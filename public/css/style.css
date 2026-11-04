@@ -136,9 +136,9 @@ body {
 
 .auth-hero-banner {
   width: 100%;
-  height: 220px;
+  height: 230px;
   position: relative;
-  background: radial-gradient(circle at 50% 30%, #FFFBEB 0%, #FEF3C7 55%, #FDE68A 100%);
+  background: linear-gradient(180deg, #FFFDF5 0%, #FEF3C7 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -146,17 +146,12 @@ body {
   overflow: hidden;
 }
 
-.auth-hero-banner::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(45deg, rgba(212, 175, 55, 0.04) 0, rgba(212, 175, 55, 0.04) 10px, transparent 10px, transparent 20px);
-}
-
-.auth-banner-particles {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
+.auth-hero-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
 }
 
 .auth-card-container {
@@ -680,24 +675,29 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
-.mining-plan-card {
+.mining-plan-card,
+.plan-card {
   background: #FFFFFF;
   border: 1.5px solid var(--gold-border);
   border-radius: var(--radius-lg);
   padding: 16px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.08);
   position: relative;
   overflow: hidden;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   touch-action: pan-y;
+  margin-bottom: 14px;
 }
 
-.mining-plan-card:hover {
+.mining-plan-card:hover,
+.plan-card:hover {
   border-color: var(--gold-bright);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.16);
+  transform: translateY(-2px);
 }
 
-.plan-card-top {
+.plan-card-top,
+.plan-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -710,9 +710,14 @@ body {
   gap: 10px;
 }
 
-.plan-coin-avatar {
+.plan-coin-avatar,
+.plan-img-container {
   width: 44px;
   height: 44px;
+  min-width: 44px;
+  max-width: 44px;
+  min-height: 44px;
+  max-height: 44px;
   border-radius: 50%;
   border: 1.5px solid var(--gold-border);
   background: #FFFFFF;
@@ -720,12 +725,19 @@ body {
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 8px rgba(212, 175, 55, 0.2);
+  overflow: hidden;
 }
 
 .plan-coin-avatar img,
-.plan-coin-avatar svg {
+.plan-coin-avatar svg,
+.plan-img-container img,
+.plan-img-container svg {
   width: 36px;
   height: 36px;
+  max-width: 36px;
+  max-height: 36px;
+  object-fit: contain;
+  display: block;
 }
 
 .plan-title-block h3 {
@@ -835,7 +847,8 @@ body {
   color: var(--gold-dark);
 }
 
-.btn-deploy-miner {
+.btn-deploy-miner,
+.btn-buy-plan {
   flex: 1;
   max-width: 170px;
   height: 42px;
@@ -852,14 +865,17 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
+  text-decoration: none;
 }
 
-.btn-deploy-miner:hover {
+.btn-deploy-miner:hover,
+.btn-buy-plan:hover {
   background: var(--gold-gradient-hover);
   box-shadow: 0 6px 18px rgba(212, 175, 55, 0.5);
 }
 
-.btn-deploy-miner:active {
+.btn-deploy-miner:active,
+.btn-buy-plan:active {
   transform: scale(0.96);
 }
 

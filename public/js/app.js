@@ -292,48 +292,55 @@ function renderPlansUI() {
 
   filtered.forEach(plan => {
     const card = document.createElement('div');
-    card.className = 'plan-card';
-    const coin = plan.coin || 'BTC';
+    card.className = 'mining-plan-card';
+    const coin = (plan.coin || 'BTC').toUpperCase();
     const hashrate = plan.hashrate || '120 TH/s';
     const planImg = plan.image || `/images/${coin.toLowerCase()}.svg`;
 
     card.innerHTML = `
-      <div class="plan-card-header">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <img src="${planImg}" alt="${coin}" style="width: 24px; height: 24px; object-fit: contain;">
-          <span>${plan.title}</span>
+      <div class="plan-card-top">
+        <div class="plan-coin-info">
+          <div class="plan-coin-avatar">
+            <img src="${planImg}" alt="${coin}" onerror="this.src='/images/miner_rig.svg'">
+          </div>
+          <div class="plan-title-block">
+            <h3>${plan.title}</h3>
+            <span class="plan-hashrate-pill">
+              <i class="fa-solid fa-bolt"></i> ${coin} • ${hashrate}
+            </span>
+          </div>
         </div>
-        <span class="plan-coin-tag">${coin} • ${hashrate}</span>
-      </div>
-      <div class="plan-card-body">
-        <div class="plan-img-container">
-          <span class="plan-limit-badge">Limit 0/${plan.limit || 10}</span>
-          <img src="${planImg}" alt="${plan.title}" onerror="this.src='/images/miner_rig.svg'">
-        </div>
-        <div class="plan-details-table">
-          <div class="plan-row">
-            <span class="plan-label"><span class="plan-dot"></span> Rig Cost</span>
-            <span class="plan-value large">₹${Number(plan.price).toLocaleString('en-IN')}</span>
-          </div>
-          <div class="plan-row">
-            <span class="plan-label"><span class="plan-dot"></span> Daily Hashrate Yield</span>
-            <span class="plan-value">₹${Number(plan.daily_income).toLocaleString('en-IN')}</span>
-          </div>
-          <div class="plan-row">
-            <span class="plan-label"><span class="plan-dot"></span> Total Expected Yield</span>
-            <span class="plan-value">₹${Number(plan.total_income).toLocaleString('en-IN')}</span>
-          </div>
-          <div class="plan-row">
-            <span class="plan-label"><span class="plan-dot"></span> Mining Term</span>
-            <span class="plan-value">${plan.cycle_days} Days</span>
-          </div>
+        <div class="plan-badge-live">
+          <span class="pulse-dot"></span> LIVE
         </div>
       </div>
-      <button class="btn-buy-plan" onclick="buyPlan('${plan.id}')">
-        <span>Deploy Miner</span>
-        <i class="fa-solid fa-server"></i>
-        <span class="buy-circle"><i class="fa-solid fa-chevron-right"></i></span>
-      </button>
+
+      <div class="plan-financials-grid">
+        <div class="plan-fin-item">
+          <div class="fin-label">Daily Yield</div>
+          <div class="fin-val gold">₹${Number(plan.daily_income).toLocaleString('en-IN')}</div>
+        </div>
+        <div class="plan-fin-item">
+          <div class="fin-label">Total Yield</div>
+          <div class="fin-val">₹${Number(plan.total_income).toLocaleString('en-IN')}</div>
+        </div>
+        <div class="plan-fin-item">
+          <div class="fin-label">Mining Term</div>
+          <div class="fin-val">${plan.cycle_days} Days</div>
+        </div>
+      </div>
+
+      <div class="plan-card-footer">
+        <div class="plan-price-block">
+          <span class="plan-price-label">Rig Price</span>
+          <span class="plan-price-amount">₹${Number(plan.price).toLocaleString('en-IN')}</span>
+        </div>
+        <button class="btn-deploy-miner" onclick="buyPlan('${plan.id}')">
+          <i class="fa-solid fa-server"></i>
+          <span>Deploy Miner</span>
+          <i class="fa-solid fa-chevron-right" style="font-size: 11px;"></i>
+        </button>
+      </div>
     `;
     container.appendChild(card);
   });

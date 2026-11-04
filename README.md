@@ -47,3 +47,4 @@ npm start
 ### 3. Open in Browser
 - **Client Mining App**: `http://localhost:3000`
 - **Executive Admin Dashboard**: `http://localhost:3000/admin`
+
