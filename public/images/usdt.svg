@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="usdtOuter" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E6FFFA"/>
+      <stop offset="40%" stop-color="#26A17B"/>
+      <stop offset="100%" stop-color="#14532D"/>
+    </linearGradient>
+    <linearGradient id="goldBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEF08A"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#B45309"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="90" fill="url(#goldBorder)"/>
+  <circle cx="100" cy="100" r="82" fill="#FFFFFF"/>
+  <circle cx="100" cy="100" r="76" fill="url(#usdtOuter)"/>
+  <!-- Tether Symbol -->
+  <path d="M100 70 C70 70 60 76 60 84 C60 92 70 98 100 98 C130 98 140 92 140 84 C140 76 130 70 100 70 Z M100 92 C80 92 72 88 72 84 C72 80 80 76 100 76 C120 76 128 80 128 84 C128 88 120 92 100 92 Z M105 102 V142 H95 V102 C115 101 125 97 129 93 L134 100 C128 106 117 110 105 111 Z" fill="#FFFFFF"/>
+  <rect x="74" y="62" width="52" height="10" rx="3" fill="#FFFFFF"/>
+  <rect x="95" y="72" width="10" height="70" fill="#FFFFFF"/>
+</svg>

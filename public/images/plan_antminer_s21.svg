@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <defs>
+    <linearGradient id="chassisGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="50%" stop-color="#F1F5F9"/>
+      <stop offset="100%" stop-color="#E2E8F0"/>
+    </linearGradient>
+    <linearGradient id="goldAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFBEB"/>
+      <stop offset="35%" stop-color="#FCD34D"/>
+      <stop offset="70%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#B45309"/>
+    </linearGradient>
+    <radialGradient id="fanLed" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FDE047"/>
+      <stop offset="60%" stop-color="#D97706"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </radialGradient>
+    <filter id="rigShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#B45309" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <!-- Server Body Chassis -->
+  <g filter="url(#rigShadow)">
+    <rect x="40" y="50" width="320" height="190" rx="18" fill="url(#chassisGrad)" stroke="url(#goldAccent)" stroke-width="3"/>
+    
+    <!-- Top Heatsink Fins -->
+    <rect x="60" y="65" width="280" height="22" rx="4" fill="#0F172A"/>
+    <line x1="80" y1="65" x2="80" y2="87" stroke="url(#goldAccent)" stroke-width="2"/>
+    <line x1="120" y1="65" x2="120" y2="87" stroke="url(#goldAccent)" stroke-width="2"/>
+    <line x1="160" y1="65" x2="160" y2="87" stroke="url(#goldAccent)" stroke-width="2"/>
+    <line x1="200" y1="65" x2="200" y2="87" stroke="url(#goldAccent)" stroke-width="2"/>
+    <line x1="240" y1="65" x2="240" y2="87" stroke="url(#goldAccent)" stroke-width="2"/>
+    <line x1="280" y1="65" x2="280" y2="87" stroke="url(#goldAccent)" stroke-width="2"/>
+    <line x1="320" y1="65" x2="320" y2="87" stroke="url(#goldAccent)" stroke-width="2"/>
+
+    <!-- Dual Heavy High-Speed Cooling Fans -->
+    <!-- Fan Left -->
+    <circle cx="120" cy="155" r="46" fill="#0A0E17" stroke="url(#goldAccent)" stroke-width="3"/>
+    <circle cx="120" cy="155" r="38" fill="none" stroke="#FDE68A" stroke-width="1.5" stroke-dasharray="3, 5"/>
+    <circle cx="120" cy="155" r="16" fill="url(#fanLed)"/>
+    <line x1="120" y1="115" x2="120" y2="195" stroke="url(#goldAccent)" stroke-width="4"/>
+    <line x1="80" y1="155" x2="160" y2="155" stroke="url(#goldAccent)" stroke-width="4"/>
+    <line x1="92" y1="127" x2="148" y2="183" stroke="url(#goldAccent)" stroke-width="3"/>
+    <line x1="92" y1="183" x2="148" y2="127" stroke="url(#goldAccent)" stroke-width="3"/>
+
+    <!-- Fan Right -->
+    <circle cx="280" cy="155" r="46" fill="#0A0E17" stroke="url(#goldAccent)" stroke-width="3"/>
+    <circle cx="280" cy="155" r="38" fill="none" stroke="#FDE68A" stroke-width="1.5" stroke-dasharray="3, 5"/>
+    <circle cx="280" cy="155" r="16" fill="url(#fanLed)"/>
+    <line x1="280" y1="115" x2="280" y2="195" stroke="url(#goldAccent)" stroke-width="4"/>
+    <line x1="240" y1="155" x2="320" y2="155" stroke="url(#goldAccent)" stroke-width="4"/>
+    <line x1="252" y1="127" x2="308" y2="183" stroke="url(#goldAccent)" stroke-width="3"/>
+    <line x1="252" y1="183" x2="308" y2="127" stroke="url(#goldAccent)" stroke-width="3"/>
+
+    <!-- Center Control Panel & Live Hashrate Display -->
+    <rect x="180" y="115" width="40" height="80" rx="8" fill="#0F172A" stroke="url(#goldAccent)" stroke-width="2"/>
+    <circle cx="200" cy="130" r="4" fill="#10B981"/> <!-- Green Status LED -->
+    <circle cx="200" cy="144" r="4" fill="#F59E0B"/> <!-- Gold Working LED -->
+    <rect x="188" y="160" width="24" height="24" rx="4" fill="#1E293B"/>
+    <text x="200" y="176" font-family="sans-serif" font-weight="900" font-size="9" fill="#FCD34D" text-anchor="middle">GH/s</text>
+
+    <!-- Bottom Footing Pedestals -->
+    <rect x="70" y="240" width="30" height="8" rx="2" fill="#0F172A"/>
+    <rect x="300" y="240" width="30" height="8" rx="2" fill="#0F172A"/>
+  </g>
+</svg>

@@ -1,0 +1,2314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CryptoMiners - Master Executive Portal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
+      --gold-border: rgba(212, 175, 55, 0.28);
+      --primary: #c59b27;
+      --primary-hover: #b0881c;
+      --gold-gradient: linear-gradient(135deg, #f59e0b 0%, #d4af37 50%, #b48608 100%);
+      --accent: #d4af37;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --sidebar-bg: #ffffff;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Admin Top Navigation */
+    .admin-nav {
+      background: #ffffff;
+      border-bottom: 1.5px solid var(--gold-border);
+      padding: 14px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(212, 175, 55, 0.08);
+    }
+    .admin-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 18px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .admin-brand img {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      border: 1.5px solid var(--primary);
+      object-fit: cover;
+      background: #faf9f6;
+    }
+    .brand-badge {
+      background: var(--gold-gradient);
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+      text-transform: uppercase;
+    }
+    .admin-nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-portal-action {
+      background: #ffffff;
+      color: #0f172a;
+      border: 1px solid var(--gold-border);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+    .btn-portal-action:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    /* Main Container */
+    .admin-container {
+      max-width: 1320px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 20px 60px 20px;
+      flex: 1;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--gold-border);
+      border-radius: 16px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(212, 175, 55, 0.05);
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 100%;
+      background: var(--primary);
+    }
+    .stat-card.alert::before { background: var(--warning); }
+    .stat-card.danger::before { background: var(--danger); }
+    .stat-card.success::before { background: var(--success); }
+    .stat-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .stat-value {
+      font-size: 26px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .stat-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Tabs Bar */
+    .tabs-bar {
+      display: flex;
+      gap: 8px;
+      background: #ffffff;
+      padding: 8px;
+      border-radius: 14px;
+      border: 1.5px solid var(--gold-border);
+      margin-bottom: 24px;
+      overflow-x: auto;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .tab-btn.active {
+      background: var(--gold-gradient);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.35);
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .search-input {
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px 14px;
+      color: #0f172a;
+      font-size: 13px;
+      min-width: 260px;
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+    }
+    .filter-select {
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: #0f172a;
+      font-size: 13px;
+      outline: none;
+    }
+
+    /* Admin Content Panels */
+    .admin-panel {
+      display: none;
+      background: var(--card-bg);
+      border: 1.5px solid var(--gold-border);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(212, 175, 55, 0.06);
+    }
+    .admin-panel.active {
+      display: block;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .panel-title {
+      font-size: 18px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #0f172a;
+    }
+
+    /* Tables */
+    .table-responsive {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13.5px;
+    }
+    th {
+      background: #faf9f6;
+      color: #0f172a;
+      font-weight: 700;
+      padding: 12px 14px;
+      border-bottom: 1.5px solid var(--gold-border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 14px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+      color: #1e293b;
+    }
+    tr:hover td {
+      background: #fffdf9;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .badge.pending { background: rgba(245, 158, 11, 0.15); color: #b45309; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge.approved { background: rgba(16, 185, 129, 0.15); color: #047857; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge.rejected { background: rgba(239, 68, 68, 0.15); color: #b91c1c; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .badge.banned { background: rgba(239, 68, 68, 0.2); color: #991b1b; border: 1px solid #ef4444; }
+
+    /* Action Buttons in Table */
+    .btn-action-group {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .btn-table-action {
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+    }
+    .btn-table-action.approve { background: #10b981; color: #fff; }
+    .btn-table-action.approve:hover { background: #059669; }
+    .btn-table-action.reject { background: #ef4444; color: #fff; }
+    .btn-table-action.reject:hover { background: #dc2626; }
+    .btn-table-action.secondary { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+    .btn-table-action.secondary:hover { background: #e2e8f0; }
+    .btn-table-action.edit { background: var(--gold-gradient); color: #fff; }
+    .btn-table-action.warn { background: #f59e0b; color: #fff; }
+
+    /* Forms */
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+    .form-control {
+      width: 100%;
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: #0f172a;
+      font-size: 13.5px;
+      outline: none;
+      transition: border 0.2s;
+    }
+    .form-control:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-box {
+      background: #ffffff;
+      border: 1.5px solid var(--gold-border);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .modal-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .btn-close-modal {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    /* Toast */
+    #toastContainer {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .toast {
+      background: #ffffff;
+      border: 1.5px solid var(--gold-border);
+      color: #0f172a;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    .toast.success { border-color: var(--success); }
+    .toast.error { border-color: var(--danger); }
+
+    /* Admin Auth Screen */
+    #adminAuthScreen {
+      position: fixed;
+      inset: 0;
+      background: #f8fafc;
+      background-image: radial-gradient(circle at 50% 30%, #fffbf0 0%, #f1f5f9 100%);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .auth-box {
+      background: #ffffff;
+      border: 1.5px solid var(--gold-border);
+      border-radius: 24px;
+      width: 100%;
+      max-width: 420px;
+      padding: 36px 30px;
+      text-align: center;
+      box-shadow: 0 25px 60px rgba(212, 175, 55, 0.12);
+    }
+    .auth-box img {
+      width: 76px;
+      height: 76px;
+      border-radius: 18px;
+      border: 2px solid var(--primary);
+      margin-bottom: 16px;
+      background: #faf9f6;
+      padding: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- AUTH SCREEN -->
+  <div id="adminAuthScreen">
+    <div class="auth-box">
+      <img src="/images/logo.svg" alt="CryptoMiners Logo">
+      <h2 style="font-size: 22px; font-weight: 800; margin-bottom: 6px; color: #0f172a;">Executive Master Access</h2>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Enter administrator credentials to manage ASIC mining rigs, deposits & crypto payouts.</p>
+
+      <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+        <div class="form-group" style="text-align: left;">
+          <label>Admin Username</label>
+          <input type="text" id="adminUser" class="form-control" placeholder="Crypto_SuperAdmin" autocomplete="username" required>
+        </div>
+        <div class="form-group" style="text-align: left; margin-bottom: 24px;">
+          <label>Password</label>
+          <input type="password" id="adminPass" class="form-control" placeholder="••••••••••••" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="btn-portal-action" style="width: 100%; justify-content: center; height: 46px; font-size: 14px; background: var(--gold-gradient); color: #fff; border: none;">
+          <i class="fa-solid fa-unlock-keyhole"></i> Authenticate & Enter Portal
+        </button>
+      </form>
+      <div style="margin-top: 18px;">
+        <a href="/" style="font-size: 12.5px; color: var(--text-muted); text-decoration: none;"><i class="fa-solid fa-arrow-left"></i> Return to Client Mining App</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP NAV -->
+  <nav class="admin-nav">
+    <div class="admin-brand">
+      <img src="/images/logo.svg" alt="CryptoMiners Logo">
+      <span>CryptoMiners Executive</span>
+      <span class="brand-badge">ADMIN CONTROL</span>
+    </div>
+    <div class="admin-nav-actions">
+      <button class="btn-portal-action" onclick="exportData('recharges')">
+        <i class="fa-solid fa-file-arrow-down"></i> Export Deposits
+      </button>
+      <button class="btn-portal-action" onclick="exportData('withdrawals')">
+        <i class="fa-solid fa-file-arrow-down"></i> Export Payouts
+      </button>
+      <a href="/" class="btn-portal-action" target="_blank">
+        <i class="fa-solid fa-mobile-screen"></i> Client View
+      </a>
+      <button class="btn-portal-action" onclick="handleAdminLogout()" style="background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.3); color: #dc2626;">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </button>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <div class="admin-container">
+    <!-- STATS OVERVIEW -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-title">Registered Miners <i class="fa-solid fa-users"></i></div>
+        <div id="admStatUsers" class="stat-value">0</div>
+        <div class="stat-sub">Active investors</div>
+      </div>
+      <div class="stat-card alert">
+        <div class="stat-title">Pending Deposits <i class="fa-solid fa-wallet"></i></div>
+        <div id="admStatPendingRecharges" class="stat-value" style="color: #d97706;">0</div>
+        <div class="stat-sub">Needs verification</div>
+      </div>
+      <div class="stat-card danger">
+        <div class="stat-title">Pending Payouts <i class="fa-solid fa-money-bill-transfer"></i></div>
+        <div id="admStatPendingWithdrawals" class="stat-value" style="color: #dc2626;">0</div>
+        <div class="stat-sub">Pending bank / USDT transfer</div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-title">Approved Capital <i class="fa-solid fa-circle-check"></i></div>
+        <div id="admStatApprovedDeposit" class="stat-value" style="color: #059669;">₹0</div>
+        <div class="stat-sub">Total capital credited</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Mining Hash Engine <i class="fa-solid fa-server"></i></div>
+        <div id="admStatUptime" class="stat-value" style="font-size: 20px; color: var(--primary);">Online</div>
+        <div class="stat-sub" id="admStatServerTime">ASIC Cluster Active</div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs-bar">
+      <button class="tab-btn active" onclick="switchTab('recharges', this)">
+        <i class="fa-solid fa-receipt"></i> Deposit Verifications
+      </button>
+      <button class="tab-btn" onclick="switchTab('withdrawals', this)">
+        <i class="fa-solid fa-money-bill-wave"></i> Withdrawal Requests
+      </button>
+      <button class="tab-btn" onclick="switchTab('qr', this)">
+        <i class="fa-solid fa-qrcode"></i> QR & Crypto Gateways
+      </button>
+      <button class="tab-btn" onclick="switchTab('plans', this)">
+        <i class="fa-solid fa-server"></i> Cloud Mining Plans
+      </button>
+      <button class="tab-btn" onclick="switchTab('users', this)">
+        <i class="fa-solid fa-user-gear"></i> Miners & Balances
+      </button>
+      <button class="tab-btn" onclick="switchTab('manual', this)">
+        <i class="fa-solid fa-wallet"></i> Manual Balance Adjust
+      </button>
+      <button class="tab-btn" onclick="switchTab('analytics', this)">
+        <i class="fa-solid fa-chart-pie"></i> Financial Analytics
+      </button>
+      <button class="tab-btn" onclick="switchTab('security', this)">
+        <i class="fa-solid fa-shield-halved"></i> Security & Credentials
+      </button>
+    </div>
+
+    <!-- PANEL 1: RECHARGES -->
+    <div id="panel-recharges" class="admin-panel active">
+      <div class="panel-header">
+        <div class="panel-title"><i class="fa-solid fa-receipt" style="color: var(--primary);"></i> Deposit Verifications (UTR / TXID)</div>
+        <button class="btn-portal-action" onclick="loadRecharges()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+      </div>
+
+      <div class="filter-bar">
+        <input type="text" id="rechargeSearchInput" class="search-input" placeholder="Search phone, name or UTR / TXID..." oninput="filterRechargesTable()">
+        <select id="rechargeStatusFilter" class="filter-select" onchange="filterRechargesTable()">
+          <option value="all">All Statuses</option>
+          <option value="pending" selected>Pending Verification</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Client / Phone</th>
+              <th>Amount</th>
+              <th>UTR / Crypto TXID</th>
+              <th>Receipt</th>
+              <th>Submission Time</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="rechargeTableBody">
+            <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Loading deposit requests...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PANEL 2: WITHDRAWALS -->
+    <div id="panel-withdrawals" class="admin-panel">
+      <div class="panel-header">
+        <div class="panel-title"><i class="fa-solid fa-money-bill-wave" style="color: #ef4444;"></i> Payout / Withdrawal Requests</div>
+        <button class="btn-portal-action" onclick="loadWithdrawals()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+      </div>
+
+      <div class="filter-bar">
+        <input type="text" id="withdrawSearchInput" class="search-input" placeholder="Search user phone, account or UPI..." oninput="filterWithdrawalsTable()">
+        <select id="withdrawStatusFilter" class="filter-select" onchange="filterWithdrawalsTable()">
+          <option value="all">All Requests</option>
+          <option value="pending" selected>Pending Payout</option>
+          <option value="approved">Paid</option>
+          <option value="rejected">Refunded</option>
+        </select>
+      </div>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Amount / Fee</th>
+              <th>Net Payout</th>
+              <th>Bank / UPI / USDT Details</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="withdrawTableBody">
+            <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Loading payouts...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PANEL 3: QR & SETTINGS -->
+    <div id="panel-qr" class="admin-panel">
+      <div class="panel-header">
+        <div class="panel-title"><i class="fa-solid fa-qrcode" style="color: var(--primary);"></i> Multi-QR Auto-Rotation Pool & Crypto Wallets</div>
+        <span style="font-size: 12px; color: #059669; font-weight: 700;"><i class="fa-solid fa-bolt"></i> Real-time Rotation Active</span>
+      </div>
+
+      <!-- POOL STATUS CARD -->
+      <div style="background: #faf9f6; border: 1.5px solid var(--gold-border); border-radius: 16px; padding: 20px; margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span class="badge approved" style="font-size: 11px; padding: 6px 12px;"><i class="fa-solid fa-check-circle"></i> AUTO-ROTATION ONLINE</span>
+            <span style="font-size: 13.5px; color: #0f172a; font-weight: 700;">Multi-Gateway Rotation Active</span>
+          </div>
+          <div style="display: flex; gap: 12px;">
+            <div style="background: #ffffff; padding: 6px 14px; border-radius: 10px; font-size: 12px; color: #334155; border: 1px solid var(--gold-border);">
+              Total Gateways in Pool: <strong id="qrStatTotal" style="color: #0f172a; font-size: 14px;">5</strong>
+            </div>
+            <div style="background: rgba(16, 185, 129, 0.1); padding: 6px 14px; border-radius: 10px; font-size: 12px; color: #047857; border: 1px solid rgba(16, 185, 129, 0.3);">
+              Active in Rotation: <strong id="qrStatActive" style="color: #047857; font-size: 14px;">5</strong>
+            </div>
+          </div>
+        </div>
+        <p style="font-size: 12.5px; color: #64748b; line-height: 1.6; margin: 0;">
+          ⚡ <strong>Round-Robin Auto-Rotation:</strong> Har new user ko automatically alag QR channel show hota hai taaki kisi ek account par load ya UPI limit issue na aaye. Users screen par "Change QR / Refresh" button daba kar instantly doosra QR load kar sakte hain!
+        </p>
+      </div>
+
+      <!-- BATCH UPLOAD CARD -->
+      <div style="background: #ffffff; border: 1.5px solid var(--gold-border); border-radius: 16px; padding: 22px; margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+          <div>
+            <h3 style="font-size: 15px; font-weight: 800; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-cloud-arrow-up" style="color: var(--primary);"></i> Batch Upload Multiple QR Codes (5+ Ek Saath)
+            </h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 4px 0 0 0;">PhonePe, GPay, Paytm ke 5 ya zyada QR files select karein aur rotation pool me add karein.</p>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 14px;">
+          <div>
+            <label style="font-size: 12px; color: #334155; font-weight: 700; display: block; margin-bottom: 6px;">Select QR Images (Multiple)</label>
+            <input type="file" id="batchQrInput" accept="image/*" multiple class="form-control" onchange="previewBatchQrs(this)">
+          </div>
+          <div>
+            <label style="font-size: 12px; color: #334155; font-weight: 700; display: block; margin-bottom: 6px;">Channel Name Prefix</label>
+            <input type="text" id="batchQrTitle" class="form-control" placeholder="e.g. VIP Instant Gateway">
+          </div>
+          <div>
+            <label style="font-size: 12px; color: #334155; font-weight: 700; display: block; margin-bottom: 6px;">Custom UPI ID (Optional)</label>
+            <input type="text" id="batchQrUpi" class="form-control" placeholder="Leave empty for default">
+          </div>
+        </div>
+
+        <div id="batchPreUploadPreview" style="display: none; margin-bottom: 14px; background: #faf9f6; padding: 12px; border-radius: 12px; border: 1px dashed var(--gold-border);">
+          <div style="font-size: 12px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">Selected Files Preview (<span id="batchCountBadge">0</span> images selected):</div>
+          <div id="batchThumbnailsRow" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
+        </div>
+
+        <button type="button" class="btn-portal-action" id="btnUploadBatch" onclick="uploadBatchQrs()" style="background: var(--gold-gradient); color: #fff; height: 42px; font-weight: 700; font-size: 13.5px; border: none;">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Upload All Selected QRs to Pool
+        </button>
+      </div>
+
+      <!-- LIVE QR POOL GRID -->
+      <div style="background: #ffffff; border: 1.5px solid var(--gold-border); border-radius: 16px; padding: 22px; margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+          <div>
+            <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-arrows-spin" style="color: var(--primary);"></i> Current QR Codes in Rotation Pool
+            </h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 4px 0 0 0;">Yahan active QRs hain jo users ko rotate hokar show hote hain.</p>
+          </div>
+          <button type="button" class="btn-portal-action" onclick="loadQrCodesPool()">
+            <i class="fa-solid fa-rotate"></i> Refresh List
+          </button>
+        </div>
+
+        <div id="qrCodesListContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
+          <div style="text-align: center; color: var(--text-muted); padding: 20px;">Loading QR pool...</div>
+        </div>
+      </div>
+
+      <!-- GLOBAL MERCHANT & CRYPTO WALLET SETTINGS FORM -->
+      <div style="background: #ffffff; border: 1.5px solid var(--gold-border); border-radius: 16px; padding: 22px; margin-bottom: 24px;">
+        <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-sliders" style="color: var(--primary);"></i> Global UPI & Crypto Wallet Addresses
+        </h3>
+
+        <form id="qrSettingsForm" onsubmit="saveQRSettings(event)">
+          <div style="display: flex; gap: 24px; align-items: flex-start; margin-bottom: 24px; background: #faf9f6; padding: 18px; border-radius: 14px; border: 1.5px solid var(--gold-border); flex-wrap: wrap;">
+            <div style="text-align: center;">
+              <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">Primary QR Preview</div>
+              <img id="adminQrPreview" src="/images/miner_rig.svg" alt="UPI QR" style="width: 130px; height: 130px; border-radius: 12px; background: #fff; object-fit: contain; border: 2px solid var(--primary); padding: 4px;">
+              <div id="activeQrStatusBadge" style="margin-top: 6px;"><span class="badge approved" style="font-size: 10px;">PRIMARY ACTIVE</span></div>
+            </div>
+            <div style="flex: 1; min-width: 250px;">
+              <label style="font-size: 13px; font-weight: 700; color: #0f172a; display: block; margin-bottom: 6px;">Quick Single QR Upload</label>
+              <div style="display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;">
+                <input type="file" id="qrFileInput" accept="image/*" class="form-control" style="flex: 1; min-width: 200px;" onchange="previewUploadedQr(this)">
+                <button type="button" class="btn-portal-action" onclick="uploadQrImmediately()" style="background: var(--gold-gradient); color: #fff; white-space: nowrap; height: 42px; border: none;">
+                  <i class="fa-solid fa-cloud-arrow-up"></i> Upload Single QR
+                </button>
+              </div>
+              <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px; background: #ffffff; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--gold-border); word-break: break-all;">
+                <span id="activeQrPathText">Current Active: /images/miner_rig.svg</span>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label style="font-size: 12px;">Or Direct Image URL (Optional)</label>
+                <input type="text" id="settingQrUrl" class="form-control" placeholder="https://... or /images/..." oninput="document.getElementById('adminQrPreview').src = this.value">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Default Merchant UPI ID (VPA) *</label>
+              <input type="text" id="settingUpiId" class="form-control" placeholder="cryptominers@okaxis" required>
+            </div>
+            <div class="form-group">
+              <label>Merchant Business Name *</label>
+              <input type="text" id="settingMerchantName" class="form-control" placeholder="CryptoMiners Cloud Holdings" required>
+            </div>
+            <div class="form-group">
+              <label>USDT (TRC-20) Deposit Address</label>
+              <input type="text" id="settingUsdtTrc20" class="form-control" placeholder="TXjK9zFw8q2LmN4vP1aB3cE5gH7jK9mN2p">
+            </div>
+            <div class="form-group">
+              <label>USDT (BEP-20) Deposit Address</label>
+              <input type="text" id="settingUsdtBep20" class="form-control" placeholder="0x71C...B3">
+            </div>
+            <div class="form-group">
+              <label>BTC Cloud Vault Address</label>
+              <input type="text" id="settingBtcAddress" class="form-control" placeholder="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh">
+            </div>
+            <div class="form-group">
+              <label>Minimum Deposit Amount (₹) *</label>
+              <input type="number" id="settingMinRecharge" class="form-control" value="285" required>
+            </div>
+            <div class="form-group">
+              <label>Minimum Withdrawal Amount (₹) *</label>
+              <input type="number" id="settingMinWithdraw" class="form-control" value="200" required>
+            </div>
+            <div class="form-group">
+              <label>Withdrawal Processing Fee (%) *</label>
+              <input type="number" id="settingFeePercent" class="form-control" value="10" required>
+            </div>
+            <div class="form-group">
+              <label>Official Telegram Channel Link</label>
+              <input type="url" id="settingTelegram" class="form-control" placeholder="https://t.me/cryptominers">
+            </div>
+            <div class="form-group">
+              <label>Support WhatsApp Number</label>
+              <input type="text" id="settingWhatsapp" class="form-control" placeholder="+919876543210">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>App Notice / Announcement Marquee Ticker</label>
+            <textarea id="settingAnnouncement" class="form-control" rows="2" placeholder="Announcements shown on the client home screen..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-portal-action" style="background: var(--gold-gradient); color: #fff; height: 46px; padding: 0 28px; font-size: 14px; border: none;">
+            <i class="fa-solid fa-floppy-disk"></i> Save & Broadcast Payment Settings
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- PANEL 4: PLANS -->
+    <div id="panel-plans" class="admin-panel">
+      <div class="panel-header">
+        <div class="panel-title"><i class="fa-solid fa-server" style="color: var(--primary);"></i> Cloud Mining Rig Plans</div>
+        <button class="btn-portal-action" onclick="openCreatePlanModal()" style="background: var(--gold-gradient); color: #fff; border: none;">
+          <i class="fa-solid fa-plus"></i> Add New Mining Rig
+        </button>
+      </div>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Coin</th>
+              <th>Rig Title</th>
+              <th>Hashrate</th>
+              <th>Category</th>
+              <th>Rig Price</th>
+              <th>Daily Yield</th>
+              <th>Total Yield</th>
+              <th>Term</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="plansTableBody">
+            <tr><td colspan="10" style="text-align: center; color: var(--text-muted);">Loading plans...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PANEL 5: USERS -->
+    <div id="panel-users" class="admin-panel">
+      <div class="panel-header">
+        <div class="panel-title"><i class="fa-solid fa-user-gear" style="color: var(--primary);"></i> Registered Miners Directory</div>
+        <button class="btn-portal-action" onclick="loadUsers()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+      </div>
+
+      <div class="filter-bar">
+        <input type="text" id="userSearchInput" class="search-input" placeholder="Search miner phone, name, or invite code..." oninput="filterUsersTable()">
+      </div>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Available Balance</th>
+              <th>Total Deposited</th>
+              <th>Total Withdrawn</th>
+              <th>Status</th>
+              <th>Referral Code</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+            <tr><td colspan="8" style="text-align: center; color: var(--text-muted);">Loading users...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PANEL 6: MANUAL CREDIT / DEBIT -->
+    <div id="panel-manual" class="admin-panel">
+      <div class="panel-header">
+        <div class="panel-title"><i class="fa-solid fa-wallet" style="color: var(--primary);"></i> Manual Miner Balance Adjustment</div>
+        <span style="font-size: 12px; color: var(--text-muted);">Directly adjust miner wallet with audit trail</span>
+      </div>
+
+      <div style="background: #ffffff; border: 1.5px solid var(--gold-border); border-radius: 16px; padding: 24px; max-width: 650px; margin-bottom: 30px;">
+        <form id="manualTxForm" onsubmit="handleManualTransaction(event)">
+          <div class="form-group">
+            <label>Miner Registered Phone Number *</label>
+            <input type="text" id="manualUserPhone" class="form-control" placeholder="e.g. 9876543210" required>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Transaction Type *</label>
+              <select id="manualTxType" class="form-control" required>
+                <option value="recharge">Credit (+ Add Money to Wallet)</option>
+                <option value="withdrawal">Debit (- Deduct Money from Wallet)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Amount (₹) *</label>
+              <input type="number" id="manualTxAmount" class="form-control" placeholder="e.g. 500" min="1" step="0.01" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Reason / Audit Note *</label>
+            <input type="text" id="manualTxReason" class="form-control" placeholder="e.g. Crypto TXID verified / Compensation / Settlement" required>
+          </div>
+
+          <button type="submit" class="btn-portal-action" style="background: var(--gold-gradient); color: #fff; border: none; font-weight: 700; height: 44px; padding: 0 24px;">
+            <i class="fa-solid fa-check"></i> Execute Balance Adjustment
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- PANEL 7: PLATFORM FINANCIALS -->
+    <div id="panel-analytics" class="admin-panel">
+      <div class="panel-header">
+        <div class="panel-title"><i class="fa-solid fa-chart-pie" style="color: var(--primary);"></i> Financial Analytics & Data Export</div>
+        <button class="btn-portal-action" onclick="loadFinancialAnalytics()"><i class="fa-solid fa-rotate"></i> Refresh Analytics</button>
+      </div>
+
+      <div class="stats-grid" style="margin-bottom: 24px;">
+        <div class="stat-card">
+          <div class="stat-title">Total Approved Capital</div>
+          <div id="finApprovedDeposits" class="stat-value" style="color: #059669;">₹0.00</div>
+          <div class="stat-sub">Lifetime Credited Volume</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Total Payouts Settled</div>
+          <div id="finApprovedWithdrawals" class="stat-value" style="color: #dc2626;">₹0.00</div>
+          <div class="stat-sub">Lifetime Paid Out</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Net Platform Float</div>
+          <div id="finNetReserve" class="stat-value" style="color: var(--primary);">₹0.00</div>
+          <div class="stat-sub">Deposits minus Withdrawals</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Pending Verifications</div>
+          <div id="finPendingVolume" class="stat-value" style="color: #d97706;">0 Req</div>
+          <div class="stat-sub">Needs Attention</div>
+        </div>
+      </div>
+
+      <div style="background: #ffffff; border: 1.5px solid var(--gold-border); padding: 24px; border-radius: 16px;">
+        <h4 style="color: #0f172a; margin-bottom: 12px; font-size: 16px;"><i class="fa-solid fa-file-csv" style="color: var(--primary);"></i> Export Ledgers (CSV & JSON)</h4>
+        <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6; margin-bottom: 18px;">
+          Export platform transaction ledgers, member accounts, and payment logs for Excel or accounting records.
+        </p>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <a href="/api/admin/export-csv/recharges" class="btn-portal-action">
+            <i class="fa-solid fa-download"></i> Export Deposits (CSV)
+          </a>
+          <a href="/api/admin/export-csv/withdrawals" class="btn-portal-action">
+            <i class="fa-solid fa-download"></i> Export Payouts (CSV)
+          </a>
+          <a href="/api/admin/export-csv/users" class="btn-portal-action">
+            <i class="fa-solid fa-download"></i> Export Miners (CSV)
+          </a>
+          <a href="/api/admin/backup/db" class="btn-portal-action" style="background: var(--gold-gradient); color: #fff; border: none;">
+            <i class="fa-solid fa-database"></i> Download Full Database Backup (.json)
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 8: SECURITY -->
+    <div id="panel-security" class="admin-panel">
+      <div class="panel-header">
+        <div class="panel-title"><i class="fa-solid fa-shield-halved" style="color: var(--primary);"></i> Security, Credentials & Server Health</div>
+        <span style="font-size: 12px; color: #059669; font-weight: 700;"><i class="fa-solid fa-circle-check"></i> SSL Secured</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+        <div style="background: #ffffff; border: 1.5px solid var(--gold-border); border-radius: 16px; padding: 24px;">
+          <h4 style="color: #0f172a; margin-bottom: 14px; font-size: 15px;"><i class="fa-solid fa-key" style="color: var(--primary);"></i> Change Admin Login Credentials</h4>
+          <form id="changeAdminPassForm" onsubmit="handleChangeAdminPassword(event)">
+            <div class="form-group">
+              <label>Current Admin Password *</label>
+              <input type="password" id="currentAdminPass" class="form-control" placeholder="Enter current password" required>
+            </div>
+            <div class="form-group">
+              <label>New Username (Optional)</label>
+              <input type="text" id="newAdminUsername" class="form-control" placeholder="Leave blank to keep current">
+            </div>
+            <div class="form-group">
+              <label>New Password * (Min 4 chars)</label>
+              <input type="password" id="newAdminPass" class="form-control" placeholder="Enter new strong password" required minlength="4">
+            </div>
+            <button type="submit" class="btn-portal-action" style="background: var(--gold-gradient); color: #fff; width: 100%; border: none;">
+              <i class="fa-solid fa-lock"></i> Update Admin Password
+            </button>
+          </form>
+        </div>
+
+        <div style="background: #ffffff; border: 1.5px solid var(--gold-border); border-radius: 16px; padding: 24px;">
+          <h4 style="color: #0f172a; margin-bottom: 14px; font-size: 15px;"><i class="fa-solid fa-server" style="color: #059669;"></i> Cloud Uptime & Server Keep-Alive</h4>
+          <div style="font-size: 13px; color: var(--text-muted); line-height: 1.8;">
+            <div><strong>Deployment Port:</strong> <code>0.0.0.0:$PORT</code></div>
+            <div><strong>Active Keep-Alive:</strong> Auto pinging every 10 min to prevent sleep</div>
+            <div><strong>Database File:</strong> <code>data/db.json</code> (Persistent)</div>
+            <div><strong>Public Uploads:</strong> <code>public/uploads/</code> (Serving QR & Proofs)</div>
+            <div><strong>API Health URL:</strong> <a href="/health" target="_blank" style="color: var(--primary);">/health (200 OK)</a></div>
+          </div>
+          <div style="margin-top: 20px;">
+            <button class="btn-portal-action" onclick="checkServerHealth(); showToast('Health check verified!');">
+              <i class="fa-solid fa-heart-pulse"></i> Ping Server Health
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD / EDIT PLAN -->
+  <div id="planModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title" id="planModalTitle">Add New Cloud Mining Rig</div>
+        <button class="btn-close-modal" onclick="closePlanModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="planForm" onsubmit="savePlan(event)">
+        <input type="hidden" id="planEditId">
+        <div class="form-group">
+          <label>Mining Rig Title</label>
+          <input type="text" id="planTitle" class="form-control" placeholder="e.g. Antminer S21 Pro Hydro" required>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Mined Coin</label>
+            <select id="planCoin" class="form-control">
+              <option value="BTC" selected>Bitcoin (BTC)</option>
+              <option value="ETH">Ethereum (ETH)</option>
+              <option value="USDT">Tether (USDT)</option>
+              <option value="SOL">Solana (SOL)</option>
+              <option value="BNB">Binance Coin (BNB)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Hashrate Power</label>
+            <input type="text" id="planHashrate" class="form-control" placeholder="e.g. 200 TH/s" value="120 TH/s">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="planCategory" class="form-control">
+            <option value="normal">Normal Mining Rig</option>
+            <option value="vip">VIP Enterprise Rig</option>
+          </select>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Price (₹)</label>
+            <input type="number" id="planPrice" class="form-control" required oninput="calcPlanTotal()">
+          </div>
+          <div class="form-group">
+            <label>Daily Yield (₹)</label>
+            <input type="number" id="planDaily" class="form-control" required oninput="calcPlanTotal()">
+          </div>
+          <div class="form-group">
+            <label>Cycle Days</label>
+            <input type="number" id="planCycle" class="form-control" value="2" required oninput="calcPlanTotal()">
+          </div>
+          <div class="form-group">
+            <label>Total Expected Yield (₹)</label>
+            <input type="number" id="planTotal" class="form-control" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Deployment Limit (Max rigs per miner)</label>
+          <input type="number" id="planLimit" class="form-control" value="10">
+        </div>
+        <div class="form-group">
+          <label>Rig Icon / Image (Upload file)</label>
+          <input type="file" id="planImageFile" class="form-control" accept="image/*">
+        </div>
+        <div class="form-group">
+          <label>Or Select Preset Crypto Coin Asset</label>
+          <select id="planPresetSelect" class="form-control" onchange="if (this.value) document.getElementById('planImageFile').value=''">
+            <option value="">-- Custom Upload --</option>
+            <option value="/images/btc.svg">Bitcoin (BTC) Medallion</option>
+            <option value="/images/eth.svg">Ethereum (ETH) Emblem</option>
+            <option value="/images/usdt.svg">Tether (USDT) Seal</option>
+            <option value="/images/sol.svg">Solana (SOL) Gradient</option>
+            <option value="/images/miner_rig.svg">ASIC Server Mining Rig</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-portal-action" style="width: 100%; justify-content: center; height: 44px; background: var(--gold-gradient); color: #fff; margin-top: 10px; border: none;">
+          <i class="fa-solid fa-check"></i> Save Mining Rig Plan
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADJUST USER BALANCE -->
+  <div id="balanceModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">Manual Balance Adjustment</div>
+        <button class="btn-close-modal" onclick="closeBalanceModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="balanceForm" onsubmit="submitBalanceAdjust(event)">
+        <input type="hidden" id="adjUserId">
+        <p id="adjUserInfo" style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 16px;"></p>
+        <div class="form-group">
+          <label>Adjustment Type</label>
+          <select id="adjType" class="form-control">
+            <option value="add">Add Balance (+) Credit</option>
+            <option value="deduct">Deduct Balance (-) Debit</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Amount (₹)</label>
+          <input type="number" id="adjAmount" class="form-control" placeholder="Enter amount" required min="1">
+        </div>
+        <button type="submit" class="btn-portal-action" style="width: 100%; justify-content: center; height: 44px; background: var(--gold-gradient); color: #fff; border: none;">
+          <i class="fa-solid fa-wallet"></i> Confirm Adjustment
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: IMAGE PREVIEW -->
+  <div id="imagePreviewModal" class="modal-overlay">
+    <div class="modal-box" style="text-align: center; max-width: 480px;">
+      <div class="modal-header">
+        <div class="modal-title">Payment Receipt Proof</div>
+        <button class="btn-close-modal" onclick="closeImageModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <img id="modalPreviewImg" src="" alt="Proof" style="max-width: 100%; max-height: 460px; border-radius: 12px; object-fit: contain; background: #faf9f6; padding: 4px; border: 1px solid var(--gold-border);">
+    </div>
+  </div>
+
+  <!-- MODAL: REJECT RECHARGE WITH REASON -->
+  <div id="rejectRechargeModal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 440px;">
+      <div class="modal-header">
+        <div class="modal-title" style="color: #ef4444;"><i class="fa-solid fa-circle-xmark"></i> Reject Deposit Request</div>
+        <button class="btn-close-modal" onclick="closeRejectRechargeModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="submitRejectRecharge(event)">
+        <input type="hidden" id="rejectRechargeId">
+        <div class="form-group">
+          <label>Select Rejection Reason:</label>
+          <select id="rejectRechargeReasonSelect" class="form-control" onchange="handleRechargeReasonSelect(this)">
+            <option value="Invalid 12-digit UTR number">Invalid 12-digit UTR number</option>
+            <option value="UTR already used in another deposit">UTR already used in another deposit</option>
+            <option value="Payment not received in merchant account">Payment not received in merchant account</option>
+            <option value="Deposited amount does not match request">Deposited amount does not match request</option>
+            <option value="custom">Other (Enter custom reason below)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Custom Note to User:</label>
+          <input type="text" id="rejectRechargeReason" class="form-control" placeholder="Explain reason..." required>
+        </div>
+        <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px;">
+          <button type="button" class="btn-portal-action secondary" onclick="closeRejectRechargeModal()">Cancel</button>
+          <button type="submit" class="btn-portal-action reject" style="background: #ef4444; color: #fff; border: none;">Reject & Notify User</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: REJECT WITHDRAWAL WITH REASON -->
+  <div id="rejectWithdrawalModal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 440px;">
+      <div class="modal-header">
+        <div class="modal-title" style="color: #ef4444;"><i class="fa-solid fa-circle-xmark"></i> Reject Payout Request</div>
+        <button class="btn-close-modal" onclick="closeRejectWithdrawalModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="submitRejectWithdrawal(event)">
+        <input type="hidden" id="rejectWithdrawalId">
+        <div class="form-group">
+          <label>Select Rejection Reason:</label>
+          <select id="rejectWdReasonSelect" class="form-control" onchange="handleWdReasonSelect(this)">
+            <option value="Invalid bank account number or IFSC code">Invalid bank account number or IFSC code</option>
+            <option value="Bank server down / IMPS failed">Bank server down / IMPS failed</option>
+            <option value="Incorrect account holder name">Incorrect account holder name</option>
+            <option value="UPI ID inactive or invalid">UPI ID inactive or invalid</option>
+            <option value="custom">Other (Enter custom reason below)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Custom Note to User:</label>
+          <input type="text" id="rejectWithdrawalReason" class="form-control" placeholder="Explain reason..." required>
+        </div>
+        <p style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 14px;">
+          ℹ️ The withdrawal amount will be refunded directly back to the miner's available balance!
+        </p>
+        <div style="display: flex; gap: 8px; justify-content: flex-end;">
+          <button type="button" class="btn-portal-action secondary" onclick="closeRejectWithdrawalModal()">Cancel</button>
+          <button type="submit" class="btn-portal-action reject" style="background: #ef4444; color: #fff; border: none;">Refund & Notify</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer"></div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    let adminToken = localStorage.getItem('cryptominers_admin_token') || localStorage.getItem('redbull_admin_token');
+    let allRecharges = [];
+    let allWithdrawals = [];
+    let allUsers = [];
+    let adminQrPool = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (adminToken) {
+        document.getElementById('adminAuthScreen').style.display = 'none';
+        initAdminData();
+      } else {
+        document.getElementById('adminAuthScreen').style.display = 'flex';
+      }
+    });
+
+    async function handleAdminLogin(e) {
+      e.preventDefault();
+      const u = document.getElementById('adminUser').value;
+      const p = document.getElementById('adminPass').value;
+
+      try {
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: u, password: p })
+        });
+        const data = await res.json();
+        if (data.success) {
+          adminToken = data.token;
+          localStorage.setItem('cryptominers_admin_token', adminToken);
+          document.getElementById('adminAuthScreen').style.display = 'none';
+          showToast('Welcome, Administrator!', 'success');
+          initAdminData();
+        } else {
+          showToast(data.message || 'Login failed', 'error');
+        }
+      } catch (err) {
+        showToast('Server connection error', 'error');
+      }
+    }
+
+    function handleAdminLogout() {
+      localStorage.removeItem('cryptominers_admin_token');
+      localStorage.removeItem('redbull_admin_token');
+      location.reload();
+    }
+
+    function showToast(msg, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i> <span>${msg}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+
+      if (btn) btn.classList.add('active');
+      const panel = document.getElementById(`panel-${tabId}`);
+      if (panel) panel.classList.add('active');
+
+      if (tabId === 'recharges') loadRecharges();
+      else if (tabId === 'withdrawals') loadWithdrawals();
+      else if (tabId === 'qr') { loadQrCodesPool(); loadSettings(); }
+      else if (tabId === 'plans') loadPlans();
+      else if (tabId === 'users') loadUsers();
+      else if (tabId === 'analytics') loadFinancialAnalytics();
+    }
+
+    function initAdminData() {
+      loadStats();
+      loadRecharges();
+      checkServerHealth();
+      setInterval(loadStats, 30000);
+    }
+
+    async function checkServerHealth() {
+      try {
+        const res = await fetch('/health');
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById('admStatServerTime').innerText = `Uptime: ${Math.round(data.uptime)}s`;
+        }
+      } catch (e) {}
+    }
+
+    // Stats
+    async function loadStats() {
+      try {
+        const res = await fetch('/api/admin/stats');
+        const data = await res.json();
+        if (data.success && data.stats) {
+          const s = data.stats;
+          document.getElementById('admStatUsers').innerText = s.totalUsers;
+          document.getElementById('admStatPendingRecharges').innerText = s.pendingRecharges;
+          document.getElementById('admStatPendingWithdrawals').innerText = s.pendingWithdrawals;
+          document.getElementById('admStatApprovedDeposit').innerText = `₹${Number(s.totalApprovedDeposit).toLocaleString('en-IN')}`;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // Recharges
+    async function loadRecharges() {
+      const tbody = document.getElementById('rechargeTableBody');
+      try {
+        const res = await fetch('/api/admin/recharges');
+        const data = await res.json();
+        if (data.success) {
+          allRecharges = data.recharges || [];
+          renderRechargesTable(allRecharges);
+        }
+      } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="7" style="color: red; text-align: center;">Error loading recharges</td></tr>';
+      }
+    }
+
+    function filterRechargesTable() {
+      const q = (document.getElementById('rechargeSearchInput').value || '').toLowerCase().trim();
+      const status = document.getElementById('rechargeStatusFilter').value;
+
+      const filtered = allRecharges.filter(r => {
+        const matchStatus = status === 'all' || r.status === status;
+        const matchSearch = !q || 
+          (r.phone && r.phone.includes(q)) || 
+          (r.user_name && r.user_name.toLowerCase().includes(q)) || 
+          (r.utr && r.utr.toLowerCase().includes(q));
+        return matchStatus && matchSearch;
+      });
+
+      renderRechargesTable(filtered);
+    }
+
+    function renderRechargesTable(recharges) {
+      const tbody = document.getElementById('rechargeTableBody');
+      tbody.innerHTML = '';
+      if (recharges.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">No matching deposits found.</td></tr>';
+        return;
+      }
+
+      [...recharges].reverse().forEach(r => {
+        const tr = document.createElement('tr');
+        const isPending = r.status === 'pending';
+        const dateStr = new Date(r.date).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+        tr.innerHTML = `
+          <td>
+            <strong>${r.user_name || 'Miner'}</strong><br>
+            <span style="font-family: monospace; color: var(--primary);">+91 ${r.phone}</span>
+          </td>
+          <td><strong style="color: #059669; font-size: 15px;">₹${r.amount}</strong></td>
+          <td>
+            <span style="font-family: monospace; font-size: 13.5px; font-weight: 700; background: #faf9f6; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--gold-border);">
+              ${r.utr || 'N/A'}
+            </span>
+          </td>
+          <td>
+            ${r.receipt_image ? `<a href="${r.receipt_image}" target="_blank" onclick="event.preventDefault(); openImageModal('${r.receipt_image}')"><img src="${r.receipt_image}" style="width: 36px; height: 36px; border-radius: 6px; object-fit: cover; border: 1px solid var(--gold-border);"></a>` : '<span style="color: var(--text-muted); font-size: 11px;">Direct UTR</span>'}
+          </td>
+          <td style="font-size: 12px; color: var(--text-muted);">${dateStr}</td>
+          <td><span class="badge ${r.status === 'approved' ? 'approved' : (r.status === 'rejected' ? 'rejected' : 'pending')}">${r.status.toUpperCase()}</span></td>
+          <td>
+            <div class="btn-action-group">
+              ${isPending ? `
+                <button class="btn-table-action approve" onclick="approveRecharge('${r.id}')"><i class="fa-solid fa-check"></i> Approve</button>
+                <button class="btn-table-action reject" onclick="openRejectRechargeModal('${r.id}')"><i class="fa-solid fa-xmark"></i> Reject</button>
+              ` : `<span style="font-size: 11px; color: var(--text-muted); font-weight: 700;">PROCESSED</span>`}
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function approveRecharge(id) {
+      if (!confirm('Approve this deposit request? User balance will be credited instantly.')) return;
+      try {
+        const res = await fetch(`/api/admin/recharge/${id}/approve`, { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          showToast(data.message, 'success');
+          loadRecharges();
+          loadStats();
+        } else {
+          showToast(data.message, 'error');
+        }
+      } catch (e) {
+        showToast('Error approving deposit', 'error');
+      }
+    }
+
+    function openRejectRechargeModal(id) {
+      document.getElementById('rejectRechargeId').value = id;
+      document.getElementById('rejectRechargeReason').value = document.getElementById('rejectRechargeReasonSelect').value;
+      document.getElementById('rejectRechargeModal').classList.add('active');
+    }
+    function closeRejectRechargeModal() {
+      document.getElementById('rejectRechargeModal').classList.remove('active');
+    }
+    function handleRechargeReasonSelect(sel) {
+      const input = document.getElementById('rejectRechargeReason');
+      if (sel.value === 'custom') {
+        input.value = '';
+        input.focus();
+      } else {
+        input.value = sel.value;
+      }
+    }
+    async function submitRejectRecharge(e) {
+      e.preventDefault();
+      const id = document.getElementById('rejectRechargeId').value;
+      const reason = document.getElementById('rejectRechargeReason').value;
+
+      try {
+        const res = await fetch(`/api/admin/recharge/${id}/reject`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reason })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(data.message, 'success');
+          closeRejectRechargeModal();
+          loadRecharges();
+          loadStats();
+        } else {
+          showToast(data.message, 'error');
+        }
+      } catch (err) {
+        showToast('Error rejecting deposit', 'error');
+      }
+    }
+
+    // Withdrawals
+    async function loadWithdrawals() {
+      const tbody = document.getElementById('withdrawTableBody');
+      try {
+        const res = await fetch('/api/admin/withdrawals');
+        const data = await res.json();
+        if (data.success) {
+          allWithdrawals = data.withdrawals || [];
+          renderWithdrawalsTable(allWithdrawals);
+        }
+      } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="7" style="color: red; text-align: center;">Error loading payouts</td></tr>';
+      }
+    }
+
+    function filterWithdrawalsTable() {
+      const q = (document.getElementById('withdrawSearchInput').value || '').toLowerCase().trim();
+      const status = document.getElementById('withdrawStatusFilter').value;
+
+      const filtered = allWithdrawals.filter(w => {
+        const matchStatus = status === 'all' || w.status === status;
+        const b = w.bank_details || {};
+        const matchSearch = !q || 
+          (w.phone && w.phone.includes(q)) || 
+          (b.account_number && b.account_number.includes(q)) || 
+          (b.upi_id && b.upi_id.toLowerCase().includes(q));
+        return matchStatus && matchSearch;
+      });
+
+      renderWithdrawalsTable(filtered);
+    }
+
+    function renderWithdrawalsTable(withdrawals) {
+      const tbody = document.getElementById('withdrawTableBody');
+      tbody.innerHTML = '';
+      if (withdrawals.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">No matching payout requests.</td></tr>';
+        return;
+      }
+
+      [...withdrawals].reverse().forEach(w => {
+        const tr = document.createElement('tr');
+        const isPending = w.status === 'pending';
+        const b = w.bank_details || {};
+        const dateStr = new Date(w.date).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+        tr.innerHTML = `
+          <td>
+            <strong>+91 ${w.phone}</strong><br>
+            <span style="font-size: 11px; color: var(--text-muted);">${w.id}</span>
+          </td>
+          <td>
+            <strong>₹${w.amount}</strong><br>
+            <span style="font-size: 11px; color: var(--text-muted);">Fee: ₹${w.fee}</span>
+          </td>
+          <td><strong style="color: #059669; font-size: 15px;">₹${w.final_amount}</strong></td>
+          <td style="font-size: 12px; line-height: 1.5;">
+            ${b.account_holder ? `<div><strong>${b.account_holder}</strong></div>` : ''}
+            ${b.bank_name ? `<div>Bank: ${b.bank_name}</div>` : ''}
+            ${b.account_number ? `<div>A/C: <span style="font-family: monospace; font-weight: 700;">${b.account_number}</span></div>` : ''}
+            ${b.ifsc ? `<div>IFSC: <span style="font-family: monospace;">${b.ifsc}</span></div>` : ''}
+            ${b.upi_id ? `<div>UPI / USDT: <span style="font-family: monospace; color: var(--primary); font-weight: 700;">${b.upi_id}</span></div>` : ''}
+          </td>
+          <td style="font-size: 12px; color: var(--text-muted);">${dateStr}</td>
+          <td><span class="badge ${w.status === 'approved' ? 'approved' : (w.status === 'rejected' ? 'rejected' : 'pending')}">${w.status === 'approved' ? 'PAID' : w.status.toUpperCase()}</span></td>
+          <td>
+            <div class="btn-action-group">
+              ${isPending ? `
+                <button class="btn-table-action approve" onclick="approveWithdrawal('${w.id}')"><i class="fa-solid fa-check"></i> Mark Paid</button>
+                <button class="btn-table-action reject" onclick="openRejectWithdrawalModal('${w.id}')"><i class="fa-solid fa-xmark"></i> Reject & Refund</button>
+              ` : `<span style="font-size: 11px; color: var(--text-muted); font-weight: 700;">SETTLED</span>`}
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function approveWithdrawal(id) {
+      if (!confirm('Mark this payout as PAID? Confirm that you have transferred the funds to user bank / USDT wallet.')) return;
+      try {
+        const res = await fetch(`/api/admin/withdrawal/${id}/approve`, { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          showToast(data.message, 'success');
+          loadWithdrawals();
+          loadStats();
+        } else {
+          showToast(data.message, 'error');
+        }
+      } catch (e) {
+        showToast('Error approving withdrawal', 'error');
+      }
+    }
+
+    function openRejectWithdrawalModal(id) {
+      document.getElementById('rejectWithdrawalId').value = id;
+      document.getElementById('rejectWithdrawalReason').value = document.getElementById('rejectWdReasonSelect').value;
+      document.getElementById('rejectWithdrawalModal').classList.add('active');
+    }
+    function closeRejectWithdrawalModal() {
+      document.getElementById('rejectWithdrawalModal').classList.remove('active');
+    }
+    function handleWdReasonSelect(sel) {
+      const input = document.getElementById('rejectWithdrawalReason');
+      if (sel.value === 'custom') {
+        input.value = '';
+        input.focus();
+      } else {
+        input.value = sel.value;
+      }
+    }
+    async function submitRejectWithdrawal(e) {
+      e.preventDefault();
+      const id = document.getElementById('rejectWithdrawalId').value;
+      const reason = document.getElementById('rejectWithdrawalReason').value;
+
+      try {
+        const res = await fetch(`/api/admin/withdrawal/${id}/reject`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reason })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(data.message, 'success');
+          closeRejectWithdrawalModal();
+          loadWithdrawals();
+          loadStats();
+        } else {
+          showToast(data.message, 'error');
+        }
+      } catch (err) {
+        showToast('Error rejecting withdrawal', 'error');
+      }
+    }
+
+    // MULTI-QR POOL
+    function previewBatchQrs(input) {
+      const previewBox = document.getElementById('batchPreUploadPreview');
+      const thumbsRow = document.getElementById('batchThumbnailsRow');
+      const badge = document.getElementById('batchCountBadge');
+
+      if (!input.files || input.files.length === 0) {
+        previewBox.style.display = 'none';
+        thumbsRow.innerHTML = '';
+        badge.innerText = '0';
+        return;
+      }
+
+      const files = Array.from(input.files);
+      badge.innerText = files.length;
+      thumbsRow.innerHTML = '';
+      previewBox.style.display = 'block';
+
+      files.forEach((file, idx) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const wrap = document.createElement('div');
+          wrap.style.cssText = 'position: relative; width: 64px; height: 64px; border-radius: 8px; border: 1.5px solid var(--gold-border); background: #ffffff; padding: 2px;';
+          wrap.innerHTML = `
+            <img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 6px;">
+            <span style="position: absolute; bottom: 2px; right: 2px; background: var(--primary); color: #fff; font-size: 9px; font-weight: 800; padding: 1px 4px; border-radius: 4px;">#${idx + 1}</span>
+          `;
+          thumbsRow.appendChild(wrap);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function uploadBatchQrs() {
+      const input = document.getElementById('batchQrInput');
+      const titlePrefix = document.getElementById('batchQrTitle').value.trim();
+      const customUpi = document.getElementById('batchQrUpi').value.trim();
+      const btn = document.getElementById('btnUploadBatch');
+
+      if (!input.files || input.files.length === 0) {
+        showToast('Please select at least 1 (recommended 5+) QR image files!', 'error');
+        return;
+      }
+
+      const formData = new FormData();
+      Array.from(input.files).forEach(file => {
+        formData.append('qr_batch_files', file);
+      });
+      if (titlePrefix) formData.append('title_prefix', titlePrefix);
+      if (customUpi) formData.append('custom_upi', customUpi);
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading QR Pool...';
+
+      try {
+        const res = await fetch('/api/admin/settings/upload-multiple-qrs', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(`✅ ${data.addedCount} new QR codes added to active rotation pool!`, 'success');
+          input.value = '';
+          document.getElementById('batchPreUploadPreview').style.display = 'none';
+          document.getElementById('batchThumbnailsRow').innerHTML = '';
+          loadQrCodesPool();
+          loadSettings();
+        } else {
+          showToast(data.message || 'Upload failed', 'error');
+        }
+      } catch (e) {
+        showToast('Error uploading QR batch', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Upload All Selected QRs to Pool';
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+    function escapeAttr(str) {
+      if (!str) return '';
+      return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    }
+
+    async function loadQrCodesPool() {
+      const container = document.getElementById('qrCodesListContainer');
+      try {
+        const res = await fetch(`/api/admin/settings/qr-codes?t=${Date.now()}`);
+        const data = await res.json();
+        if (data.success) {
+          adminQrPool = data.qr_codes || [];
+          const activeCount = data.active_count || adminQrPool.filter(q => q.status === 'active').length;
+          const totalCount = data.total || adminQrPool.length;
+
+          const statTotal = document.getElementById('qrStatTotal');
+          if (statTotal) statTotal.innerText = totalCount;
+          const statActive = document.getElementById('qrStatActive');
+          if (statActive) statActive.innerText = activeCount;
+
+          if (adminQrPool.length === 0) {
+            container.innerHTML = `
+              <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 30px; background: #faf9f6; border-radius: 12px; border: 1px dashed var(--gold-border);">
+                <i class="fa-solid fa-qrcode" style="font-size: 32px; color: var(--primary); margin-bottom: 10px;"></i>
+                <p>No QR codes in pool yet. Upload QRs above to start auto-rotation!</p>
+              </div>
+            `;
+            return;
+          }
+
+          container.innerHTML = adminQrPool.map((qr, idx) => {
+            const isActive = qr.status === 'active';
+            const hits = qr.hits || 0;
+            return `
+              <div style="background: #ffffff; border: 1.5px solid ${isActive ? 'var(--gold-border)' : '#e2e8f0'}; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                <div style="display: flex; gap: 14px; align-items: flex-start;">
+                  <img src="${qr.image}" alt="QR" style="width: 72px; height: 72px; border-radius: 10px; background: #fff; object-fit: contain; padding: 3px; border: 1.5px solid ${isActive ? '#10b981' : '#cbd5e1'}; cursor: pointer;" onclick="window.open('${qr.image}', '_blank')" title="Click to view full image">
+                  <div style="flex: 1; min-width: 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                      <span style="font-size: 11px; font-weight: 800; color: var(--primary);">Channel #${idx + 1}</span>
+                      <span class="badge ${isActive ? 'approved' : 'rejected'}" style="font-size: 9.5px; padding: 2px 7px;">
+                        ${isActive ? 'ACTIVE' : 'PAUSED'}
+                      </span>
+                    </div>
+                    <div style="font-size: 13.5px; font-weight: 700; color: #0f172a; margin-bottom: 3px; word-break: break-word;">${escapeHtml(qr.title || `QR Channel #${idx + 1}`)}</div>
+                    <div style="font-size: 11px; color: var(--text-muted); word-break: break-all; margin-bottom: 4px;"><i class="fa-solid fa-at"></i> ${escapeHtml(qr.upi_id || 'Default UPI')}</div>
+                    <div style="font-size: 10.5px; color: #059669; font-weight: 600;"><i class="fa-solid fa-chart-simple"></i> Served <strong>${hits}</strong> times to miners</div>
+                  </div>
+                </div>
+
+                <div style="display: flex; gap: 6px; margin-top: 14px; flex-wrap: wrap;">
+                  <button type="button" class="btn-portal-action" onclick="toggleQrStatus('${qr.id}')" style="background: ${isActive ? '#f59e0b' : '#10b981'}; color: #fff; height: 30px; font-size: 11px; padding: 0 10px; flex: 1; border: none;">
+                    <i class="fa-solid ${isActive ? 'fa-pause' : 'fa-play'}"></i> ${isActive ? 'Pause' : 'Activate'}
+                  </button>
+                  <button type="button" class="btn-portal-action" onclick="setPrimaryQr('${qr.id}')" style="background: var(--gold-gradient); color: #fff; height: 30px; font-size: 11px; padding: 0 10px; border: none;" title="Make first in rotation">
+                    <i class="fa-solid fa-star"></i> Primary
+                  </button>
+                  <button type="button" class="btn-portal-action" onclick="editQrDetails('${qr.id}', '${escapeAttr(qr.title)}', '${escapeAttr(qr.upi_id || '')}')" style="background: #3b82f6; color: #fff; height: 30px; font-size: 11px; padding: 0 10px; border: none;" title="Edit Title/UPI">
+                    <i class="fa-solid fa-pen"></i>
+                  </button>
+                  <button type="button" class="btn-portal-action" onclick="deleteQrCode('${qr.id}', '${escapeAttr(qr.title)}')" style="background: #ef4444; color: #fff; height: 30px; font-size: 11px; padding: 0 10px; border: none;" title="Delete QR">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      } catch (e) {
+        console.error("Error loading QR pool:", e);
+      }
+    }
+
+    async function toggleQrStatus(qrId) {
+      try {
+        const res = await fetch(`/api/admin/settings/qr-codes/${qrId}/toggle`, { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          showToast(data.message, 'success');
+          loadQrCodesPool();
+        } else {
+          showToast(data.message, 'error');
+        }
+      } catch (e) {
+        showToast('Error toggling QR status', 'error');
+      }
+    }
+
+    async function setPrimaryQr(qrId) {
+      try {
+        const res = await fetch(`/api/admin/settings/qr-codes/${qrId}/set-primary`, { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          showToast(data.message, 'success');
+          loadQrCodesPool();
+          loadSettings();
+        } else {
+          showToast(data.message, 'error');
+        }
+      } catch (e) {
+        showToast('Error setting primary QR', 'error');
+      }
+    }
+
+    async function deleteQrCode(qrId, title) {
+      if (!confirm(`Are you sure you want to remove "${title}" from the rotation pool?`)) return;
+      try {
+        const res = await fetch(`/api/admin/settings/qr-codes/${qrId}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) {
+          showToast(data.message, 'success');
+          loadQrCodesPool();
+          loadSettings();
+        } else {
+          showToast(data.message, 'error');
+        }
+      } catch (e) {
+        showToast('Error deleting QR', 'error');
+      }
+    }
+
+    async function editQrDetails(qrId, currentTitle, currentUpi) {
+      const newTitle = prompt('Enter QR Channel Title:', currentTitle);
+      if (newTitle === null) return;
+      const newUpi = prompt('Enter UPI ID for this QR (leave empty for default):', currentUpi);
+      if (newUpi === null) return;
+
+      try {
+        const res = await fetch(`/api/admin/settings/qr-codes/${qrId}/update`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: newTitle, upi_id: newUpi })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('QR details updated successfully!', 'success');
+          loadQrCodesPool();
+        } else {
+          showToast(data.message, 'error');
+        }
+      } catch (e) {
+        showToast('Error updating QR details', 'error');
+      }
+    }
+
+    function previewUploadedQr(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('adminQrPreview').src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    async function loadSettings() {
+      try {
+        const res = await fetch(`/api/payment-config?t=${Date.now()}`);
+        const data = await res.json();
+        if (data.success) {
+          const s = data.settings || data.config || {};
+          const qrUrl = s.qr_image || '/images/miner_rig.svg';
+          document.getElementById('adminQrPreview').src = qrUrl.includes('?') ? qrUrl : `${qrUrl}?v=${Date.now()}`;
+          if (document.getElementById('activeQrPathText')) {
+            document.getElementById('activeQrPathText').innerText = `Current Active: ${qrUrl}`;
+          }
+          document.getElementById('settingUpiId').value = s.upi_id || '';
+          document.getElementById('settingMerchantName').value = s.merchant_name || '';
+          if (document.getElementById('settingUsdtTrc20')) document.getElementById('settingUsdtTrc20').value = s.usdt_trc20 || '';
+          if (document.getElementById('settingUsdtBep20')) document.getElementById('settingUsdtBep20').value = s.usdt_bep20 || '';
+          if (document.getElementById('settingBtcAddress')) document.getElementById('settingBtcAddress').value = s.btc_address || '';
+          document.getElementById('settingMinRecharge').value = s.min_recharge || 285;
+          document.getElementById('settingMinWithdraw').value = s.min_withdraw || 200;
+          document.getElementById('settingFeePercent').value = s.withdrawal_fee_percent || 10;
+          document.getElementById('settingTelegram').value = s.telegram_channel || '';
+          document.getElementById('settingWhatsapp').value = s.whatsapp_support || '';
+          document.getElementById('settingAnnouncement').value = s.app_announcement || '';
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function uploadQrImmediately() {
+      const fileInput = document.getElementById('qrFileInput');
+      if (!fileInput.files || fileInput.files.length === 0) {
+        showToast('Please choose a QR code image file first!', 'error');
+        return;
+      }
+      const formData = new FormData();
+      formData.append('qr_image_file', fileInput.files[0]);
+
+      showToast('Uploading payment QR...', 'success');
+
+      try {
+        const res = await fetch('/api/admin/settings/upload-qr', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('✅ New QR Code uploaded & live for all miners!', 'success');
+          document.getElementById('adminQrPreview').src = `${data.qr_image}?v=${Date.now()}`;
+          if (document.getElementById('activeQrPathText')) {
+            document.getElementById('activeQrPathText').innerText = `Current Active: ${data.qr_image}`;
+          }
+          loadSettings();
+          loadQrCodesPool();
+        } else {
+          showToast(data.message || 'Upload failed', 'error');
+        }
+      } catch (e) {
+        showToast('Error uploading QR file', 'error');
+      }
+    }
+
+    async function saveQRSettings(e) {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append('upi_id', document.getElementById('settingUpiId').value);
+      formData.append('merchant_name', document.getElementById('settingMerchantName').value);
+      if (document.getElementById('settingUsdtTrc20')) formData.append('usdt_trc20', document.getElementById('settingUsdtTrc20').value);
+      if (document.getElementById('settingUsdtBep20')) formData.append('usdt_bep20', document.getElementById('settingUsdtBep20').value);
+      if (document.getElementById('settingBtcAddress')) formData.append('btc_address', document.getElementById('settingBtcAddress').value);
+      formData.append('min_recharge', document.getElementById('settingMinRecharge').value);
+      formData.append('min_withdraw', document.getElementById('settingMinWithdraw').value);
+      formData.append('withdrawal_fee_percent', document.getElementById('settingFeePercent').value);
+      formData.append('telegram_channel', document.getElementById('settingTelegram').value);
+      formData.append('whatsapp_support', document.getElementById('settingWhatsapp').value);
+      formData.append('app_announcement', document.getElementById('settingAnnouncement').value);
+
+      const qrUrl = document.getElementById('settingQrUrl').value;
+      if (qrUrl) formData.append('qr_image_url', qrUrl);
+
+      const fileInput = document.getElementById('qrFileInput');
+      if (fileInput.files.length > 0) {
+        formData.append('qr_image_file', fileInput.files[0]);
+      }
+
+      try {
+        const res = await fetch('/api/admin/settings/qr', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Payment & Crypto Settings saved! Client app is updated live.', 'success');
+          loadSettings();
+          loadQrCodesPool();
+        } else {
+          showToast(data.message, 'error');
+        }
+      } catch (e) {
+        showToast('Error saving settings', 'error');
+      }
+    }
+
+    // Manual Transactions
+    async function handleManualTransaction(e) {
+      e.preventDefault();
+      const phone = document.getElementById('manualUserPhone').value.trim();
+      const type = document.getElementById('manualTxType').value;
+      const amount = parseFloat(document.getElementById('manualTxAmount').value);
+      const reason = document.getElementById('manualTxReason').value.trim();
+
+      if (!phone || isNaN(amount) || amount <= 0) {
+        showToast('Please fill all transaction fields properly', 'error');
+        return;
+      }
+
+      if (!confirm(`Are you sure you want to ${type === 'recharge' ? 'CREDIT ₹' + amount : 'DEBIT ₹' + amount} for user +91 ${phone}?`)) {
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/admin/transactions/manual', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone, type, amount, reason })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(data.message, 'success');
+          document.getElementById('manualTxAmount').value = '';
+          document.getElementById('manualTxReason').value = '';
+          loadStats();
+          loadUsers();
+          loadFinancialAnalytics();
+          if (type === 'recharge') loadRecharges();
+          else loadWithdrawals();
+        } else {
+          showToast(data.message || 'Operation failed', 'error');
+        }
+      } catch (err) {
+        showToast('Server error executing transaction', 'error');
+      }
+    }
+
+    // Platform Financial Analytics
+    async function loadFinancialAnalytics() {
+      try {
+        const [statsRes, rechRes, wdRes] = await Promise.all([
+          fetch('/api/admin/stats').then(r => r.json()),
+          fetch('/api/admin/recharges').then(r => r.json()),
+          fetch('/api/admin/withdrawals').then(r => r.json())
+        ]);
+
+        const approvedRech = (rechRes.recharges || [])
+          .filter(r => r.status === 'approved')
+          .reduce((sum, r) => sum + Number(r.amount || 0), 0);
+
+        const approvedWd = (wdRes.withdrawals || [])
+          .filter(w => w.status === 'approved')
+          .reduce((sum, w) => sum + Number(w.amount || 0), 0);
+
+        const pendingCount = (rechRes.recharges || []).filter(r => r.status === 'pending').length +
+                             (wdRes.withdrawals || []).filter(w => w.status === 'pending').length;
+
+        const netReserve = approvedRech - approvedWd;
+
+        if (document.getElementById('finApprovedDeposits')) {
+          document.getElementById('finApprovedDeposits').innerText = '₹' + approvedRech.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+        }
+        if (document.getElementById('finApprovedWithdrawals')) {
+          document.getElementById('finApprovedWithdrawals').innerText = '₹' + approvedWd.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+        }
+        if (document.getElementById('finNetReserve')) {
+          document.getElementById('finNetReserve').innerText = '₹' + netReserve.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+          document.getElementById('finNetReserve').style.color = netReserve >= 0 ? '#059669' : '#dc2626';
+        }
+        if (document.getElementById('finPendingVolume')) {
+          document.getElementById('finPendingVolume').innerText = `${pendingCount} Req`;
+        }
+      } catch (e) {
+        console.error('Error loading financial analytics:', e);
+      }
+    }
+
+    // Change Admin Credentials
+    async function handleChangeAdminPassword(e) {
+      e.preventDefault();
+      const current_password = document.getElementById('currentAdminPass').value;
+      const new_username = document.getElementById('newAdminUsername').value;
+      const new_password = document.getElementById('newAdminPass').value;
+
+      try {
+        const res = await fetch('/api/admin/change-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ current_password, new_username, new_password })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Admin credentials updated successfully! Please remember your new password.', 'success');
+          document.getElementById('changeAdminPassForm').reset();
+        } else {
+          showToast(data.message || 'Failed to update credentials', 'error');
+        }
+      } catch (err) {
+        showToast('Error connecting to server', 'error');
+      }
+    }
+
+    // Mining Plans Management
+    async function loadPlans() {
+      const tbody = document.getElementById('plansTableBody');
+      try {
+        const res = await fetch('/api/admin/plans');
+        const data = await res.json();
+        if (data.success) {
+          tbody.innerHTML = '';
+          (data.plans || []).forEach(p => {
+            const tr = document.createElement('tr');
+            const coin = p.coin || 'BTC';
+            const hashrate = p.hashrate || '120 TH/s';
+            tr.innerHTML = `
+              <td>
+                <img src="${p.image || `/images/${coin.toLowerCase()}.svg`}" style="width: 38px; height: 38px; border-radius: 8px; object-fit: contain; background: #faf9f6; padding: 2px; border: 1px solid var(--gold-border);">
+              </td>
+              <td>
+                <strong>${p.title}</strong><br>
+                <span style="font-size: 11px; color: var(--primary); font-weight: 700;">${coin}</span>
+              </td>
+              <td><span style="font-size: 12px; font-weight: 800; background: #faf9f6; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--gold-border);">${hashrate}</span></td>
+              <td><span class="badge ${p.category === 'vip' ? 'pending' : 'approved'}">${p.category}</span></td>
+              <td style="font-weight: 800; color: #0f172a;">₹${p.price}</td>
+              <td style="font-weight: 700; color: #059669;">₹${p.daily_income}</td>
+              <td style="font-weight: 800; color: var(--primary);">₹${p.total_income}</td>
+              <td>${p.cycle_days} days</td>
+              <td><span class="badge ${p.status === 'active' ? 'approved' : 'rejected'}">${p.status || 'active'}</span></td>
+              <td>
+                <div class="btn-action-group">
+                  <button class="btn-table-action secondary" onclick="togglePlanStatus('${p.id}')"><i class="fa-solid fa-power-off"></i> Toggle</button>
+                  <button class="btn-table-action reject" onclick="deletePlan('${p.id}')"><i class="fa-solid fa-trash"></i></button>
+                </div>
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+      } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="10" style="color: red; text-align: center;">Error loading plans</td></tr>';
+      }
+    }
+
+    async function togglePlanStatus(id) {
+      try {
+        const res = await fetch(`/api/admin/plans/${id}/toggle`, { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          showToast(data.message, 'success');
+          loadPlans();
+        }
+      } catch (e) {
+        showToast('Error toggling plan', 'error');
+      }
+    }
+
+    function openCreatePlanModal() {
+      document.getElementById('planForm').reset();
+      document.getElementById('planEditId').value = '';
+      document.getElementById('planModalTitle').innerText = 'Add New Cloud Mining Rig';
+      document.getElementById('planModal').classList.add('active');
+    }
+
+    function closePlanModal() {
+      document.getElementById('planModal').classList.remove('active');
+    }
+
+    function calcPlanTotal() {
+      const daily = parseFloat(document.getElementById('planDaily').value) || 0;
+      const days = parseInt(document.getElementById('planCycle').value) || 0;
+      if (daily && days) {
+        document.getElementById('planTotal').value = daily * days;
+      }
+    }
+
+    async function savePlan(e) {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append('id', document.getElementById('planEditId').value);
+      formData.append('title', document.getElementById('planTitle').value);
+      formData.append('coin', document.getElementById('planCoin').value);
+      formData.append('hashrate', document.getElementById('planHashrate').value);
+      formData.append('category', document.getElementById('planCategory').value);
+      formData.append('price', document.getElementById('planPrice').value);
+      formData.append('daily_income', document.getElementById('planDaily').value);
+      formData.append('cycle_days', document.getElementById('planCycle').value);
+      formData.append('total_income', document.getElementById('planTotal').value);
+      formData.append('limit', document.getElementById('planLimit').value);
+
+      const preset = document.getElementById('planPresetSelect').value;
+      if (preset) formData.append('image_url', preset);
+
+      const file = document.getElementById('planImageFile').files[0];
+      if (file) {
+        formData.append('plan_image', file);
+      }
+
+      try {
+        const res = await fetch('/api/admin/plans', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Mining rig plan saved successfully!', 'success');
+          closePlanModal();
+          loadPlans();
+          loadStats();
+        } else {
+          showToast(data.message, 'error');
+        }
+      } catch (err) {
+        showToast('Error saving plan', 'error');
+      }
+    }
+
+    async function deletePlan(id) {
+      if (!confirm('Are you sure you want to delete this mining rig plan?')) return;
+      try {
+        const res = await fetch(`/api/admin/plans/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Plan deleted!', 'success');
+          loadPlans();
+          loadStats();
+        } else {
+          showToast(data.message, 'error');
+        }
+      } catch (e) {
+        showToast('Error deleting plan', 'error');
+      }
+    }
+
+    // Users & Balance Adjustment
+    async function loadUsers() {
+      const tbody = document.getElementById('usersTableBody');
+      try {
+        const res = await fetch('/api/admin/users');
+        const data = await res.json();
+        if (data.success) {
+          allUsers = data.users || [];
+          renderUsersTable(allUsers);
+        }
+      } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="8" style="color: red; text-align: center;">Error loading miners</td></tr>';
+      }
+    }
+
+    function filterUsersTable() {
+      const q = (document.getElementById('userSearchInput').value || '').toLowerCase().trim();
+      const filtered = allUsers.filter(u => {
+        return !q || 
+          (u.phone && u.phone.includes(q)) || 
+          (u.name && u.name.toLowerCase().includes(q)) || 
+          (u.ref_code && u.ref_code.includes(q));
+      });
+      renderUsersTable(filtered);
+    }
+
+    function renderUsersTable(users) {
+      const tbody = document.getElementById('usersTableBody');
+      tbody.innerHTML = '';
+      if (users.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 24px;">No matching miners.</td></tr>';
+        return;
+      }
+      users.forEach(u => {
+        const tr = document.createElement('tr');
+        const isBanned = u.status === 'banned';
+        tr.innerHTML = `
+          <td><strong>${u.name || 'Miner'}</strong></td>
+          <td><span style="font-family: monospace; color: var(--primary);">+91 ${u.phone}</span></td>
+          <td style="font-weight: 800; color: #059669; font-size: 15px;">₹${Number(u.balance).toFixed(2)}</td>
+          <td>₹${Number(u.total_recharge || 0).toFixed(2)}</td>
+          <td>₹${Number(u.total_withdraw || 0).toFixed(2)}</td>
+          <td><span class="badge ${isBanned ? 'banned' : 'approved'}">${(u.status || 'active').toUpperCase()}</span></td>
+          <td><span style="background: #faf9f6; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-family: monospace; border: 1px solid var(--gold-border);">${u.ref_code || '-'}</span></td>
+          <td>
+            <div class="btn-action-group">
+              <button class="btn-table-action edit" onclick="openBalanceModal('${u.id}', '${u.name}', '${u.phone}', ${u.balance})">
+                <i class="fa-solid fa-wallet"></i> Balance
+              </button>
+              <button class="btn-table-action warn" onclick="toggleUserBan('${u.id}')">
+                <i class="fa-solid fa-user-slash"></i> ${isBanned ? 'Unban' : 'Ban'}
+              </button>
+              <button class="btn-table-action secondary" onclick="resetUserPassword('${u.id}')">
+                <i class="fa-solid fa-key"></i> Reset
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function toggleUserBan(id) {
+      try {
+        const res = await fetch(`/api/admin/user/${id}/toggle-ban`, { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          showToast(data.message, 'success');
+          loadUsers();
+        } else {
+          showToast(data.message, 'error');
+        }
+      } catch (e) {
+        showToast('Error changing ban status', 'error');
+      }
+    }
+
+    async function resetUserPassword(id) {
+      const newPass = prompt("Enter new password for this miner (defaults to 123456):", "123456");
+      if (newPass === null) return;
+      try {
+        const res = await fetch(`/api/admin/user/${id}/reset-password`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ new_password: newPass })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(data.message, 'success');
+        }
+      } catch (e) {
+        showToast('Error resetting password', 'error');
+      }
+    }
+
+    function openBalanceModal(id, name, phone, bal) {
+      document.getElementById('adjUserId').value = id;
+      document.getElementById('adjUserInfo').innerHTML = `Miner: <strong>${name}</strong> (+91 ${phone}) | Current Balance: <strong style="color: #059669;">₹${Number(bal).toFixed(2)}</strong>`;
+      document.getElementById('adjAmount').value = '';
+      document.getElementById('balanceModal').classList.add('active');
+    }
+
+    function closeBalanceModal() {
+      document.getElementById('balanceModal').classList.remove('active');
+    }
+
+    async function submitBalanceAdjust(e) {
+      e.preventDefault();
+      const uid = document.getElementById('adjUserId').value;
+      const type = document.getElementById('adjType').value;
+      const amount = document.getElementById('adjAmount').value;
+
+      try {
+        const res = await fetch(`/api/admin/user/${uid}/balance`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type, amount })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(data.message, 'success');
+          closeBalanceModal();
+          loadUsers();
+          loadStats();
+        } else {
+          showToast(data.message, 'error');
+        }
+      } catch (err) {
+        showToast('Error adjusting balance', 'error');
+      }
+    }
+
+    function openImageModal(src) {
+      document.getElementById('modalPreviewImg').src = src;
+      document.getElementById('imagePreviewModal').classList.add('active');
+    }
+    function closeImageModal() {
+      document.getElementById('imagePreviewModal').classList.remove('active');
+    }
+
+    function exportData(type) {
+      window.open(`/api/admin/export/${type}`, '_blank');
+    }
+  </script>
+</body>
+</html>

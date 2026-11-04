@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="goldLg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFDF0"/>
+      <stop offset="20%" stop-color="#FFE885"/>
+      <stop offset="45%" stop-color="#FFC820"/>
+      <stop offset="70%" stop-color="#D49A12"/>
+      <stop offset="100%" stop-color="#7A5200"/>
+    </linearGradient>
+    <linearGradient id="pearlBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="50%" stop-color="#FBFBFD"/>
+      <stop offset="100%" stop-color="#F1F3F7"/>
+    </linearGradient>
+    <filter id="logoShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#D4AF37" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Card Background -->
+  <rect width="512" height="512" rx="120" fill="url(#pearlBg)" stroke="url(#goldLg)" stroke-width="4"/>
+  <circle cx="256" cy="230" r="150" fill="none" stroke="url(#goldLg)" stroke-width="10" filter="url(#logoShadow)"/>
+  <circle cx="256" cy="230" r="136" fill="#FFFFFF" stroke="url(#goldLg)" stroke-width="2" stroke-dasharray="4, 6"/>
+
+  <!-- Center Pickaxe + Golden Bitcoin -->
+  <g transform="translate(256, 230) scale(1.15)">
+    <!-- Crown -->
+    <path d="M-36,-90 L-28,-115 L-16,-98 L0,-126 L16,-98 L28,-115 L36,-90 Z" fill="url(#goldLg)"/>
+    <circle cx="0" cy="-128" r="4" fill="#EF4444"/>
+    
+    <!-- Crossed Golden Mining Pickaxes -->
+    <path d="M-60,-50 L60,50" stroke="url(#goldLg)" stroke-width="8" stroke-linecap="round"/>
+    <path d="M60,-50 L-60,50" stroke="url(#goldLg)" stroke-width="8" stroke-linecap="round"/>
+    
+    <!-- Center Crypto Medallion -->
+    <circle cx="0" cy="0" r="54" fill="url(#goldLg)" stroke="#FFFFFF" stroke-width="4"/>
+    <text x="0" y="18" text-anchor="middle" font-family="'Outfit', sans-serif" font-weight="900" font-size="52" fill="#FFFFFF">₿</text>
+  </g>
+
+  <!-- Title Pill -->
+  <g transform="translate(256, 420)">
+    <rect x="-170" y="-28" width="340" height="56" rx="28" fill="url(#goldLg)" filter="url(#logoShadow)"/>
+    <rect x="-166" y="-24" width="332" height="48" rx="24" fill="#FFFFFF"/>
+    <text x="0" y="8" text-anchor="middle" font-family="'Outfit', 'Montserrat', sans-serif" font-weight="900" font-size="22" fill="#B45309" letter-spacing="3">CRYPTO MINERS</text>
+  </g>
+</svg>

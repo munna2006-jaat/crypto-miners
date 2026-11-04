@@ -1,0 +1,149 @@
+{
+  "admin": {
+    "username": "Crypto_SuperAdmin",
+    "password": "Crypto@2026#SecureAdmin!"
+  },
+  "settings": {
+    "platform_name": "CryptoMiners VIP",
+    "app_announcement": "⚡ Welcome to CryptoMiners Global Cloud Hashrate! Real-time ASIC mining yields credited every 24H. Instant withdrawals in INR & USDT! 3-level VIP commission up to 40%! Earn passive crypto wealth today!",
+    "min_recharge": 499,
+    "min_withdraw": 200,
+    "withdrawal_fee_percent": 5,
+    "withdrawal_time": "08:00 - 22:00 (Daily)",
+    "telegram_channel": "https://t.me/cryptominers_official",
+    "whatsapp_support": "+919876543210",
+    "upi_id": "cryptominers@okaxis",
+    "merchant_name": "CRYPTOMINERS CLOUD TECHNOLOGIES PVT LTD",
+    "usdt_trc20_address": "TXjK9zFw8q2LmN4vP1aB3cE5gH7jK9mN2p",
+    "usdt_bep20_address": "0x71C865882B32847B0d0c35471647F4f98BE1111",
+    "btc_address": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+    "qr_image": "/images/logo.svg",
+    "qr_rotation_index": 0,
+    "qr_codes": [
+      {
+        "id": "qr_1",
+        "image": "/images/logo.svg",
+        "title": "Channel 1 (Primary UPI FastPay)",
+        "upi_id": "cryptominers@okaxis",
+        "crypto_address": "TXjK9zFw8q2LmN4vP1aB3cE5gH7jK9mN2p",
+        "crypto_network": "USDT TRC-20",
+        "status": "active",
+        "created_at": "2026-11-05T00:00:00.000Z",
+        "hits": 0
+      },
+      {
+        "id": "qr_2",
+        "image": "/images/usdt.svg",
+        "title": "Channel 2 (USDT TRC20 Direct)",
+        "upi_id": "cryptominers@okaxis",
+        "crypto_address": "TXjK9zFw8q2LmN4vP1aB3cE5gH7jK9mN2p",
+        "crypto_network": "USDT TRC-20",
+        "status": "active",
+        "created_at": "2026-11-05T00:00:00.000Z",
+        "hits": 0
+      },
+      {
+        "id": "qr_3",
+        "image": "/images/btc.svg",
+        "title": "Channel 3 (PhonePe & GPay Instant)",
+        "upi_id": "cryptominers@okaxis",
+        "crypto_address": "0x71C865882B32847B0d0c35471647F4f98BE1111",
+        "crypto_network": "USDT BEP-20",
+        "status": "active",
+        "created_at": "2026-11-05T00:00:00.000Z",
+        "hits": 0
+      }
+    ]
+  },
+  "plans": [
+    {
+      "id": "plan_btc_starter",
+      "category": "normal",
+      "title": "BTC Starter Cloud Rig (Antminer S19)",
+      "coin": "BTC",
+      "hashrate": "95 TH/s",
+      "price": 499,
+      "daily_income": 165,
+      "total_income": 4950,
+      "cycle_days": 30,
+      "limit": 10,
+      "image": "/images/btc.svg",
+      "status": "active"
+    },
+    {
+      "id": "plan_eth_staking",
+      "category": "normal",
+      "title": "ETH Staking Node (Daily Withdrawal)",
+      "coin": "ETH",
+      "hashrate": "320 MH/s",
+      "price": 1200,
+      "daily_income": 480,
+      "total_income": 9600,
+      "cycle_days": 20,
+      "limit": 10,
+      "image": "/images/eth.svg",
+      "status": "active"
+    },
+    {
+      "id": "plan_usdt_yield",
+      "category": "normal",
+      "title": "USDT High-Yield Rig (Fast Cashout)",
+      "coin": "USDT",
+      "hashrate": "680 MH/s",
+      "price": 3000,
+      "daily_income": 1450,
+      "total_income": 21750,
+      "cycle_days": 15,
+      "limit": 10,
+      "image": "/images/usdt.svg",
+      "status": "active"
+    },
+    {
+      "id": "plan_antminer_s21",
+      "category": "vip",
+      "title": "Antminer S21 Hydro Ultra Farm",
+      "coin": "BTC",
+      "hashrate": "200 TH/s",
+      "price": 6500,
+      "daily_income": 3450,
+      "total_income": 34500,
+      "cycle_days": 10,
+      "limit": 10,
+      "image": "/images/miner_rig.svg",
+      "status": "active"
+    },
+    {
+      "id": "plan_sol_cluster",
+      "category": "vip",
+      "title": "Solana High-Speed Validator Cluster",
+      "coin": "SOL",
+      "hashrate": "4.5 GH/s",
+      "price": 14000,
+      "daily_income": 8200,
+      "total_income": 57400,
+      "cycle_days": 7,
+      "limit": 10,
+      "image": "/images/sol.svg",
+      "status": "active"
+    },
+    {
+      "id": "plan_genesis_hive",
+      "category": "vip",
+      "title": "Genesis AI ASIC Supercomputer Hive",
+      "coin": "BTC",
+      "hashrate": "1.2 PH/s",
+      "price": 32000,
+      "daily_income": 21000,
+      "total_income": 105000,
+      "cycle_days": 5,
+      "limit": 10,
+      "image": "/images/logo.svg",
+      "status": "active"
+    }
+  ],
+  "users": [],
+  "orders": [],
+  "recharges": [],
+  "withdrawals": [],
+  "transactions": []
+}

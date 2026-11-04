@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="solGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9945FF"/>
+      <stop offset="50%" stop-color="#14F195"/>
+      <stop offset="100%" stop-color="#00C2FF"/>
+    </linearGradient>
+    <linearGradient id="solGoldRim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFDF0"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#92400E"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="90" fill="url(#solGoldRim)"/>
+  <circle cx="100" cy="100" r="82" fill="#FFFFFF"/>
+  <circle cx="100" cy="100" r="76" fill="#0D0E15"/>
+  <g transform="translate(48, 62) scale(0.42)">
+    <path d="M228.3 48.7c-2.4-2.6-5.8-4-9.3-4H9.3c-5 0-9.3 2.8-11.4 7.2-2.1 4.4-1.3 9.6 2.1 13.2l53.4 56.4c2.4 2.6 5.8 4 9.3 4h209.7c5 0 9.3-2.8 11.4-7.2 2.1-4.4 1.3-9.6-2.1-13.2L228.3 48.7z" fill="url(#solGrad)"/>
+    <path d="M62.7 137.3c2.4-2.6 5.8-4 9.3-4h209.7c5 0 9.3 2.8 11.4 7.2 2.1 4.4 1.3 9.6-2.1 13.2l-53.4 56.4c-2.4 2.6-5.8 4-9.3 4H20.7c-5 0-9.3-2.8-11.4-7.2-2.1-4.4-1.3-9.6 2.1-13.2l51.3-56.4z" fill="url(#solGrad)"/>
+    <path d="M228.3 225.9c-2.4-2.6-5.8-4-9.3-4H9.3c-5 0-9.3 2.8-11.4 7.2-2.1 4.4-1.3 9.6 2.1 13.2l53.4 56.4c2.4 2.6 5.8 4 9.3 4h209.7c5 0 9.3-2.8 11.4-7.2 2.1-4.4 1.3-9.6-2.1-13.2l-53.4-56.4z" fill="url(#solGrad)"/>
+  </g>
+</svg>

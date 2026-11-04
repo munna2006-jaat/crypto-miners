@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>CryptoMiners - Global Cloud Mining & VIP Staking Platform</title>
+  <meta name="description" content="CryptoMiners Official Cloud Hashrate & Staking Platform - 24/7 ASIC mining yields, 3-level team commission up to 40%, and instant withdrawals.">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <meta name="theme-color" content="#D4AF37">
+</head>
+<body>
+
+  <div class="desktop-wrapper">
+
+    <!-- ==========================================
+         SCREEN 1: AUTHENTICATION (LOGIN / REGISTER)
+         ========================================== -->
+    <section id="screen-auth" class="screen active">
+      <div class="auth-hero-banner">
+        <div class="auth-banner-particles">
+          <svg width="100%" height="100%" viewBox="0 0 480 220" preserveAspectRatio="none" fill="none">
+            <circle cx="80" cy="60" r="45" fill="rgba(245, 158, 11, 0.08)" />
+            <circle cx="400" cy="140" r="65" fill="rgba(212, 175, 55, 0.08)" />
+            <path d="M0,180 Q120,120 240,160 T480,140 L480,220 L0,220 Z" fill="rgba(255, 255, 255, 0.85)" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="auth-card-container">
+        <div class="auth-card">
+          <!-- Floating Brand Logo Badge -->
+          <div class="auth-brand-badge">
+            <img src="/images/logo.svg" alt="CryptoMiners Logo">
+          </div>
+
+          <div class="auth-title-wrap">
+            <h1 class="auth-main-title">CRYPTO MINERS</h1>
+            <div class="auth-subtitle">★ Global VIP Cloud Hashrate ★</div>
+          </div>
+
+          <!-- Auth Switcher Tabs -->
+          <div class="auth-tabs">
+            <button id="authTabLogin" class="auth-tab-btn" onclick="switchAuthTab('login')">Login</button>
+            <button id="authTabRegister" class="auth-tab-btn active" onclick="switchAuthTab('register')">Register</button>
+          </div>
+
+          <!-- Register Form -->
+          <form id="registerForm" onsubmit="handleRegister(event)">
+            <div class="auth-input-group">
+              <div class="auth-input-wrapper">
+                <div class="auth-input-icon"><i class="fa-solid fa-user"></i></div>
+                <input type="text" id="regName" class="auth-input" placeholder="Full Name" required>
+              </div>
+            </div>
+
+            <div class="auth-input-group">
+              <div class="auth-input-wrapper">
+                <div class="auth-input-icon"><i class="fa-solid fa-phone"></i></div>
+                <div class="auth-prefix">+91</div>
+                <input type="tel" id="regPhone" class="auth-input" placeholder="Mobile Number" maxlength="10" required>
+              </div>
+            </div>
+
+            <div class="auth-input-group">
+              <div class="auth-input-wrapper">
+                <div class="auth-input-icon"><i class="fa-solid fa-lock"></i></div>
+                <input type="password" id="regPassword" class="auth-input" placeholder="Login Password" required>
+                <i class="fa-regular fa-eye auth-action-icon" onclick="togglePasswordVisibility('regPassword', this)"></i>
+              </div>
+            </div>
+
+            <div class="auth-input-group">
+              <div class="auth-input-wrapper">
+                <div class="auth-input-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <input type="password" id="regConfirmPassword" class="auth-input" placeholder="Confirm Password" required>
+                <i class="fa-regular fa-eye auth-action-icon" onclick="togglePasswordVisibility('regConfirmPassword', this)"></i>
+              </div>
+            </div>
+
+            <div class="auth-input-group">
+              <div class="auth-input-wrapper">
+                <div class="auth-input-icon"><i class="fa-solid fa-key"></i></div>
+                <input type="text" id="regRefCode" class="auth-input" value="882651" placeholder="Invitation Code">
+                <i class="fa-solid fa-circle-xmark auth-action-icon" onclick="document.getElementById('regRefCode').value=''"></i>
+              </div>
+            </div>
+
+            <label class="auth-terms">
+              <input type="checkbox" id="regTerms" checked required>
+              <span>I agree to the <a href="javascript:void(0)" onclick="showTerms()">CryptoMiners Terms & Risk Policy</a></span>
+            </label>
+
+            <button type="submit" class="btn-gold-primary">
+              <span>Deploy Account & Register</span>
+              <span class="circle-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+            </button>
+
+            <div class="auth-footer-toggle">
+              <span>Already registered? <a href="javascript:void(0)" onclick="switchAuthTab('login')">Sign In Now</a></span>
+            </div>
+          </form>
+
+          <!-- Login Form -->
+          <form id="loginForm" style="display: none;" onsubmit="handleLogin(event)">
+            <div class="auth-input-group">
+              <div class="auth-input-wrapper">
+                <div class="auth-input-icon"><i class="fa-solid fa-phone"></i></div>
+                <div class="auth-prefix">+91</div>
+                <input type="tel" id="loginPhone" class="auth-input" placeholder="Mobile Number" maxlength="10" required>
+              </div>
+            </div>
+
+            <div class="auth-input-group">
+              <div class="auth-input-wrapper">
+                <div class="auth-input-icon"><i class="fa-solid fa-lock"></i></div>
+                <input type="password" id="loginPassword" class="auth-input" placeholder="Enter Password" required>
+                <i class="fa-regular fa-eye auth-action-icon" onclick="togglePasswordVisibility('loginPassword', this)"></i>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-gold-primary" style="margin-top: 18px;">
+              <span>Sign In to Mining Portal</span>
+              <span class="circle-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+            </button>
+
+            <div class="auth-footer-toggle">
+              <span>New to CryptoMiners? <a href="javascript:void(0)" onclick="switchAuthTab('register')">Create Account</a></span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SCREEN 2: HOME DASHBOARD
+         ========================================== -->
+    <section id="screen-home" class="screen">
+      <!-- App Header -->
+      <header class="main-app-header">
+        <div class="header-brand">
+          <div class="header-logo-icon">
+            <img src="/images/logo.svg" alt="CryptoMiners">
+          </div>
+          <div>
+            <div class="header-brand-name">CryptoMiners</div>
+            <div class="header-badge-tag">VIP Cloud Rigs</div>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="header-wallet-pill" onclick="switchNav('recharge')" title="Click to Deposit">
+            <i class="fa-solid fa-wallet"></i>
+            <span id="homeWalletBalDisplay">₹0.00</span>
+          </div>
+          <button class="header-icon-btn" onclick="openSupportModal()" aria-label="Support">
+            <i class="fa-solid fa-headset"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Announcement Ticker -->
+      <div class="announcement-ticker">
+        <i class="fa-solid fa-bullhorn ticker-icon"></i>
+        <div class="ticker-marquee" id="homeTickerText">
+          ⚡ Welcome to CryptoMiners Global Cloud Hashrate! Real-time ASIC mining yields credited every 24H. Instant withdrawals in INR & USDT! 3-level VIP commission up to 40%!
+        </div>
+      </div>
+
+      <!-- Live Crypto Price Ticker Strip -->
+      <div style="background: #FFFFFF; border-bottom: 1px solid rgba(212, 175, 55, 0.2); padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch;">
+        <div style="display: flex; align-items: center; gap: 5px; font-weight: 800;">
+          <span style="color: #F59E0B;">₿ BTC</span>
+          <span style="color: #0F172A;">$68,450</span>
+          <span style="color: #10B981;">+2.4%</span>
+        </div>
+        <div style="color: #CBD5E1;">|</div>
+        <div style="display: flex; align-items: center; gap: 5px; font-weight: 800;">
+          <span style="color: #6366F1;">Ξ ETH</span>
+          <span style="color: #0F172A;">$2,642</span>
+          <span style="color: #10B981;">+3.1%</span>
+        </div>
+        <div style="color: #CBD5E1;">|</div>
+        <div style="display: flex; align-items: center; gap: 5px; font-weight: 800;">
+          <span style="color: #10B981;">₮ USDT</span>
+          <span style="color: #0F172A;">₹91.50</span>
+          <span style="color: #10B981;">Stable</span>
+        </div>
+        <div style="color: #CBD5E1;">|</div>
+        <div style="display: flex; align-items: center; gap: 5px; font-weight: 800;">
+          <span style="color: #9945FF;">◎ SOL</span>
+          <span style="color: #0F172A;">$184.20</span>
+          <span style="color: #10B981;">+5.8%</span>
+        </div>
+      </div>
+
+      <!-- Hero Hashrate Overview Banner -->
+      <div class="home-hero-card">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <div>
+            <div style="font-size: 11px; font-weight: 800; color: #B45309; text-transform: uppercase; letter-spacing: 0.5px;">Global Active Hashrate</div>
+            <div style="font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 900; color: #78350F; margin: 2px 0;">1,280.45 <span style="font-size: 15px; color: #B45309;">TH/s</span></div>
+          </div>
+          <div style="text-align: right;">
+            <div class="plan-badge-live">
+              <span class="pulse-dot"></span>
+              <span>Pool Online</span>
+            </div>
+            <div style="font-size: 10px; font-weight: 700; color: #64748B; margin-top: 5px;">99.98% Hash Uptime</div>
+          </div>
+        </div>
+
+        <div class="hero-stats-row">
+          <div class="hero-stat-box">
+            <div class="hero-stat-label">Active Miners</div>
+            <div class="hero-stat-val">14,820</div>
+          </div>
+          <div class="hero-stat-box">
+            <div class="hero-stat-label">24h Block Payout</div>
+            <div class="hero-stat-val">₹42.8L</div>
+          </div>
+          <div class="hero-stat-box">
+            <div class="hero-stat-label">Total Reserve</div>
+            <div class="hero-stat-val">₹1.85 Cr</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action 4-Grid -->
+      <div class="quick-action-grid">
+        <div class="quick-action-item" onclick="switchNav('recharge')">
+          <div class="action-circle-icon icon-recharge"><i class="fa-solid fa-wallet"></i></div>
+          <div class="action-label">Deposit</div>
+        </div>
+        <div class="quick-action-item" onclick="switchNav('withdraw')">
+          <div class="action-circle-icon icon-withdraw"><i class="fa-solid fa-money-bill-transfer"></i></div>
+          <div class="action-label">Withdraw</div>
+        </div>
+        <div class="quick-action-item" onclick="switchNav('income')">
+          <div class="action-circle-icon icon-rigs"><i class="fa-solid fa-microchip"></i></div>
+          <div class="action-label">My Rigs</div>
+        </div>
+        <div class="quick-action-item" onclick="switchNav('team')">
+          <div class="action-circle-icon icon-team"><i class="fa-solid fa-users"></i></div>
+          <div class="action-label">Invite</div>
+        </div>
+      </div>
+
+      <!-- Plan Category Filter -->
+      <div class="section-header-wrap">
+        <div class="section-title">
+          <span>Cloud Mining Rigs</span>
+          <span class="gold-tag">★ VIP</span>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button id="tabNormalPlan" class="auth-tab-btn active" style="padding: 5px 12px; font-size: 12px; border: 1px solid rgba(212, 175, 55, 0.4);" onclick="filterPlans('normal')">Starter Rigs</button>
+          <button id="tabVipPlan" class="auth-tab-btn" style="padding: 5px 12px; font-size: 12px; border: 1px solid rgba(212, 175, 55, 0.4);" onclick="filterPlans('vip')">ASIC Ultra</button>
+        </div>
+      </div>
+
+      <!-- Plans List Container (Rendered dynamically via app.js) -->
+      <div id="plansListContainer" class="plans-container">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SCREEN 3: DEDICATED RECHARGE (DEPOSIT)
+         ========================================== -->
+    <section id="screen-recharge" class="screen">
+      <header class="main-app-header">
+        <button class="header-icon-btn" onclick="switchNav('home')"><i class="fa-solid fa-chevron-left"></i></button>
+        <div style="font-family: var(--font-display); font-weight: 900; font-size: 18px; color: var(--gold-dark);">Crypto & UPI Deposit</div>
+        <div style="width: 36px;"></div>
+      </header>
+
+      <div class="recharge-card">
+        <div style="background: var(--gold-soft); border-radius: var(--radius-md); padding: 12px; text-align: center; margin-bottom: 14px; border: 1px solid rgba(212, 175, 55, 0.3);">
+          <div style="font-size: 11px; font-weight: 700; color: var(--gold-dark); text-transform: uppercase;">Available Wallet Balance</div>
+          <div id="rechargeUserBalDisplay" style="font-family: var(--font-display); font-size: 24px; font-weight: 900; color: #78350F;">₹0.00</div>
+        </div>
+
+        <!-- Enter Amount -->
+        <div style="margin-bottom: 14px;">
+          <label style="font-size: 12px; font-weight: 800; color: var(--text-dark); display: block; margin-bottom: 6px;">Deposit Amount (INR)</label>
+          <div class="auth-input-wrapper">
+            <span style="font-weight: 900; color: var(--gold-dark); font-size: 18px; margin-right: 8px;">₹</span>
+            <input type="number" id="depositAmountInput" class="auth-input" value="1200" min="499" oninput="updateRechargeDisplay(this.value)" style="font-size: 18px; font-weight: 800;">
+          </div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 600;">Minimum deposit: <strong id="minRechargeHint">₹499</strong></div>
+        </div>
+
+        <!-- Preset Chips -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 16px;">
+          <button type="button" class="gateway-pill" onclick="selectRechargeChip(499, this)">₹499</button>
+          <button type="button" class="gateway-pill active" onclick="selectRechargeChip(1200, this)">₹1,200</button>
+          <button type="button" class="gateway-pill" onclick="selectRechargeChip(3000, this)">₹3,000</button>
+          <button type="button" class="gateway-pill" onclick="selectRechargeChip(6500, this)">₹6,500</button>
+          <button type="button" class="gateway-pill" onclick="selectRechargeChip(14000, this)">₹14,000</button>
+          <button type="button" class="gateway-pill" onclick="selectRechargeChip(32000, this)">₹32,000</button>
+        </div>
+
+        <!-- Payment Channel / QR Box -->
+        <div class="qr-display-box">
+          <div class="timer-countdown-badge">
+            <i class="fa-regular fa-clock"></i>
+            <span>Payment Window: <strong id="rechargeTimerTxt">10:00</strong></span>
+          </div>
+
+          <div class="qr-image-wrap">
+            <img id="clientRechargeQrImg" src="/images/logo.svg" alt="Scan QR Code">
+          </div>
+
+          <div id="clientQrBadge" style="font-size: 11px; font-weight: 800; color: var(--gold-dark); background: var(--gold-soft); padding: 4px 12px; border-radius: var(--radius-pill); margin-bottom: 10px;">
+            <span id="clientQrTitleTxt">Primary FastPay VIP</span>
+          </div>
+
+          <!-- Merchant UPI Copy Field -->
+          <div class="copy-field-box">
+            <div>
+              <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">UPI ID (PhonePe / GPay / Paytm)</div>
+              <div id="clientRechargeUpiIdTxt" class="copy-field-val">cryptominers@okaxis</div>
+            </div>
+            <button type="button" class="btn-copy-tag" onclick="copyClientUpiId()"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+
+          <!-- USDT TRC-20 Address Copy Field -->
+          <div class="copy-field-box">
+            <div>
+              <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">USDT (TRC-20) Address</div>
+              <div id="clientRechargeUsdtTxt" class="copy-field-val">TXjK9zFw8q2LmN4vP1aB3cE5gH7jK9mN2p</div>
+            </div>
+            <button type="button" class="btn-copy-tag" onclick="navigator.clipboard.writeText('TXjK9zFw8q2LmN4vP1aB3cE5gH7jK9mN2p'); showToast('USDT TRC20 Address Copied!');"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+
+          <!-- Change QR Button -->
+          <button type="button" onclick="refreshClientQr()" style="margin-top: 10px; background: transparent; border: 1px solid var(--primary-gold); color: var(--gold-dark); font-size: 11.5px; font-weight: 800; border-radius: var(--radius-pill); padding: 6px 14px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-arrows-rotate" id="clientRefreshQrIcon"></i> Change / Rotate QR
+          </button>
+        </div>
+
+        <!-- Step 2: UTR Submission -->
+        <div style="margin-bottom: 16px;">
+          <label style="font-size: 12px; font-weight: 800; color: var(--text-dark); display: block; margin-bottom: 6px;">Step 2: Enter 12-Digit UTR or Crypto TXID</label>
+          <div class="auth-input-wrapper">
+            <input type="text" id="depositUtrInput" class="auth-input" placeholder="e.g. 429188294821 or 0x4f...89a" style="font-family: monospace; font-size: 15px; font-weight: 700;">
+          </div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Copy the transaction reference from PhonePe/GPay or crypto wallet.</div>
+        </div>
+
+        <button type="button" class="btn-gold-primary" onclick="submitRechargeUTR()">
+          <span>Confirm Payment & Submit</span>
+          <span class="circle-arrow"><i class="fa-solid fa-check"></i></span>
+        </button>
+
+        <!-- Collapsible Deposit Records -->
+        <div style="margin-top: 18px; border-top: 1px solid #E2E8F0; padding-top: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleRechargeRecords()">
+            <span style="font-size: 13.5px; font-weight: 800; color: var(--text-dark);"><i class="fa-solid fa-clock-rotate-left"></i> My Deposit Records</span>
+            <i id="rechargeRecordsChevron" class="fa-solid fa-chevron-down" style="color: var(--text-muted);"></i>
+          </div>
+          <div id="inlineRechargeRecords" style="display: none; margin-top: 10px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SCREEN 4: DEDICATED WITHDRAWAL
+         ========================================== -->
+    <section id="screen-withdraw" class="screen">
+      <header class="main-app-header">
+        <button class="header-icon-btn" onclick="switchNav('profile')"><i class="fa-solid fa-chevron-left"></i></button>
+        <div style="font-family: var(--font-display); font-weight: 900; font-size: 18px; color: var(--gold-dark);">Instant Withdrawal</div>
+        <div style="width: 36px;"></div>
+      </header>
+
+      <div class="recharge-card">
+        <!-- Balance Card -->
+        <div style="background: var(--gold-soft); border-radius: var(--radius-md); padding: 12px; text-align: center; margin-bottom: 14px; border: 1px solid rgba(212, 175, 55, 0.3);">
+          <div style="font-size: 11px; font-weight: 700; color: var(--gold-dark); text-transform: uppercase;">Withdrawable Balance</div>
+          <div id="withdrawUserBalDisplay" style="font-family: var(--font-display); font-size: 26px; font-weight: 900; color: #78350F;">₹0.00</div>
+          <div style="font-size: 11px; color: var(--gold-dark); margin-top: 4px; font-weight: 700;">Min ₹200 • Processing Fee 5% • Daily 08:00 - 22:00</div>
+        </div>
+
+        <!-- Withdrawal Amount Input -->
+        <div style="margin-bottom: 14px;">
+          <label style="font-size: 12px; font-weight: 800; color: var(--text-dark); display: block; margin-bottom: 6px;">Withdrawal Amount (INR)</label>
+          <div class="auth-input-wrapper">
+            <span style="font-weight: 900; color: var(--gold-dark); font-size: 18px; margin-right: 8px;">₹</span>
+            <input type="number" id="wdAmountInput" class="auth-input" placeholder="Enter amount (min ₹200)" oninput="calculateWithdrawFee()" style="font-size: 18px; font-weight: 800;">
+          </div>
+        </div>
+
+        <!-- Fee Breakdown -->
+        <div style="background: var(--bg-offwhite); border-radius: var(--radius-md); padding: 12px; margin-bottom: 16px; border: 1px solid rgba(212, 175, 55, 0.2);">
+          <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); font-weight: 700; margin-bottom: 6px;">
+            <span>Processing Fee (5%):</span>
+            <span id="wdFeeTxt">₹0.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 900; color: var(--accent-emerald);">
+            <span>Net Bank / USDT Payout:</span>
+            <span id="wdNetTxt">₹0.00</span>
+          </div>
+        </div>
+
+        <!-- Bank & Wallet Details Bound -->
+        <div style="background: #FFFFFF; border: 1.5px solid var(--gold-border); border-radius: var(--radius-md); padding: 14px; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <div style="font-size: 12.5px; font-weight: 800; color: var(--text-dark);"><i class="fa-solid fa-building-columns"></i> Receiving Account</div>
+            <button type="button" onclick="openBankSetupModal()" style="font-size: 11px; font-weight: 800; color: var(--gold-dark); background: transparent; border: none; cursor: pointer; text-decoration: underline;">Edit</button>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+            <div>Holder: <strong id="wdAccountHolder" style="color: var(--text-dark);">-</strong></div>
+            <div>Bank: <strong id="wdBankName" style="color: var(--text-dark);">-</strong></div>
+            <div>Account: <strong id="wdAccountNumber" style="color: var(--text-dark);">-</strong></div>
+            <div>IFSC: <strong id="wdIfsc" style="color: var(--text-dark);">-</strong></div>
+            <div>UPI: <strong id="wdUpiId" style="color: var(--text-dark);">-</strong></div>
+          </div>
+        </div>
+
+        <button type="button" class="btn-gold-primary" onclick="submitWithdrawal()">
+          <span>Submit Payout Request</span>
+          <span class="circle-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+        </button>
+
+        <!-- Collapsible Withdrawal Records -->
+        <div style="margin-top: 18px; border-top: 1px solid #E2E8F0; padding-top: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleWithdrawRecords()">
+            <span style="font-size: 13.5px; font-weight: 800; color: var(--text-dark);"><i class="fa-solid fa-clock-rotate-left"></i> My Withdrawal Records</span>
+            <i id="withdrawRecordsChevron" class="fa-solid fa-chevron-down" style="color: var(--text-muted);"></i>
+          </div>
+          <div id="inlineWithdrawRecords" style="display: none; margin-top: 10px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SCREEN 5: INCOME / ACTIVE MINING RIGS
+         ========================================== -->
+    <section id="screen-income" class="screen">
+      <div class="income-hero-card">
+        <div class="income-metric-title">Active Cloud Hashrate & Rewards</div>
+        <div id="statDailyIncome" class="income-metric-val">₹0.00</div>
+        
+        <div style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; color: var(--gold-dark); background: #FFFFFF; padding: 4px 14px; border-radius: var(--radius-pill); margin-bottom: 14px; border: 1px solid var(--gold-border);">
+          <i class="fa-regular fa-clock"></i> Next Hash Settlement in <strong id="liveIncomeCountdown">12 : 21 : 57</strong>
+        </div>
+
+        <div>
+          <button type="button" class="btn-claim-yield" onclick="claimDailyIncome()">
+            <i class="fa-solid fa-bolt"></i> Claim Mining Yield
+          </button>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 14px 14px 14px;">
+        <div class="wallet-tile">
+          <div class="wallet-tile-label">Total Invested</div>
+          <div id="statTotalInvested" class="wallet-tile-amount">₹0.00</div>
+        </div>
+        <div class="wallet-tile">
+          <div class="wallet-tile-label">Active Mining Rigs</div>
+          <div id="statActivePlans" class="wallet-tile-amount">0 Rigs</div>
+        </div>
+      </div>
+
+      <div class="section-header-wrap" style="padding-top: 0;">
+        <div class="section-title">
+          <span>My Deployed Rigs</span>
+          <span class="gold-tag">★ Active</span>
+        </div>
+      </div>
+
+      <div id="ordersContentContainer" class="plans-container">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SCREEN 6: TASK / REWARDS & LUCKY SPIN
+         ========================================== -->
+    <section id="screen-task" class="screen">
+      <div style="padding: 16px 14px 0 14px;">
+        <!-- Daily Attendance Check-In Card -->
+        <div class="home-hero-card" style="margin: 0 0 14px 0;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div style="font-size: 11px; font-weight: 800; color: var(--gold-dark); text-transform: uppercase;">Daily Attendance Bonus</div>
+              <div style="font-family: var(--font-display); font-size: 20px; font-weight: 900; color: var(--text-dark); margin: 2px 0;">Claim Free ₹15 Hashrate</div>
+            </div>
+            <button id="btnDailyAttendance" type="button" class="btn-deploy-miner" style="max-width: 120px;" onclick="claimDailyAttendance()">
+              Check In
+            </button>
+          </div>
+        </div>
+
+        <!-- Lucky Crypto Wheel Card -->
+        <div class="recharge-card" style="margin: 0; text-align: center;">
+          <div style="font-family: var(--font-display); font-size: 18px; font-weight: 900; color: var(--gold-dark); margin-bottom: 4px;">
+            ★ Lucky Hashrate Wheel ★
+          </div>
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Spin daily to win extra cloud mining power and cash rewards!</p>
+
+          <div style="position: relative; width: 220px; height: 220px; margin: 0 auto 16px auto;">
+            <div id="wheelRotatingDisk" style="width: 100%; height: 100%; border-radius: 50%; border: 6px solid var(--primary-gold); background: conic-gradient(#FFFBEB 0deg 45deg, #FEF3C7 45deg 90deg, #FDE68A 90deg 135deg, #FCD34D 135deg 180deg, #F59E0B 180deg 225deg, #D97706 225deg 270deg, #FEF3C7 270deg 315deg, #FFFBEB 315deg 360deg); box-shadow: var(--shadow-gold-glow); transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);">
+            </div>
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 56px; height: 56px; border-radius: 50%; background: var(--gold-gradient); color: #fff; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2);" onclick="playSpinWheel()">
+              SPIN
+            </div>
+          </div>
+
+          <div style="font-size: 13px; font-weight: 800; color: var(--text-dark); margin-bottom: 10px;">
+            Spins Remaining: <strong id="userSpinsCount" style="color: var(--gold-dark);">1</strong>
+          </div>
+
+          <button id="btnSpinAction" type="button" class="btn-gold-primary" onclick="playSpinWheel()">
+            Spin Now
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SCREEN 7: 3-LEVEL VIP TEAM REFERRAL
+         ========================================== -->
+    <section id="screen-team" class="screen">
+      <header class="main-app-header">
+        <button class="header-icon-btn" onclick="switchNav('home')"><i class="fa-solid fa-chevron-left"></i></button>
+        <div style="font-family: var(--font-display); font-weight: 900; font-size: 18px; color: var(--gold-dark);">VIP Team Network</div>
+        <div style="width: 36px;"></div>
+      </header>
+
+      <div style="padding: 14px;">
+        <!-- Referral Share Card -->
+        <div class="home-hero-card" style="margin: 0 0 14px 0;">
+          <div style="font-size: 11px; font-weight: 800; color: var(--gold-dark); text-transform: uppercase;">Your Invitation Code</div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin: 6px 0 12px 0;">
+            <div id="myInviteCodeText" style="font-family: monospace; font-size: 24px; font-weight: 900; color: #78350F;">882651</div>
+            <button type="button" class="btn-copy-tag" onclick="copyInviteCode()" style="font-size: 12px; padding: 6px 14px;">Copy Code</button>
+          </div>
+          <button type="button" class="btn-gold-primary" onclick="copyInviteLink()">
+            <i class="fa-solid fa-share-nodes"></i> Copy Referral Link (40% Comm.)
+          </button>
+        </div>
+
+        <!-- 3-Level Commission Rates Strip -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px;">
+          <div class="wallet-tile" style="border-top: 3px solid #10B981;">
+            <div class="wallet-tile-label">Tier 1 Rebate</div>
+            <div class="wallet-tile-amount" style="color: #10B981;">40%</div>
+            <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Direct Invite</div>
+          </div>
+          <div class="wallet-tile" style="border-top: 3px solid #6366F1;">
+            <div class="wallet-tile-label">Tier 2 Rebate</div>
+            <div class="wallet-tile-amount" style="color: #6366F1;">3%</div>
+            <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Secondary</div>
+          </div>
+          <div class="wallet-tile" style="border-top: 3px solid #F59E0B;">
+            <div class="wallet-tile-label">Tier 3 Rebate</div>
+            <div class="wallet-tile-amount" style="color: #F59E0B;">1%</div>
+            <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Tertiary</div>
+          </div>
+        </div>
+
+        <!-- Team Stats Overview -->
+        <div class="recharge-card" style="margin: 0 0 14px 0;">
+          <div style="font-family: var(--font-display); font-size: 16px; font-weight: 800; color: var(--text-dark); margin-bottom: 12px;">
+            Team Performance
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center;">
+            <div>
+              <div style="font-size: 10px; font-weight: 700; color: var(--text-muted);">Total Team</div>
+              <div id="statTeamMembersCount" style="font-size: 18px; font-weight: 900; color: var(--gold-dark); margin-top: 2px;">0</div>
+            </div>
+            <div>
+              <div style="font-size: 10px; font-weight: 700; color: var(--text-muted);">Team Deposit</div>
+              <div id="statTeamRecharge" style="font-size: 18px; font-weight: 900; color: var(--gold-dark); margin-top: 2px;">₹0.00</div>
+            </div>
+            <div>
+              <div style="font-size: 10px; font-weight: 700; color: var(--text-muted);">Commission</div>
+              <div id="statTeamWithdraw" style="font-size: 18px; font-weight: 900; color: var(--accent-emerald); margin-top: 2px;">₹0.00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tier Breakdown Details -->
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div class="wallet-tile" style="text-align: left; padding: 12px 14px;">
+            <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 13px;">
+              <span>Tier 1 Team (40%)</span>
+              <span id="lvl1Members">0 Members</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+              <span>Deposit: <strong id="lvl1Recharge">₹0.00</strong></span>
+              <span>Active: <strong id="lvl1Active">0</strong></span>
+            </div>
+          </div>
+
+          <div class="wallet-tile" style="text-align: left; padding: 12px 14px;">
+            <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 13px;">
+              <span>Tier 2 Team (3%)</span>
+              <span id="lvl2Members">0 Members</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+              <span>Deposit: <strong id="lvl2Recharge">₹0.00</strong></span>
+              <span>Active: <strong id="lvl2Active">0</strong></span>
+            </div>
+          </div>
+
+          <div class="wallet-tile" style="text-align: left; padding: 12px 14px;">
+            <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 13px;">
+              <span>Tier 3 Team (1%)</span>
+              <span id="lvl3Members">0 Members</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+              <span>Deposit: <strong id="lvl3Recharge">₹0.00</strong></span>
+              <span>Active: <strong id="lvl3Active">0</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SCREEN 8: PROFILE / ACCOUNT SETTINGS
+         ========================================== -->
+    <section id="screen-profile" class="screen">
+      <!-- VIP Profile Hero -->
+      <div class="profile-hero">
+        <div class="profile-avatar">
+          <i class="fa-solid fa-crown"></i>
+        </div>
+        <div class="profile-info">
+          <h2 id="modalUserName">Crypto Miner</h2>
+          <div id="profileUserPhoneMasked" class="profile-phone">+91 987***4321</div>
+          <div class="profile-vip-tag">
+            <i class="fa-solid fa-gem"></i>
+            <span id="profileVipLevel">VIP 1 Miner</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 Wallet Metrics -->
+      <div class="profile-wallets-grid">
+        <div class="wallet-tile" onclick="switchNav('withdraw')">
+          <div class="wallet-tile-label">Available Bal.</div>
+          <div id="profileAvailBal" class="wallet-tile-amount">₹0.00</div>
+        </div>
+        <div class="wallet-tile" onclick="switchNav('income')">
+          <div class="wallet-tile-label">Active Rigs</div>
+          <div id="profileRechargeBal" class="wallet-tile-amount">₹0.00</div>
+        </div>
+        <div class="wallet-tile">
+          <div class="wallet-tile-label">Total Earned</div>
+          <div id="profileTotalIncome" class="wallet-tile-amount" style="color: var(--accent-emerald);">₹0.00</div>
+        </div>
+      </div>
+
+      <!-- Profile Menu List -->
+      <div class="profile-menu-list">
+        <div class="menu-item-row" onclick="openBankSetupModal()">
+          <div class="menu-item-left">
+            <div class="menu-item-icon"><i class="fa-solid fa-building-columns"></i></div>
+            <span>Bank & USDT Wallet Settings</span>
+          </div>
+          <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+        </div>
+
+        <div class="menu-item-row" onclick="openHistoryModal('recharge')">
+          <div class="menu-item-left">
+            <div class="menu-item-icon"><i class="fa-solid fa-wallet"></i></div>
+            <span>Deposit Transaction History</span>
+          </div>
+          <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+        </div>
+
+        <div class="menu-item-row" onclick="openHistoryModal('withdraw')">
+          <div class="menu-item-left">
+            <div class="menu-item-icon"><i class="fa-solid fa-money-bill-transfer"></i></div>
+            <span>Withdrawal History</span>
+          </div>
+          <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+        </div>
+
+        <div class="menu-item-row" onclick="openSupportModal()">
+          <div class="menu-item-left">
+            <div class="menu-item-icon"><i class="fa-solid fa-headset"></i></div>
+            <span>24x7 VIP Support Desk</span>
+          </div>
+          <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+        </div>
+
+        <div class="menu-item-row" onclick="handleLogout()" style="color: var(--accent-red);">
+          <div class="menu-item-left" style="color: var(--accent-red);">
+            <div class="menu-item-icon" style="background: #FEE2E2; color: var(--accent-red);"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
+            <span>Logout Account</span>
+          </div>
+          <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         FIXED BOTTOM NAVIGATION DOCK (5 ICONS)
+         ========================================== -->
+    <nav id="bottomNavBar" class="bottom-nav-dock">
+      <div id="navHome" class="nav-dock-item active" onclick="switchNav('home')">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </div>
+      <div id="navIncome" class="nav-dock-item" onclick="switchNav('income')">
+        <i class="fa-solid fa-microchip"></i>
+        <span>Miners</span>
+      </div>
+      <div id="navTask" class="nav-dock-item" onclick="switchNav('task')">
+        <i class="fa-solid fa-gift"></i>
+        <span>Rewards</span>
+      </div>
+      <div id="navTeam" class="nav-dock-item" onclick="switchNav('team')">
+        <i class="fa-solid fa-users"></i>
+        <span>Team</span>
+      </div>
+      <div id="navProfile" class="nav-dock-item" onclick="switchNav('profile')">
+        <i class="fa-solid fa-user"></i>
+        <span>Mine</span>
+      </div>
+    </nav>
+
+    <!-- ==========================================
+         MODALS & OVERLAYS
+         ========================================== -->
+    <!-- Bank & Crypto Wallet Setup Modal -->
+    <div id="bankModal" class="modal-overlay">
+      <div class="modal-card-box">
+        <button type="button" class="modal-close-btn" onclick="closeBankModal()"><i class="fa-solid fa-xmark"></i></button>
+        <h3 style="font-family: var(--font-display); font-size: 18px; font-weight: 800; color: var(--gold-dark); margin-bottom: 14px;">
+          Payout Account Settings
+        </h3>
+        
+        <form id="bankSetupForm" onsubmit="handleSaveBank(event)">
+          <div class="auth-input-group">
+            <label style="font-size: 11px; font-weight: 700; color: var(--text-muted);">Account Holder Name</label>
+            <div class="auth-input-wrapper">
+              <input type="text" id="setupAccountHolder" class="auth-input" placeholder="Name as per Bank" required>
+            </div>
+          </div>
+
+          <div class="auth-input-group">
+            <label style="font-size: 11px; font-weight: 700; color: var(--text-muted);">Bank Name</label>
+            <div class="auth-input-wrapper">
+              <input type="text" id="setupBankName" class="auth-input" placeholder="e.g. State Bank of India" required>
+            </div>
+          </div>
+
+          <div class="auth-input-group">
+            <label style="font-size: 11px; font-weight: 700; color: var(--text-muted);">Bank Account Number</label>
+            <div class="auth-input-wrapper">
+              <input type="text" id="setupAccountNumber" class="auth-input" placeholder="Account Number" required>
+            </div>
+          </div>
+
+          <div class="auth-input-group">
+            <label style="font-size: 11px; font-weight: 700; color: var(--text-muted);">IFSC Code</label>
+            <div class="auth-input-wrapper">
+              <input type="text" id="setupIfsc" class="auth-input" placeholder="IFSC Code (e.g. SBIN0001234)" required>
+            </div>
+          </div>
+
+          <div class="auth-input-group">
+            <label style="font-size: 11px; font-weight: 700; color: var(--text-muted);">UPI ID (Optional)</label>
+            <div class="auth-input-wrapper">
+              <input type="text" id="setupUpiId" class="auth-input" placeholder="name@upi">
+            </div>
+          </div>
+
+          <button type="submit" class="btn-gold-primary" style="margin-top: 14px;">
+            Save Account Details
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- History Records Modal -->
+    <div id="historyModal" class="modal-overlay">
+      <div class="modal-card-box">
+        <button type="button" class="modal-close-btn" onclick="closeHistoryModal()"><i class="fa-solid fa-xmark"></i></button>
+        <h3 id="historyModalTitle" style="font-family: var(--font-display); font-size: 18px; font-weight: 800; color: var(--gold-dark); margin-bottom: 14px;">
+          Transaction Records
+        </h3>
+        <div id="historyModalList" style="max-height: 55vh; overflow-y: auto;">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- VIP Support Modal -->
+    <div id="supportModal" class="modal-overlay">
+      <div class="modal-card-box" style="text-align: center;">
+        <button type="button" class="modal-close-btn" onclick="closeSupportModal()"><i class="fa-solid fa-xmark"></i></button>
+        <div style="width: 58px; height: 58px; border-radius: 50%; background: var(--gold-soft); color: var(--gold-dark); display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 12px auto;">
+          <i class="fa-solid fa-headset"></i>
+        </div>
+        <h3 style="font-family: var(--font-display); font-size: 18px; font-weight: 800; color: var(--text-dark); margin-bottom: 6px;">
+          CryptoMiners Help Desk
+        </h3>
+        <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 18px;">
+          Our 24x7 support managers are ready to assist you with mining rigs, recharges, and payouts.
+        </p>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <a id="supportTelegramLink" href="https://t.me/cryptominers_official" target="_blank" class="btn-gold-primary" style="text-decoration: none; background: linear-gradient(135deg, #0088CC 0%, #005580 100%);">
+            <i class="fa-brands fa-telegram"></i> Telegram VIP Channel
+          </a>
+          <a id="supportWhatsappLink" href="https://wa.me/919876543210" target="_blank" class="btn-gold-primary" style="text-decoration: none; background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);">
+            <i class="fa-brands fa-whatsapp"></i> WhatsApp Support
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" style="position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 99999; display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 420px; pointer-events: none;"></div>
+
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
