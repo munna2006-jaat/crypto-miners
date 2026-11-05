@@ -499,7 +499,6 @@ async function loadRechargeScreen() {
     balDisplay.innerText = `₹${Number(currentUser.balance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
   }
   await fetchPaymentConfig();
-  startRechargeTimer(10 * 60);
   loadRechargeRecords();
 }
 
@@ -530,20 +529,6 @@ function updateRechargeDisplay(val) {
 
 function startRechargeTimer(durationSeconds) {
   if (rechargeTimerInterval) clearInterval(rechargeTimerInterval);
-  let timer = durationSeconds;
-  const display = document.getElementById('rechargeTimerTxt');
-  if (!display) return;
-
-  rechargeTimerInterval = setInterval(() => {
-    const minutes = Math.floor(timer / 60);
-    const seconds = timer % 60;
-    display.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-    if (--timer < 0) {
-      clearInterval(rechargeTimerInterval);
-      display.innerText = "EXPIRED";
-    }
-  }, 1000);
 }
 
 function copyClientUpiId() {
