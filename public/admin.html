@@ -869,13 +869,16 @@
               <th>Available Balance</th>
               <th>Total Deposited</th>
               <th>Total Withdrawn</th>
+              <th>GST Tax %</th>
+              <th>Commission %</th>
+              <th>Withdrawal Notice</th>
               <th>Status</th>
               <th>Referral Code</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody id="usersTableBody">
-            <tr><td colspan="8" style="text-align: center; color: var(--text-muted);">Loading users...</td></tr>
+            <tr><td colspan="11" style="text-align: center; color: var(--text-muted);">Loading users...</td></tr>
           </tbody>
         </table>
       </div>
@@ -1063,16 +1066,12 @@
             <input type="number" id="planPrice" class="form-control" required oninput="calcPlanTotal()">
           </div>
           <div class="form-group">
-            <label>Daily Yield (₹)</label>
-            <input type="number" id="planDaily" class="form-control" required oninput="calcPlanTotal()">
-          </div>
-          <div class="form-group">
-            <label>Cycle Days</label>
-            <input type="number" id="planCycle" class="form-control" value="2" required oninput="calcPlanTotal()">
+            <label>Duration (Minutes)</label>
+            <input type="number" id="planDurationMin" class="form-control" value="45" required>
           </div>
           <div class="form-group">
             <label>Total Expected Yield (₹)</label>
-            <input type="number" id="planTotal" class="form-control" required>
+            <input type="number" id="planTotal" class="form-control" placeholder="e.g. 4500" required>
           </div>
         </div>
         <div class="form-group">
@@ -1124,6 +1123,59 @@
         </div>
         <button type="submit" class="btn-portal-action" style="width: 100%; justify-content: center; height: 44px; background: var(--gold-gradient); color: #fff; border: none;">
           <i class="fa-solid fa-wallet"></i> Confirm Adjustment
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: USER GST TAX & WITHDRAWAL NOTICE -->
+  <div id="taxModal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 540px;">
+      <div class="modal-header">
+        <div class="modal-title"><i class="fa-solid fa-file-invoice-dollar" style="color: var(--primary); margin-right: 6px;"></i> Set Custom GST Tax & Notice</div>
+        <button class="btn-close-modal" onclick="closeTaxModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="taxForm" onsubmit="submitTaxSettings(event)">
+        <input type="hidden" id="taxUserId">
+        
+        <div style="background: #FFFDF5; border: 1.5px solid var(--gold-border); border-radius: 12px; padding: 12px 14px; margin-bottom: 16px;">
+          <div style="font-size: 11px; font-weight: 800; color: var(--gold-dark); text-transform: uppercase; letter-spacing: 0.5px;">Configuring Miner Account</div>
+          <div id="taxUserInfo" style="font-size: 15px; font-weight: 800; color: #1E293B; margin-top: 3px;">-</div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>GST Tax Rate (%) <span style="font-size: 11px; color: var(--text-muted); font-weight: normal;">(Any % required)</span></label>
+            <input type="number" step="0.1" min="0" max="100" id="taxGstInput" class="form-control" placeholder="e.g. 18 or 28" required>
+            <span style="font-size: 11px; color: var(--text-muted); margin-top: 2px; display: block;">Displays as GST charges during user payout</span>
+          </div>
+          <div class="form-group">
+            <label>Platform Commission (%)</label>
+            <input type="number" step="0.1" min="0" max="100" id="taxCommInput" class="form-control" placeholder="e.g. 10" required>
+            <span style="font-size: 11px; color: var(--text-muted); margin-top: 2px; display: block;">Deducted as platform handling commission</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Custom Withdrawal Description / Message Box</label>
+          <textarea id="taxNoticeInput" class="form-control" rows="4" placeholder="Enter custom message / instructions shown to this specific user right below GST charges on their withdrawal screen..."></textarea>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Har user ke liye alag text likh sakte hain jo unhe withdrawal screen par GST charges ke niche dikhega.</div>
+          
+          <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;">
+            <button type="button" class="btn-table-action secondary" style="font-size: 11px; padding: 4px 8px;" onclick="document.getElementById('taxNoticeInput').value='Note: 18% Government GST charges applicable on cloud mining yields. Official tax voucher generated upon approval.'">
+              + 18% GST Notice
+            </button>
+            <button type="button" class="btn-table-action secondary" style="font-size: 11px; padding: 4px 8px;" onclick="document.getElementById('taxNoticeInput').value='Notice: As per platform guidelines, 28% compliance tax & verification charge applies to high-tier hash payouts.'">
+              + 28% Tax Notice
+            </button>
+            <button type="button" class="btn-table-action reject" style="font-size: 11px; padding: 4px 8px;" onclick="document.getElementById('taxNoticeInput').value=''">
+              Clear Text
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-portal-action" style="width: 100%; justify-content: center; height: 46px; background: var(--gold-gradient); color: #fff; border: none; font-size: 14.5px; font-weight: 800; border-radius: 8px;">
+          <i class="fa-solid fa-floppy-disk" style="margin-right: 6px;"></i> Save Tax & Description Box
         </button>
       </form>
     </div>
@@ -2059,7 +2111,7 @@
               <td style="font-weight: 800; color: #0f172a;">₹${p.price}</td>
               <td style="font-weight: 700; color: #059669;">₹${p.daily_income}</td>
               <td style="font-weight: 800; color: var(--primary);">₹${p.total_income}</td>
-              <td>${p.cycle_days} days</td>
+              <td><span style="font-weight: 800; color: var(--gold-dark);"><i class="fa-solid fa-clock"></i> ${p.duration_label || (p.duration_minutes ? p.duration_minutes + ' Min' : (p.cycle_days ? p.cycle_days + ' days' : '45 Min'))}</span></td>
               <td><span class="badge ${p.status === 'active' ? 'approved' : 'rejected'}">${p.status || 'active'}</span></td>
               <td>
                 <div class="btn-action-group">
@@ -2101,11 +2153,7 @@
     }
 
     function calcPlanTotal() {
-      const daily = parseFloat(document.getElementById('planDaily').value) || 0;
-      const days = parseInt(document.getElementById('planCycle').value) || 0;
-      if (daily && days) {
-        document.getElementById('planTotal').value = daily * days;
-      }
+      // In 45-min plans, total_income is directly the final yield
     }
 
     async function savePlan(e) {
@@ -2117,9 +2165,12 @@
       formData.append('hashrate', document.getElementById('planHashrate').value);
       formData.append('category', document.getElementById('planCategory').value);
       formData.append('price', document.getElementById('planPrice').value);
-      formData.append('daily_income', document.getElementById('planDaily').value);
-      formData.append('cycle_days', document.getElementById('planCycle').value);
-      formData.append('total_income', document.getElementById('planTotal').value);
+      const totalYield = document.getElementById('planTotal').value;
+      const durationMin = document.getElementById('planDurationMin') ? document.getElementById('planDurationMin').value : 45;
+      formData.append('daily_income', totalYield);
+      formData.append('total_income', totalYield);
+      formData.append('duration_minutes', durationMin);
+      formData.append('cycle_days', 0);
       formData.append('limit', document.getElementById('planLimit').value);
 
       const preset = document.getElementById('planPresetSelect').value;
@@ -2196,22 +2247,43 @@
       const tbody = document.getElementById('usersTableBody');
       tbody.innerHTML = '';
       if (users.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 24px;">No matching miners.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; color: var(--text-muted); padding: 24px;">No matching miners.</td></tr>';
         return;
       }
       users.forEach(u => {
         const tr = document.createElement('tr');
         const isBanned = u.status === 'banned';
+        const gstRate = u.gst_percent !== undefined && u.gst_percent !== null ? Number(u.gst_percent) : 0;
+        const commRate = u.commission_percent !== undefined && u.commission_percent !== null ? Number(u.commission_percent) : 10;
+        const notice = (u.withdrawal_notice || '').trim();
+        const safeNotice = encodeURIComponent(notice);
+
         tr.innerHTML = `
           <td><strong>${u.name || 'Miner'}</strong></td>
-          <td><span style="font-family: monospace; color: var(--primary);">+91 ${u.phone}</span></td>
+          <td><span style="font-family: monospace; color: var(--primary); font-weight: 700;">+91 ${u.phone}</span></td>
           <td style="font-weight: 800; color: #059669; font-size: 15px;">₹${Number(u.balance).toFixed(2)}</td>
           <td>₹${Number(u.total_recharge || 0).toFixed(2)}</td>
           <td>₹${Number(u.total_withdraw || 0).toFixed(2)}</td>
+          <td>
+            <span class="badge ${gstRate > 0 ? 'pending' : 'approved'}" style="font-size: 11px; font-weight: 800;">
+              ${gstRate}% GST
+            </span>
+          </td>
+          <td>
+            <span style="font-size: 12px; font-weight: 700; color: var(--text-dark);">${commRate}%</span>
+          </td>
+          <td style="max-width: 140px;">
+            ${notice 
+              ? `<span title="${notice.replace(/"/g, '&quot;')}" style="font-size: 11px; color: #B45309; font-weight: 600; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3;"><i class="fa-solid fa-message" style="margin-right: 3px;"></i>${notice}</span>` 
+              : `<span style="color: #94A3B8; font-size: 11px;">Default</span>`}
+          </td>
           <td><span class="badge ${isBanned ? 'banned' : 'approved'}">${(u.status || 'active').toUpperCase()}</span></td>
           <td><span style="background: #faf9f6; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-family: monospace; border: 1px solid var(--gold-border);">${u.ref_code || '-'}</span></td>
           <td>
             <div class="btn-action-group">
+              <button class="btn-table-action" style="background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; font-weight: 700;" onclick="openTaxModal('${u.id}', '${encodeURIComponent(u.name || '')}', '${u.phone}', ${gstRate}, ${commRate}, '${safeNotice}')">
+                <i class="fa-solid fa-percent"></i> GST & Notice
+              </button>
               <button class="btn-table-action edit" onclick="openBalanceModal('${u.id}', '${u.name}', '${u.phone}', ${u.balance})">
                 <i class="fa-solid fa-wallet"></i> Balance
               </button>
@@ -2295,6 +2367,48 @@
         }
       } catch (err) {
         showToast('Error adjusting balance', 'error');
+      }
+    }
+
+    // User Custom GST Tax & Notice Functions
+    function openTaxModal(id, encName, phone, gstRate, commRate, encNotice) {
+      const name = decodeURIComponent(encName || '');
+      const notice = decodeURIComponent(encNotice || '');
+      document.getElementById('taxUserId').value = id;
+      document.getElementById('taxUserInfo').innerHTML = `<strong>${name}</strong> (<span style="font-family: monospace;">+91 ${phone}</span>)`;
+      document.getElementById('taxGstInput').value = gstRate !== undefined ? gstRate : 0;
+      document.getElementById('taxCommInput').value = commRate !== undefined ? commRate : 10;
+      document.getElementById('taxNoticeInput').value = notice || '';
+      document.getElementById('taxModal').classList.add('active');
+    }
+
+    function closeTaxModal() {
+      document.getElementById('taxModal').classList.remove('active');
+    }
+
+    async function submitTaxSettings(e) {
+      e.preventDefault();
+      const uid = document.getElementById('taxUserId').value;
+      const gst_percent = parseFloat(document.getElementById('taxGstInput').value) || 0;
+      const commission_percent = parseFloat(document.getElementById('taxCommInput').value) || 0;
+      const withdrawal_notice = document.getElementById('taxNoticeInput').value;
+
+      try {
+        const res = await fetch(`/api/admin/user/${uid}/tax-settings`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ gst_percent, commission_percent, withdrawal_notice })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(data.message, 'success');
+          closeTaxModal();
+          loadUsers();
+        } else {
+          showToast(data.message || 'Failed to update tax settings', 'error');
+        }
+      } catch (err) {
+        showToast('Error updating tax settings', 'error');
       }
     }
 

@@ -388,15 +388,34 @@
           </div>
         </div>
 
-        <!-- Fee Breakdown -->
-        <div style="background: var(--bg-offwhite); border-radius: var(--radius-md); padding: 12px; margin-bottom: 16px; border: 1px solid rgba(212, 175, 55, 0.2);">
-          <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); font-weight: 700; margin-bottom: 6px;">
-            <span>Processing Fee (5%):</span>
-            <span id="wdFeeTxt">₹0.00</span>
+        <!-- Fee Breakdown (GST Charges & Platform Commission) -->
+        <div style="background: var(--bg-offwhite); border-radius: var(--radius-md); padding: 14px; margin-bottom: 12px; border: 1.5px solid rgba(212, 175, 55, 0.25);">
+          <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-dark); font-weight: 700; margin-bottom: 6px;">
+            <span><i class="fa-solid fa-receipt" style="color: var(--gold-dark); margin-right: 4px;"></i> GST Tax (<span id="wdGstPercentLabel">0%</span>):</span>
+            <span id="wdGstAmountTxt" style="color: #DC2626; font-weight: 800;">-₹0.00</span>
           </div>
-          <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 900; color: var(--accent-emerald);">
+          <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); font-weight: 700; margin-bottom: 8px;">
+            <span><i class="fa-solid fa-percent" style="color: var(--gold-dark); margin-right: 4px;"></i> Platform Commission (<span id="wdCommPercentLabel">10%</span>):</span>
+            <span id="wdCommAmountTxt" style="color: var(--text-muted); font-weight: 800;">-₹0.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); font-weight: 700; margin-bottom: 8px; border-top: 1px dashed rgba(212, 175, 55, 0.3); padding-top: 6px;">
+            <span>Total Deductions:</span>
+            <span id="wdTotalFeeTxt" style="color: #DC2626; font-weight: 800;">-₹0.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 14.5px; font-weight: 900; color: var(--accent-emerald); border-top: 1px solid rgba(212, 175, 55, 0.4); padding-top: 8px;">
             <span>Net Bank / USDT Payout:</span>
             <span id="wdNetTxt">₹0.00</span>
+          </div>
+        </div>
+
+        <!-- Custom Admin GST Description & Instructions Box (Directly below GST charges) -->
+        <div id="wdCustomNoticeBox" style="display: none; background: linear-gradient(135deg, #FFFDF0 0%, #FEF3C7 100%); border: 1.5px dashed #D97706; border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(217, 119, 6, 0.1);">
+          <div style="display: flex; align-items: flex-start; gap: 9px;">
+            <i class="fa-solid fa-circle-info" style="color: #B45309; font-size: 17px; margin-top: 2px; flex-shrink: 0;"></i>
+            <div style="flex: 1;">
+              <div style="font-size: 11px; font-weight: 800; color: #92400E; text-transform: uppercase; letter-spacing: 0.5px;">Notice From Platform Admin</div>
+              <div id="wdCustomNoticeText" style="font-size: 12.5px; color: #78350F; font-weight: 700; line-height: 1.5; margin-top: 3px; white-space: pre-wrap;"></div>
+            </div>
           </div>
         </div>
 

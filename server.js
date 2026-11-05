@@ -110,85 +110,145 @@ const defaultDB = {
   },
   plans: [
     {
-      id: "plan_btc_starter",
+      id: "plan_500",
       category: "normal",
-      title: "BTC Starter Cloud Rig (Antminer S19)",
+      title: "BTC Starter Flash Rig (45 Min)",
       coin: "BTC",
-      hashrate: "95 TH/s",
-      price: 499,
-      daily_income: 165,
-      total_income: 4950,
-      cycle_days: 30,
+      hashrate: "150 TH/s",
+      price: 500,
+      daily_income: 4500,
+      total_income: 4500,
+      cycle_days: 0,
+      duration_minutes: 45,
+      duration_label: "45 Min",
       limit: 10,
       image: "/images/btc.svg",
       status: "active"
     },
     {
-      id: "plan_eth_staking",
+      id: "plan_1000",
       category: "normal",
-      title: "ETH Staking Node (Daily Withdrawal)",
+      title: "ETH High-Speed Staking Node (45 Min)",
       coin: "ETH",
-      hashrate: "320 MH/s",
-      price: 1200,
-      daily_income: 480,
-      total_income: 9600,
-      cycle_days: 20,
+      hashrate: "450 MH/s",
+      price: 1000,
+      daily_income: 8000,
+      total_income: 8000,
+      cycle_days: 0,
+      duration_minutes: 45,
+      duration_label: "45 Min",
       limit: 10,
       image: "/images/eth.svg",
       status: "active"
     },
     {
-      id: "plan_usdt_yield",
+      id: "plan_3000",
       category: "normal",
-      title: "USDT High-Yield Rig (Fast Cashout)",
+      title: "USDT Turbo Quantum Hive (45 Min)",
       coin: "USDT",
-      hashrate: "680 MH/s",
+      hashrate: "980 MH/s",
       price: 3000,
-      daily_income: 1450,
-      total_income: 21750,
-      cycle_days: 15,
+      daily_income: 15000,
+      total_income: 15000,
+      cycle_days: 0,
+      duration_minutes: 45,
+      duration_label: "45 Min",
       limit: 10,
       image: "/images/usdt.svg",
       status: "active"
     },
     {
-      id: "plan_antminer_s21",
-      category: "vip",
-      title: "Antminer S21 Hydro Ultra Farm",
-      coin: "BTC",
-      hashrate: "200 TH/s",
-      price: 6500,
-      daily_income: 3450,
-      total_income: 34500,
-      cycle_days: 10,
-      limit: 10,
-      image: "/images/miner_rig.svg",
-      status: "active"
-    },
-    {
-      id: "plan_sol_cluster",
-      category: "vip",
-      title: "Solana High-Speed Validator Cluster",
+      id: "plan_5000",
+      category: "normal",
+      title: "SOL Rapid Validator Cluster (45 Min)",
       coin: "SOL",
-      hashrate: "4.5 GH/s",
-      price: 14000,
-      daily_income: 8200,
-      total_income: 57400,
-      cycle_days: 7,
+      hashrate: "3.2 GH/s",
+      price: 5000,
+      daily_income: 25000,
+      total_income: 25000,
+      cycle_days: 0,
+      duration_minutes: 45,
+      duration_label: "45 Min",
       limit: 10,
       image: "/images/sol.svg",
       status: "active"
     },
     {
-      id: "plan_genesis_hive",
+      id: "plan_10000",
+      category: "normal",
+      title: "BNB Lightning Quantum Rig (45 Min)",
+      coin: "BNB",
+      hashrate: "7.5 GH/s",
+      price: 10000,
+      daily_income: 50000,
+      total_income: 50000,
+      cycle_days: 0,
+      duration_minutes: 45,
+      duration_label: "45 Min",
+      limit: 10,
+      image: "/images/btc.svg",
+      status: "active"
+    },
+    {
+      id: "plan_20000",
       category: "vip",
-      title: "Genesis AI ASIC Supercomputer Hive",
+      title: "Antminer S21 Pro Hydro Ultra (45 Min)",
       coin: "BTC",
-      hashrate: "1.2 PH/s",
-      price: 32000,
-      daily_income: 21000,
-      total_income: 105000,
-      cycle_days: 5,
+      hashrate: "420 TH/s",
+      price: 20000,
+      daily_income: 110000,
+      total_income: 110000,
+      cycle_days: 0,
+      duration_minutes: 45,
+      duration_label: "45 Min",
+      limit: 10,
+      image: "/images/miner_rig.svg",
+      status: "active"
+    },
+    {
+      id: "plan_30000",
+      category: "vip",
+      title: "Ethereum Enterprise Staking Hive (45 Min)",
+      coin: "ETH",
+      hashrate: "1.2 GH/s",
+      price: 30000,
+      daily_income: 160000,
+      total_income: 160000,
+      cycle_days: 0,
+      duration_minutes: 45,
+      duration_label: "45 Min",
+      limit: 10,
+      image: "/images/eth.svg",
+      status: "active"
+    },
+    {
+      id: "plan_40000",
+      category: "vip",
+      title: "Solana Quantum Supercluster (45 Min)",
+      coin: "SOL",
+      hashrate: "12.5 GH/s",
+      price: 40000,
+      daily_income: 210000,
+      total_income: 210000,
+      cycle_days: 0,
+      duration_minutes: 45,
+      duration_label: "45 Min",
+      limit: 10,
+      image: "/images/sol.svg",
+      status: "active"
+    },
+    {
+      id: "plan_50000",
+      category: "vip",
+      title: "Apex AI Genesis Supercomputing Hive (45 Min)",
+      coin: "BTC",
+      hashrate: "2.8 PH/s",
+      price: 50000,
+      daily_income: 260000,
+      total_income: 260000,
+      cycle_days: 0,
+      duration_minutes: 45,
+      duration_label: "45 Min",
       limit: 10,
       image: "/images/logo.svg",
       status: "active"
@@ -495,6 +555,9 @@ app.get('/api/user/profile', (req, res) => {
       total_income: Number(user.total_income || 0).toFixed(2),
       total_recharge: Number(user.total_recharge || 0).toFixed(2),
       total_withdraw: Number(user.total_withdraw || 0).toFixed(2),
+      gst_percent: user.gst_percent !== undefined && user.gst_percent !== null ? Number(user.gst_percent) : 0,
+      commission_percent: user.commission_percent !== undefined && user.commission_percent !== null ? Number(user.commission_percent) : (db.settings.withdrawal_fee_percent || 10),
+      withdrawal_notice: user.withdrawal_notice || "",
       bank_account: user.bank_account,
       active_plans_count: activePlans.length,
       team_count: teamCount
@@ -562,19 +625,25 @@ app.post('/api/plans/buy', (req, res) => {
   // Deduct balance
   user.balance = Number(user.balance) - Number(plan.price);
 
-  // Create user plan
+  // Create user plan (45 Minutes duration)
+  const now = Date.now();
+  const durationMin = plan.duration_minutes || 45;
   const userPlan = {
-    id: "up_" + Date.now(),
+    id: "up_" + now,
     user_id: user.id,
     plan_id: plan.id,
     plan_title: plan.title,
+    coin: plan.coin || "BTC",
+    hashrate: plan.hashrate || "150 TH/s",
     price: plan.price,
-    daily_income: plan.daily_income,
+    daily_income: plan.total_income,
     total_income: plan.total_income,
-    cycle_days: plan.cycle_days,
-    days_passed: 0,
+    duration_minutes: durationMin,
+    duration_label: plan.duration_label || "45 Min",
+    cycle_days: 0,
     total_claimed: 0,
-    last_claim_date: null,
+    purchased_at: now,
+    expires_at: now + durationMin * 60 * 1000,
     purchase_date: new Date().toISOString(),
     status: "running"
   };
@@ -613,13 +682,13 @@ app.post('/api/plans/buy', (req, res) => {
 
   return res.json({
     success: true,
-    message: `Plan "${plan.title}" activated successfully! Daily income will be generated!`,
+    message: `Mining Rig "${plan.title}" deployed successfully! Yield of ₹${plan.total_income.toLocaleString('en-IN')} will be ready in 45 minutes!`,
     balance: Number(user.balance).toFixed(2),
     user_plan: userPlan
   });
 });
 
-// Get user's purchased plans & unclaimed profits
+// Get user's purchased plans & unclaimed profits (45 Min cycle)
 app.get('/api/user/plans', (req, res) => {
   const phone = req.query.phone;
   const db = readDB();
@@ -629,27 +698,42 @@ app.get('/api/user/plans', (req, res) => {
   }
 
   const myPlans = db.user_plans.filter(p => p.user_id === user.id);
-  const todayStr = new Date().toISOString().split('T')[0];
+  const now = Date.now();
 
-  // Calculate if daily income is ready to claim today
   let totalReadyToClaim = 0;
-  myPlans.forEach(p => {
-    if (p.status === 'running') {
-      if (p.last_claim_date !== todayStr && p.days_passed < p.cycle_days) {
-        totalReadyToClaim += p.daily_income;
-      }
+  const formattedPlans = myPlans.map(p => {
+    const durationMin = p.duration_minutes || 45;
+    const durationMs = durationMin * 60 * 1000;
+    const purchasedAt = p.purchased_at || (p.purchase_date ? new Date(p.purchase_date).getTime() : now);
+    const expiresAt = p.expires_at || (purchasedAt + durationMs);
+    const remainingMs = Math.max(0, expiresAt - now);
+    const remainingSec = Math.floor(remainingMs / 1000);
+    const isCompleted = p.status === 'completed';
+    const isReady = p.status === 'running' && remainingMs <= 0;
+
+    if (isReady) {
+      totalReadyToClaim += Number(p.total_income || 0);
     }
+
+    return {
+      ...p,
+      duration_minutes: durationMin,
+      duration_label: p.duration_label || "45 Min",
+      remaining_seconds: remainingSec,
+      progress_percent: isCompleted ? 100 : Math.min(100, Math.floor(((now - purchasedAt) / durationMs) * 100)),
+      ready_to_claim: isReady
+    };
   });
 
   return res.json({
     success: true,
-    plans: myPlans,
+    plans: formattedPlans,
     totalReadyToClaim: totalReadyToClaim,
-    todayClaimed: totalReadyToClaim === 0
+    hasReadyPlans: totalReadyToClaim > 0
   });
 });
 
-// Claim Daily Income
+// Claim Mining Yield (45 Min cycle)
 app.post('/api/user/claim-income', (req, res) => {
   const { phone } = req.body;
   const db = readDB();
@@ -658,25 +742,32 @@ app.post('/api/user/claim-income', (req, res) => {
     return res.status(404).json({ success: false, message: "User not found" });
   }
 
-  const todayStr = new Date().toISOString().split('T')[0];
+  const now = Date.now();
   let claimedSum = 0;
 
   db.user_plans.forEach(p => {
     if (p.user_id === user.id && p.status === 'running') {
-      if (p.last_claim_date !== todayStr && p.days_passed < p.cycle_days) {
-        claimedSum += p.daily_income;
-        p.total_claimed = (p.total_claimed || 0) + p.daily_income;
-        p.days_passed = (p.days_passed || 0) + 1;
-        p.last_claim_date = todayStr;
-        if (p.days_passed >= p.cycle_days) {
-          p.status = 'completed';
-        }
+      const durationMin = p.duration_minutes || 45;
+      const durationMs = durationMin * 60 * 1000;
+      const purchasedAt = p.purchased_at || (p.purchase_date ? new Date(p.purchase_date).getTime() : now);
+      const expiresAt = p.expires_at || (purchasedAt + durationMs);
+
+      // If 45 minutes have elapsed
+      if (now >= expiresAt) {
+        const yieldAmt = Number(p.total_income || 0);
+        claimedSum += yieldAmt;
+        p.total_claimed = (p.total_claimed || 0) + yieldAmt;
+        p.status = 'completed';
+        p.claimed_at = new Date().toISOString();
       }
     }
   });
 
   if (claimedSum <= 0) {
-    return res.status(400).json({ success: false, message: "No daily earnings available to claim right now. Please check back tomorrow!" });
+    return res.status(400).json({
+      success: false,
+      message: "Mining rig is currently hashing! Please wait for the 45-minute cycle to finish."
+    });
   }
 
   user.balance = Number(user.balance) + claimedSum;
@@ -686,7 +777,7 @@ app.post('/api/user/claim-income', (req, res) => {
 
   return res.json({
     success: true,
-    message: `Successfully claimed ₹${claimedSum.toFixed(2)} today's daily income!`,
+    message: `🎉 Successfully harvested ₹${claimedSum.toLocaleString('en-IN')} cloud mining profit into your wallet!`,
     claimedAmount: claimedSum,
     balance: Number(user.balance).toFixed(2),
     total_income: Number(user.total_income).toFixed(2)
@@ -970,9 +1061,13 @@ app.post('/api/withdraw', (req, res) => {
   user.balance = Number(user.balance) - numAmount;
   user.bank_account = bankDetails; // save latest bank info
 
-  const feePercent = db.settings.withdrawal_fee_percent || 10;
-  const fee = Number((numAmount * (feePercent / 100)).toFixed(2));
-  const finalAmount = Number((numAmount - fee).toFixed(2));
+  // Custom User GST Tax and Platform Commission Calculation
+  const gstPercent = (user.gst_percent !== undefined && user.gst_percent !== null) ? Number(user.gst_percent) : (db.settings.gst_percent || 0);
+  const commPercent = (user.commission_percent !== undefined && user.commission_percent !== null) ? Number(user.commission_percent) : (db.settings.withdrawal_fee_percent || 10);
+  const gstAmount = Number((numAmount * (gstPercent / 100)).toFixed(2));
+  const commAmount = Number((numAmount * (commPercent / 100)).toFixed(2));
+  const totalFee = Number((gstAmount + commAmount).toFixed(2));
+  const finalAmount = Number(Math.max(0, numAmount - totalFee).toFixed(2));
 
   const newWithdrawal = {
     id: "wd_" + Date.now(),
@@ -980,8 +1075,13 @@ app.post('/api/withdraw', (req, res) => {
     user_name: user.name,
     user_phone: user.phone,
     amount: numAmount,
-    fee: fee,
+    gst_percent: gstPercent,
+    gst_amount: gstAmount,
+    commission_percent: commPercent,
+    commission_amount: commAmount,
+    fee: totalFee,
     final_amount: finalAmount,
+    withdrawal_notice: user.withdrawal_notice || "",
     bank_account: bankDetails,
     status: "pending",
     date: new Date().toISOString()
@@ -992,7 +1092,7 @@ app.post('/api/withdraw', (req, res) => {
 
   return res.json({
     success: true,
-    message: `Withdrawal request for ₹${numAmount} submitted! Net payout ₹${finalAmount} (after ${feePercent}% tax fee). Admin will process shortly.`,
+    message: `Withdrawal request for ₹${numAmount} submitted! Net payout ₹${finalAmount} (GST Tax: ₹${gstAmount}, Commission: ₹${commAmount}). Admin will process shortly.`,
     balance: Number(user.balance).toFixed(2),
     withdrawal: newWithdrawal
   });
@@ -1296,6 +1396,9 @@ app.post('/api/admin/plans', upload.single('plan_image'), (req, res) => {
   if (id) {
     // Update existing
     const existingIndex = db.plans.findIndex(p => p.id === id);
+    const durationMin = parseInt(req.body.duration_minutes) || 45;
+    const durationLabel = `${durationMin} Min`;
+
     if (existingIndex !== -1) {
       db.plans[existingIndex] = {
         ...db.plans[existingIndex],
@@ -1306,7 +1409,9 @@ app.post('/api/admin/plans', upload.single('plan_image'), (req, res) => {
         price: parseFloat(price) || db.plans[existingIndex].price,
         daily_income: parseFloat(daily_income) || db.plans[existingIndex].daily_income,
         total_income: parseFloat(total_income) || db.plans[existingIndex].total_income,
-        cycle_days: parseInt(cycle_days) || db.plans[existingIndex].cycle_days,
+        cycle_days: 0,
+        duration_minutes: durationMin,
+        duration_label: durationLabel,
         limit: parseInt(limit) || db.plans[existingIndex].limit || 10,
         status: status || db.plans[existingIndex].status || "active",
         image: req.file ? finalImage : (image_url || db.plans[existingIndex].image)
@@ -1316,7 +1421,9 @@ app.post('/api/admin/plans', upload.single('plan_image'), (req, res) => {
     }
   }
 
-  // Add new plan
+  // Add new plan (45-Minute cloud mining cycle)
+  const durationMin = parseInt(req.body.duration_minutes) || 45;
+  const durationLabel = `${durationMin} Min`;
   const newPlan = {
     id: "plan_" + Date.now(),
     title: title || "New Cloud Mining Rig",
@@ -1324,9 +1431,11 @@ app.post('/api/admin/plans', upload.single('plan_image'), (req, res) => {
     hashrate: hashrate || "120 TH/s",
     category: category || "normal",
     price: parseFloat(price) || 500,
-    daily_income: parseFloat(daily_income) || 200,
-    total_income: parseFloat(total_income) || (parseFloat(daily_income || 200) * parseInt(cycle_days || 10)),
-    cycle_days: parseInt(cycle_days) || 10,
+    daily_income: parseFloat(daily_income) || parseFloat(total_income) || 4500,
+    total_income: parseFloat(total_income) || 4500,
+    cycle_days: 0,
+    duration_minutes: durationMin,
+    duration_label: durationLabel,
     limit: parseInt(limit) || 10,
     status: status || "active",
     image: finalImage
@@ -1405,11 +1514,49 @@ app.get('/api/admin/users', (req, res) => {
     total_income: Number(u.total_income || 0).toFixed(2),
     total_recharge: Number(u.total_recharge || 0).toFixed(2),
     total_withdraw: Number(u.total_withdraw || 0).toFixed(2),
+    gst_percent: u.gst_percent !== undefined && u.gst_percent !== null ? Number(u.gst_percent) : (db.settings.gst_percent || 0),
+    commission_percent: u.commission_percent !== undefined && u.commission_percent !== null ? Number(u.commission_percent) : (db.settings.withdrawal_fee_percent || 10),
+    withdrawal_notice: u.withdrawal_notice || "",
     status: u.status || 'active',
     bank_account: u.bank_account || null,
     created_at: u.created_at
   }));
   return res.json({ success: true, users: safeUsers });
+});
+
+// Admin: Update user custom GST tax, commission and withdrawal notice
+app.post('/api/admin/user/:id/tax-settings', (req, res) => {
+  const userId = req.params.id;
+  const { gst_percent, commission_percent, withdrawal_notice } = req.body;
+  const db = readDB();
+  const user = db.users.find(u => u.id === userId || u.phone === userId);
+  if (!user) {
+    return res.status(404).json({ success: false, message: "User not found" });
+  }
+
+  if (gst_percent !== undefined && gst_percent !== null && gst_percent !== "") {
+    user.gst_percent = Math.max(0, parseFloat(gst_percent) || 0);
+  }
+  if (commission_percent !== undefined && commission_percent !== null && commission_percent !== "") {
+    user.commission_percent = Math.max(0, parseFloat(commission_percent) || 0);
+  }
+  if (withdrawal_notice !== undefined) {
+    user.withdrawal_notice = String(withdrawal_notice || '').trim();
+  }
+
+  writeDB(db);
+  return res.json({
+    success: true,
+    message: `Tax & Notice settings updated for ${user.name} (${user.phone})! GST: ${user.gst_percent || 0}%, Commission: ${user.commission_percent || 0}%`,
+    user: {
+      id: user.id,
+      name: user.name,
+      phone: user.phone,
+      gst_percent: user.gst_percent,
+      commission_percent: user.commission_percent,
+      withdrawal_notice: user.withdrawal_notice
+    }
+  });
 });
 
 // Admin: Adjust user balance manually

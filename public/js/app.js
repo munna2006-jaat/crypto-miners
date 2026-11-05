@@ -296,12 +296,13 @@ function renderPlansUI() {
     const coin = (plan.coin || 'BTC').toUpperCase();
     const hashrate = plan.hashrate || '120 TH/s';
     const planImg = plan.image || `/images/${coin.toLowerCase()}.svg`;
+    const termLabel = plan.duration_label || (plan.duration_minutes ? `${plan.duration_minutes} Min` : '45 Min');
 
     card.innerHTML = `
       <div class="plan-card-top">
         <div class="plan-coin-info">
-          <div class="plan-coin-avatar">
-            <img src="${planImg}" alt="${coin}" onerror="this.src='/images/miner_rig.svg'">
+          <div class="plan-coin-avatar" style="width: 44px; height: 44px; min-width: 44px; max-width: 44px; min-height: 44px; max-height: 44px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #FFFFFF; border: 1.5px solid rgba(212, 175, 55, 0.4); box-shadow: 0 2px 8px rgba(212, 175, 55, 0.2); flex-shrink: 0;">
+            <img src="${planImg}" alt="${coin}" style="width: 34px; height: 34px; max-width: 34px; max-height: 34px; object-fit: contain; display: block;" onerror="this.src='/images/miner_rig.svg'">
           </div>
           <div class="plan-title-block">
             <h3>${plan.title}</h3>
@@ -317,22 +318,22 @@ function renderPlansUI() {
 
       <div class="plan-financials-grid">
         <div class="plan-fin-item">
-          <div class="fin-label">Daily Yield</div>
-          <div class="fin-val gold">₹${Number(plan.daily_income).toLocaleString('en-IN')}</div>
+          <div class="fin-label">Rig Price</div>
+          <div class="fin-val gold">₹${Number(plan.price).toLocaleString('en-IN')}</div>
         </div>
         <div class="plan-fin-item">
           <div class="fin-label">Total Yield</div>
-          <div class="fin-val">₹${Number(plan.total_income).toLocaleString('en-IN')}</div>
+          <div class="fin-val" style="color: #059669; font-weight: 900;">₹${Number(plan.total_income).toLocaleString('en-IN')}</div>
         </div>
         <div class="plan-fin-item">
           <div class="fin-label">Mining Term</div>
-          <div class="fin-val">${plan.cycle_days} Days</div>
+          <div class="fin-val" style="color: var(--gold-dark); font-weight: 800;"><i class="fa-solid fa-clock" style="font-size: 11px;"></i> ${termLabel}</div>
         </div>
       </div>
 
       <div class="plan-card-footer">
         <div class="plan-price-block">
-          <span class="plan-price-label">Rig Price</span>
+          <span class="plan-price-label">Activation</span>
           <span class="plan-price-amount">₹${Number(plan.price).toLocaleString('en-IN')}</span>
         </div>
         <button class="btn-deploy-miner" onclick="buyPlan('${plan.id}')">
@@ -660,19 +661,52 @@ function loadWithdrawScreen() {
     if (document.getElementById('wdUpiId')) document.getElementById('wdUpiId').value = b.upi_id || '';
   }
 
+  // Display custom admin description / notice if set for this user
+  const noticeBox = document.getElementById('wdCustomNoticeBox');
+  const noticeText = document.getElementById('wdCustomNoticeText');
+  if (noticeBox && noticeText) {
+    const notice = (currentUser.withdrawal_notice || '').trim();
+    if (notice) {
+      noticeText.innerText = notice;
+      noticeBox.style.display = 'block';
+    } else {
+      noticeBox.style.display = 'none';
+    }
+  }
+
   calculateWithdrawFee();
 }
 
 function calculateWithdrawFee() {
   const amtInput = document.getElementById('wdAmountInput');
   const amt = parseFloat(amtInput ? amtInput.value : 0) || 0;
-  const feePercent = paymentSettings.withdrawal_fee_percent || 10;
-  const fee = amt * (feePercent / 100);
-  const net = Math.max(0, amt - fee);
 
-  const feeTxt = document.getElementById('wdFeeTxt');
+  // Custom User GST Tax and Platform Commission
+  const gstPercent = (currentUser && currentUser.gst_percent !== undefined && currentUser.gst_percent !== null)
+    ? Number(currentUser.gst_percent)
+    : (paymentSettings.gst_percent || 0);
+
+  const commPercent = (currentUser && currentUser.commission_percent !== undefined && currentUser.commission_percent !== null)
+    ? Number(currentUser.commission_percent)
+    : (paymentSettings.withdrawal_fee_percent || 10);
+
+  const gstAmount = amt * (gstPercent / 100);
+  const commAmount = amt * (commPercent / 100);
+  const totalDeductions = gstAmount + commAmount;
+  const net = Math.max(0, amt - totalDeductions);
+
+  const gstLabel = document.getElementById('wdGstPercentLabel');
+  const gstTxt = document.getElementById('wdGstAmountTxt');
+  const commLabel = document.getElementById('wdCommPercentLabel');
+  const commTxt = document.getElementById('wdCommAmountTxt');
+  const totalFeeTxt = document.getElementById('wdTotalFeeTxt');
   const netTxt = document.getElementById('wdNetTxt');
-  if (feeTxt) feeTxt.innerText = `₹${fee.toFixed(2)}`;
+
+  if (gstLabel) gstLabel.innerText = `${gstPercent}%`;
+  if (gstTxt) gstTxt.innerText = `-₹${gstAmount.toFixed(2)}`;
+  if (commLabel) commLabel.innerText = `${commPercent}%`;
+  if (commTxt) commTxt.innerText = `-₹${commAmount.toFixed(2)}`;
+  if (totalFeeTxt) totalFeeTxt.innerText = `-₹${totalDeductions.toFixed(2)}`;
   if (netTxt) netTxt.innerText = `₹${net.toFixed(2)}`;
 }
 
@@ -773,26 +807,33 @@ async function loadWithdrawRecords() {
   }
 }
 
-// ----------------- INCOME / ORDERS SCREEN -----------------
-function startLiveIncomeTimer() {
+// ----------------- INCOME / ORDERS SCREEN (45-MIN TURBO CLOUD MINING) -----------------
+function formatSecs(sec) {
+  if (sec <= 0) return "Ready!";
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+}
+
+let activeRigsTickInterval = null;
+
+function startLiveIncomeTimer(plans) {
   if (incomeCountdownInterval) clearInterval(incomeCountdownInterval);
   const display = document.getElementById('liveIncomeCountdown');
-  
-  // Daily mining yield settles at 18:00 IST
-  incomeCountdownInterval = setInterval(() => {
-    const now = new Date();
-    const target = new Date();
-    target.setHours(18, 0, 0, 0);
-    if (now > target) {
-      target.setDate(target.getDate() + 1);
-    }
-    const diff = Math.floor((target - now) / 1000);
-    const hrs = Math.floor(diff / 3600);
-    const mins = Math.floor((diff % 3600) / 60);
-    const secs = diff % 60;
 
-    if (display) {
-      display.innerText = `${hrs.toString().padStart(2, '0')} : ${mins.toString().padStart(2, '0')} : ${secs.toString().padStart(2, '0')}`;
+  incomeCountdownInterval = setInterval(() => {
+    const runningRigs = (plans || []).filter(p => p.status === 'running' && p.remaining_seconds > 0);
+    if (runningRigs.length > 0) {
+      const minSec = Math.min(...runningRigs.map(p => p.remaining_seconds));
+      if (minSec <= 0) {
+        if (display) display.innerText = "YIELD READY!";
+      } else {
+        const m = Math.floor(minSec / 60);
+        const s = minSec % 60;
+        if (display) display.innerText = `00 : ${m.toString().padStart(2, '0')} : ${s.toString().padStart(2, '0')}`;
+      }
+    } else {
+      if (display) display.innerText = "00 : 45 : 00";
     }
   }, 1000);
 }
@@ -805,11 +846,13 @@ async function loadUserOrders() {
     if (data.success) {
       const plans = data.plans || [];
       const totalInvested = plans.reduce((sum, p) => sum + Number(p.price || 0), 0);
-      const dailyIncome = plans.reduce((sum, p) => sum + Number(p.daily_income || 0), 0);
+      const totalYield = plans.reduce((sum, p) => sum + Number(p.total_income || 0), 0);
 
       document.getElementById('statTotalInvested').innerText = `₹${totalInvested.toLocaleString('en-IN')}`;
-      document.getElementById('statDailyIncome').innerText = `₹${dailyIncome.toLocaleString('en-IN')}`;
-      document.getElementById('statActivePlans').innerText = plans.length;
+      document.getElementById('statDailyIncome').innerText = `₹${totalYield.toLocaleString('en-IN')}`;
+      document.getElementById('statActivePlans').innerText = `${plans.length} Rigs`;
+
+      startLiveIncomeTimer(plans);
 
       const container = document.getElementById('ordersContentContainer');
       if (!container) return;
@@ -819,45 +862,80 @@ async function loadUserOrders() {
           <div class="empty-orders-card">
             <div class="empty-squircle-icon"><i class="fa-solid fa-server"></i></div>
             <div class="empty-orders-title">No Active Mining Rigs</div>
-            <div class="empty-orders-sub">You have not deployed any cloud mining rigs yet. Explore our ASIC plans to start generating daily crypto returns.</div>
+            <div class="empty-orders-sub">You have not deployed any cloud mining rigs yet. Explore our 45-minute high yield plans to start generating instant crypto returns.</div>
             <button class="btn-explore-plans" onclick="switchNav('home')">
-              <span>Explore ASIC Miners</span> <i class="fa-solid fa-arrow-right"></i>
+              <span>Explore Mining Rigs</span> <i class="fa-solid fa-arrow-right"></i>
             </button>
           </div>
         `;
       } else {
         container.innerHTML = `
-          <div class="card-white-rounded" style="margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
+          <div class="card-white-rounded" style="margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; border: 1.5px solid var(--gold-border);">
             <div>
-              <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Ready To Harvest Today</div>
-              <div style="font-size: 22px; font-weight: 800; color: #10b981;">₹${(data.totalReadyToClaim || 0).toLocaleString('en-IN')}</div>
+              <div style="font-size: 11.5px; color: var(--gold-dark); font-weight: 800; text-transform: uppercase;">Ready To Harvest Yield</div>
+              <div style="font-size: 24px; font-weight: 900; color: #059669;">₹${(data.totalReadyToClaim || 0).toLocaleString('en-IN')}</div>
             </div>
-            <button class="btn-primary-gold" style="width: auto; padding: 0 20px; height: 40px; font-size: 13px;" onclick="claimDailyIncome()" ${data.totalReadyToClaim > 0 ? '' : 'disabled style="opacity: 0.6;"'}>
+            <button class="btn-primary-gold" style="width: auto; padding: 0 20px; height: 42px; font-size: 13.5px; border-radius: var(--radius-pill);" onclick="claimDailyIncome()" ${data.totalReadyToClaim > 0 ? '' : 'disabled style="opacity: 0.55; cursor: not-allowed;"'}>
               <i class="fa-solid fa-coins"></i> Harvest Yield
             </button>
           </div>
           <div style="display: flex; flex-direction: column; gap: 12px;">
-            ${plans.map(p => `
-              <div class="card-white-rounded" style="padding: 14px 16px;">
+            ${plans.map(p => {
+              const isCompleted = p.status === 'completed';
+              const isReady = p.ready_to_claim;
+              const remaining = p.remaining_seconds || 0;
+              const pct = p.progress_percent || 0;
+              return `
+              <div class="card-white-rounded" style="padding: 14px 16px; border: 1.5px solid var(--gold-border);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                  <strong style="color: var(--text-main); font-size: 14.5px;">${p.plan_title}</strong>
-                  <span class="badge approved">${p.status.toUpperCase()}</span>
+                  <strong style="color: var(--text-dark); font-size: 14.5px;">${p.plan_title}</strong>
+                  <span class="badge ${isCompleted ? 'approved' : (isReady ? 'pending' : 'approved')}">${isCompleted ? 'COMPLETED' : (isReady ? 'READY' : 'MINING')}</span>
                 </div>
                 <div style="display: flex; justify-content: space-between; font-size: 12.5px; color: var(--text-muted); margin-bottom: 6px;">
-                  <span>Daily Yield: <strong style="color: var(--gold-dark);">₹${p.daily_income}</strong></span>
-                  <span>Harvested: <strong style="color: #10b981;">₹${p.total_claimed || 0}</strong> / ₹${p.total_income}</span>
+                  <span>Rig Activation: <strong style="color: var(--text-dark);">₹${Number(p.price).toLocaleString('en-IN')}</strong></span>
+                  <span>Net Return: <strong style="color: #059669; font-weight: 800;">₹${Number(p.total_income).toLocaleString('en-IN')}</strong></span>
                 </div>
-                <div class="progress-bar-track">
-                  <div class="progress-bar-fill" style="width: ${Math.min(100, Math.round((p.days_passed / p.cycle_days) * 100))}%;"></div>
+                <div class="progress-bar-track" style="height: 8px; border-radius: 4px; background: #E2E8F0; overflow: hidden; margin-bottom: 6px;">
+                  <div class="progress-bar-fill" id="fill_${p.id}" style="height: 100%; background: linear-gradient(90deg, #F59E0B, #10B981); width: ${pct}%; transition: width 0.5s;"></div>
                 </div>
-                <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 4px;">
-                  <span>Cycle: ${p.days_passed} of ${p.cycle_days} days</span>
-                  <span>Rig Cost: ₹${p.price}</span>
+                <div style="display: flex; justify-content: space-between; font-size: 11.5px; color: var(--text-muted); font-weight: 700;">
+                  <span><i class="fa-solid fa-stopwatch" style="color: var(--gold-dark);"></i> Term: 45 Minutes</span>
+                  <span id="timer_${p.id}" style="color: ${isCompleted ? '#059669' : (isReady ? '#D97706' : 'var(--gold-dark)')};">
+                    ${isCompleted ? '✓ Harvested to Wallet' : (isReady ? '⚡ 45 Min Done - Ready to Claim!' : `⏳ <span id="sec_${p.id}">${formatSecs(remaining)}</span> left`)}
+                  </span>
                 </div>
               </div>
-            `).join('')}
+            `;}).join('')}
           </div>
         `;
+
+        // Live seconds tick for active running plans
+        if (activeRigsTickInterval) clearInterval(activeRigsTickInterval);
+        activeRigsTickInterval = setInterval(() => {
+          let anyFinished = false;
+          plans.forEach(p => {
+            if (p.status === 'running' && p.remaining_seconds > 0) {
+              p.remaining_seconds -= 1;
+              const secSpan = document.getElementById(`sec_${p.id}`);
+              if (secSpan) {
+                secSpan.innerText = formatSecs(p.remaining_seconds);
+              }
+              const totalSec = (p.duration_minutes || 45) * 60;
+              const fill = document.getElementById(`fill_${p.id}`);
+              if (fill) {
+                const currentPct = Math.min(100, Math.floor(((totalSec - p.remaining_seconds) / totalSec) * 100));
+                fill.style.width = `${currentPct}%`;
+              }
+              if (p.remaining_seconds <= 0) {
+                anyFinished = true;
+              }
+            }
+          });
+          if (anyFinished) {
+            clearInterval(activeRigsTickInterval);
+            loadUserOrders();
+          }
+        }, 1000);
       }
     }
   } catch (e) {
