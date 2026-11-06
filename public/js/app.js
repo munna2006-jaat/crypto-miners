@@ -136,17 +136,18 @@ function switchAuthTab(tab) {
   const formRegister = document.getElementById('registerForm');
 
   if (tab === 'login') {
-    tabLogin.classList.add('active');
-    tabRegister.classList.remove('active');
-    formLogin.style.display = 'block';
-    formRegister.style.display = 'none';
+    if (tabLogin) tabLogin.classList.add('active');
+    if (tabRegister) tabRegister.classList.remove('active');
+    if (formLogin) formLogin.style.display = 'block';
+    if (formRegister) formRegister.style.display = 'none';
   } else {
-    tabRegister.classList.add('active');
-    tabLogin.classList.remove('active');
-    formRegister.style.display = 'block';
-    formLogin.style.display = 'none';
+    if (tabRegister) tabRegister.classList.add('active');
+    if (tabLogin) tabLogin.classList.remove('active');
+    if (formRegister) formRegister.style.display = 'block';
+    if (formLogin) formLogin.style.display = 'none';
   }
 }
+window.switchAuthTab = switchAuthTab;
 
 function togglePasswordVisibility(inputId, icon) {
   const input = document.getElementById(inputId);
@@ -785,26 +786,6 @@ async function submitWithdrawal() {
   } catch (e) {
     console.error(e);
     showToast('Server error while processing withdrawal', 'error');
-  }
-}
-        account_number,
-        ifsc,
-        upi_id
-      })
-    });
-    const data = await res.json();
-    if (data.success) {
-      showToast(data.message);
-      document.getElementById('wdAmountInput').value = '';
-      await refreshUserProfile();
-      loadWithdrawScreen();
-      loadWithdrawRecords();
-      switchNav('profile');
-    } else {
-      showToast(data.message, 'error');
-    }
-  } catch (e) {
-    showToast("Error processing withdrawal", "error");
   }
 }
 
