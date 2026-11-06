@@ -557,6 +557,9 @@ app.get('/api/user/profile', (req, res) => {
       total_withdraw: Number(user.total_withdraw || 0).toFixed(2),
       gst_percent: user.gst_percent !== undefined && user.gst_percent !== null ? Number(user.gst_percent) : 0,
       commission_percent: user.commission_percent !== undefined && user.commission_percent !== null ? Number(user.commission_percent) : (db.settings.withdrawal_fee_percent || 10),
+      custom_tax_name: user.custom_tax_name || "Withdrawal Tax",
+      custom_tax_type: user.custom_tax_type || "percent",
+      custom_tax_value: user.custom_tax_value !== undefined && user.custom_tax_value !== null ? Number(user.custom_tax_value) : 0,
       withdrawal_notice: user.withdrawal_notice || "",
       bank_account: user.bank_account,
       active_plans_count: activePlans.length,
@@ -1061,12 +1064,26 @@ app.post('/api/withdraw', (req, res) => {
   user.balance = Number(user.balance) - numAmount;
   user.bank_account = bankDetails; // save latest bank info
 
-  // Custom User GST Tax and Platform Commission Calculation
+  // Custom User GST Tax, Platform Commission & Custom User Tax (e.g. Withdrawal Tax)
   const gstPercent = (user.gst_percent !== undefined && user.gst_percent !== null) ? Number(user.gst_percent) : (db.settings.gst_percent || 0);
   const commPercent = (user.commission_percent !== undefined && user.commission_percent !== null) ? Number(user.commission_percent) : (db.settings.withdrawal_fee_percent || 10);
   const gstAmount = Number((numAmount * (gstPercent / 100)).toFixed(2));
   const commAmount = Number((numAmount * (commPercent / 100)).toFixed(2));
-  const totalFee = Number((gstAmount + commAmount).toFixed(2));
+
+  // User-specific custom tax (e.g. Withdrawal Tax, TDS, Security Tax in % or Flat ₹)
+  const customTaxName = user.custom_tax_name || "Withdrawal Tax";
+  const customTaxType = user.custom_tax_type || "percent";
+  const customTaxValue = Number(user.custom_tax_value || 0);
+  let customTaxAmount = 0;
+  if (customTaxValue > 0) {
+    if (customTaxType === 'flat') {
+      customTaxAmount = Number(customTaxValue.toFixed(2));
+    } else {
+      customTaxAmount = Number((numAmount * (customTaxValue / 100)).toFixed(2));
+    }
+  }
+
+  const totalFee = Number((gstAmount + commAmount + customTaxAmount).toFixed(2));
   const finalAmount = Number(Math.max(0, numAmount - totalFee).toFixed(2));
 
   const newWithdrawal = {
@@ -1079,6 +1096,10 @@ app.post('/api/withdraw', (req, res) => {
     gst_amount: gstAmount,
     commission_percent: commPercent,
     commission_amount: commAmount,
+    custom_tax_name: customTaxName,
+    custom_tax_type: customTaxType,
+    custom_tax_value: customTaxValue,
+    custom_tax_amount: customTaxAmount,
     fee: totalFee,
     final_amount: finalAmount,
     withdrawal_notice: user.withdrawal_notice || "",
@@ -1516,6 +1537,9 @@ app.get('/api/admin/users', (req, res) => {
     total_withdraw: Number(u.total_withdraw || 0).toFixed(2),
     gst_percent: u.gst_percent !== undefined && u.gst_percent !== null ? Number(u.gst_percent) : (db.settings.gst_percent || 0),
     commission_percent: u.commission_percent !== undefined && u.commission_percent !== null ? Number(u.commission_percent) : (db.settings.withdrawal_fee_percent || 10),
+    custom_tax_name: u.custom_tax_name || "Withdrawal Tax",
+    custom_tax_type: u.custom_tax_type || "percent",
+    custom_tax_value: u.custom_tax_value !== undefined && u.custom_tax_value !== null ? Number(u.custom_tax_value) : 0,
     withdrawal_notice: u.withdrawal_notice || "",
     status: u.status || 'active',
     bank_account: u.bank_account || null,
@@ -1527,7 +1551,7 @@ app.get('/api/admin/users', (req, res) => {
 // Admin: Update user custom GST tax, commission and withdrawal notice
 app.post('/api/admin/user/:id/tax-settings', (req, res) => {
   const userId = req.params.id;
-  const { gst_percent, commission_percent, withdrawal_notice } = req.body;
+  const { gst_percent, commission_percent, withdrawal_notice, custom_tax_name, custom_tax_type, custom_tax_value } = req.body;
   const db = readDB();
   const user = db.users.find(u => u.id === userId || u.phone === userId);
   if (!user) {
@@ -1540,20 +1564,35 @@ app.post('/api/admin/user/:id/tax-settings', (req, res) => {
   if (commission_percent !== undefined && commission_percent !== null && commission_percent !== "") {
     user.commission_percent = Math.max(0, parseFloat(commission_percent) || 0);
   }
+  if (custom_tax_name !== undefined) {
+    user.custom_tax_name = String(custom_tax_name || '').trim() || "Withdrawal Tax";
+  }
+  if (custom_tax_type !== undefined) {
+    user.custom_tax_type = custom_tax_type === 'flat' ? 'flat' : 'percent';
+  }
+  if (custom_tax_value !== undefined && custom_tax_value !== null && custom_tax_value !== "") {
+    user.custom_tax_value = Math.max(0, parseFloat(custom_tax_value) || 0);
+  }
   if (withdrawal_notice !== undefined) {
     user.withdrawal_notice = String(withdrawal_notice || '').trim();
   }
 
   writeDB(db);
+  const taxSummary = user.custom_tax_value > 0 
+    ? `${user.custom_tax_name}: ${user.custom_tax_type === 'flat' ? '₹' + user.custom_tax_value : user.custom_tax_value + '%'}`
+    : 'No Custom Tax';
   return res.json({
     success: true,
-    message: `Tax & Notice settings updated for ${user.name} (${user.phone})! GST: ${user.gst_percent || 0}%, Commission: ${user.commission_percent || 0}%`,
+    message: `Tax & Notice updated for ${user.name} (${user.phone})! GST: ${user.gst_percent || 0}%, ${taxSummary}`,
     user: {
       id: user.id,
       name: user.name,
       phone: user.phone,
       gst_percent: user.gst_percent,
       commission_percent: user.commission_percent,
+      custom_tax_name: user.custom_tax_name,
+      custom_tax_type: user.custom_tax_type,
+      custom_tax_value: user.custom_tax_value,
       withdrawal_notice: user.withdrawal_notice
     }
   });

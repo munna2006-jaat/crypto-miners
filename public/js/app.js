@@ -636,14 +636,26 @@ function loadWithdrawScreen() {
     balDisplay.innerText = `₹${Number(currentUser.balance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
   }
 
-  // Pre-fill registered bank account if available
-  if (currentUser.bank_account) {
+  // Pre-fill registered bank account details into Receiving Account card
+  const elHolder = document.getElementById('wdAccountHolder');
+  const elBank = document.getElementById('wdBankName');
+  const elAcc = document.getElementById('wdAccountNumber');
+  const elIfsc = document.getElementById('wdIfsc');
+  const elUpi = document.getElementById('wdUpiId');
+
+  if (currentUser.bank_account && (currentUser.bank_account.account_number || currentUser.bank_account.upi_id)) {
     const b = currentUser.bank_account;
-    if (document.getElementById('wdAccountHolder')) document.getElementById('wdAccountHolder').value = b.account_holder || '';
-    if (document.getElementById('wdBankName')) document.getElementById('wdBankName').value = b.bank_name || '';
-    if (document.getElementById('wdAccountNumber')) document.getElementById('wdAccountNumber').value = b.account_number || '';
-    if (document.getElementById('wdIfsc')) document.getElementById('wdIfsc').value = b.ifsc || '';
-    if (document.getElementById('wdUpiId')) document.getElementById('wdUpiId').value = b.upi_id || '';
+    if (elHolder) elHolder.innerText = b.account_holder || currentUser.name || '-';
+    if (elBank) elBank.innerText = b.bank_name || '-';
+    if (elAcc) elAcc.innerText = b.account_number || '-';
+    if (elIfsc) elIfsc.innerText = b.ifsc || '-';
+    if (elUpi) elUpi.innerText = b.upi_id || '-';
+  } else {
+    if (elHolder) elHolder.innerText = currentUser.name || '-';
+    if (elBank) elBank.innerText = 'Not Set (Click Edit to Add)';
+    if (elAcc) elAcc.innerText = 'Not Set';
+    if (elIfsc) elIfsc.innerText = 'Not Set';
+    if (elUpi) elUpi.innerText = 'Not Set';
   }
 
   // Display custom admin description / notice if set for this user
@@ -677,7 +689,35 @@ function calculateWithdrawFee() {
 
   const gstAmount = amt * (gstPercent / 100);
   const commAmount = amt * (commPercent / 100);
-  const totalDeductions = gstAmount + commAmount;
+
+  // Custom User Tax (e.g. Withdrawal Tax, TDS, Flat ₹ or %)
+  let customTaxAmount = 0;
+  const customTaxRow = document.getElementById('wdCustomTaxRow');
+  const customTaxNameLabel = document.getElementById('wdCustomTaxNameLabel');
+  const customTaxRateLabel = document.getElementById('wdCustomTaxRateLabel');
+  const customTaxTxt = document.getElementById('wdCustomTaxAmountTxt');
+
+  if (currentUser && currentUser.custom_tax_value > 0) {
+    const taxName = currentUser.custom_tax_name || "Withdrawal Tax";
+    const taxType = currentUser.custom_tax_type || "percent";
+    const taxVal = Number(currentUser.custom_tax_value);
+
+    if (taxType === 'flat') {
+      customTaxAmount = taxVal;
+      if (customTaxRateLabel) customTaxRateLabel.innerText = `Flat ₹${taxVal}`;
+    } else {
+      customTaxAmount = amt * (taxVal / 100);
+      if (customTaxRateLabel) customTaxRateLabel.innerText = `${taxVal}%`;
+    }
+
+    if (customTaxNameLabel) customTaxNameLabel.innerText = taxName;
+    if (customTaxTxt) customTaxTxt.innerText = `-₹${customTaxAmount.toFixed(2)}`;
+    if (customTaxRow) customTaxRow.style.display = 'flex';
+  } else {
+    if (customTaxRow) customTaxRow.style.display = 'none';
+  }
+
+  const totalDeductions = gstAmount + commAmount + customTaxAmount;
   const net = Math.max(0, amt - totalDeductions);
 
   const gstLabel = document.getElementById('wdGstPercentLabel');
@@ -696,12 +736,8 @@ function calculateWithdrawFee() {
 }
 
 async function submitWithdrawal() {
-  const amount = parseFloat(document.getElementById('wdAmountInput').value);
-  const account_holder = document.getElementById('wdAccountHolder').value.trim();
-  const bank_name = document.getElementById('wdBankName').value.trim();
-  const account_number = document.getElementById('wdAccountNumber').value.trim();
-  const ifsc = document.getElementById('wdIfsc').value.trim();
-  const upi_id = document.getElementById('wdUpiId').value.trim();
+  const amtInput = document.getElementById('wdAmountInput');
+  const amount = parseFloat(amtInput ? amtInput.value : 0);
 
   const minWd = paymentSettings.min_withdraw || 200;
   if (isNaN(amount) || amount < minWd) {
@@ -714,8 +750,10 @@ async function submitWithdrawal() {
     return;
   }
 
-  if (!account_number && !upi_id) {
-    showToast("Please provide Bank Account Number or UPI/USDT Address", 'error');
+  const bank = currentUser.bank_account || {};
+  if (!bank.account_number && !bank.upi_id) {
+    showToast("Please enter and save your bank account or UPI details first", 'error');
+    openBankSetupModal();
     return;
   }
 
@@ -726,8 +764,29 @@ async function submitWithdrawal() {
       body: JSON.stringify({
         phone: currentUser.phone,
         amount,
-        account_holder,
-        bank_name,
+        account_holder: bank.account_holder || currentUser.name,
+        bank_name: bank.bank_name || 'Bank',
+        account_number: bank.account_number || '',
+        ifsc: bank.ifsc || '',
+        upi_id: bank.upi_id || ''
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      currentUser.balance = parseFloat(data.balance);
+      showToast(data.message, 'success');
+      if (amtInput) amtInput.value = '';
+      loadWithdrawScreen();
+      loadWithdrawHistory();
+      refreshUserProfile();
+    } else {
+      showToast(data.message || 'Withdrawal failed', 'error');
+    }
+  } catch (e) {
+    console.error(e);
+    showToast('Server error while processing withdrawal', 'error');
+  }
+}
         account_number,
         ifsc,
         upi_id
@@ -1165,27 +1224,51 @@ function promptChangePassword() {
   }
 }
 
-// Bank Modal
+// Bank Account Setup Modal
+function openBankSetupModal() {
+  openBankCardModal();
+}
+
 function openBankCardModal() {
-  if (currentUser && currentUser.bank_account) {
-    const b = currentUser.bank_account;
-    document.getElementById('setupAccountHolder').value = b.account_holder || '';
-    document.getElementById('setupBankName').value = b.bank_name || '';
-    document.getElementById('setupAccountNumber').value = b.account_number || '';
-    document.getElementById('setupIfsc').value = b.ifsc || '';
-    document.getElementById('setupUpiId').value = b.upi_id || '';
+  if (currentUser) {
+    if (currentUser.bank_account) {
+      const b = currentUser.bank_account;
+      document.getElementById('setupAccountHolder').value = b.account_holder || currentUser.name || '';
+      document.getElementById('setupBankName').value = b.bank_name || '';
+      document.getElementById('setupAccountNumber').value = b.account_number || '';
+      document.getElementById('setupIfsc').value = b.ifsc || '';
+      document.getElementById('setupUpiId').value = b.upi_id || '';
+    } else {
+      document.getElementById('setupAccountHolder').value = currentUser.name || '';
+      document.getElementById('setupBankName').value = '';
+      document.getElementById('setupAccountNumber').value = '';
+      document.getElementById('setupIfsc').value = '';
+      document.getElementById('setupUpiId').value = '';
+    }
   }
   document.getElementById('bankModal').classList.add('active');
 }
+
 function closeBankModal() {
   document.getElementById('bankModal').classList.remove('active');
 }
+
+async function handleSaveBank(event) {
+  if (event) event.preventDefault();
+  await saveBankDetails();
+}
+
 async function saveBankDetails() {
   const account_holder = document.getElementById('setupAccountHolder').value.trim();
   const bank_name = document.getElementById('setupBankName').value.trim();
   const account_number = document.getElementById('setupAccountNumber').value.trim();
-  const ifsc = document.getElementById('setupIfsc').value.trim();
+  const ifsc = document.getElementById('setupIfsc').value.trim().toUpperCase();
   const upi_id = document.getElementById('setupUpiId').value.trim();
+
+  if (!account_number && !upi_id) {
+    showToast("Please enter Bank Account Number or UPI ID", "error");
+    return;
+  }
 
   try {
     const res = await fetch('/api/user/bank', {
@@ -1193,8 +1276,8 @@ async function saveBankDetails() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         phone: currentUser.phone,
-        account_holder,
-        bank_name,
+        account_holder: account_holder || currentUser.name,
+        bank_name: bank_name || 'Bank',
         account_number,
         ifsc,
         upi_id
@@ -1202,13 +1285,16 @@ async function saveBankDetails() {
     });
     const data = await res.json();
     if (data.success) {
-      showToast("Bank / Crypto details saved!");
+      currentUser.bank_account = data.bank_account;
+      showToast("Bank / Payout details saved successfully! 🏦", "success");
       closeBankModal();
-      await refreshUserProfile();
+      loadWithdrawScreen();
+      refreshUserProfile();
     } else {
-      showToast(data.message, 'error');
+      showToast(data.message || "Failed to save bank details", 'error');
     }
   } catch (e) {
+    console.error(e);
     showToast("Error saving bank details", "error");
   }
 }

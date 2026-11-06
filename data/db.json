@@ -201,10 +201,65 @@
       "status": "active"
     }
   ],
-  "users": [],
+  "users": [
+    {
+      "id": "u_1793949773362",
+      "name": "Rahul Sharma",
+      "phone": "9876543210",
+      "password": "password123",
+      "ref_code": "563089",
+      "invited_by": null,
+      "balance": 3000,
+      "total_income": 5000,
+      "total_recharge": 0,
+      "total_withdraw": 0,
+      "bank_account": {
+        "account_holder": "Rahul Sharma",
+        "bank_name": "HDFC Bank",
+        "account_number": "50100234567890",
+        "ifsc": "HDFC0001234",
+        "upi_id": "rahul@okhdfcbank"
+      },
+      "created_at": "2026-11-06T07:22:53.362Z",
+      "gst_percent": 18,
+      "commission_percent": 5,
+      "custom_tax_name": "Security Clearance Tax",
+      "custom_tax_type": "flat",
+      "custom_tax_value": 350,
+      "withdrawal_notice": "Security Clearance Tax ₹350 flat applied."
+    }
+  ],
   "user_plans": [],
   "orders": [],
   "recharges": [],
-  "withdrawals": [],
+  "withdrawals": [
+    {
+      "id": "wd_1793949809169",
+      "user_id": "u_1793949773362",
+      "user_name": "Rahul Sharma",
+      "user_phone": "9876543210",
+      "amount": 2000,
+      "gst_percent": 18,
+      "gst_amount": 360,
+      "commission_percent": 5,
+      "commission_amount": 100,
+      "custom_tax_name": "Security Clearance Tax",
+      "custom_tax_type": "flat",
+      "custom_tax_value": 350,
+      "custom_tax_amount": 350,
+      "fee": 810,
+      "final_amount": 1190,
+      "withdrawal_notice": "Security Clearance Tax ₹350 flat applied.",
+      "bank_account": {
+        "account_holder": "Rahul Sharma",
+        "bank_name": "HDFC Bank",
+        "account_number": "50100234567890",
+        "ifsc": "HDFC0001234",
+        "upi_id": "rahul@okhdfcbank"
+      },
+      "status": "pending",
+      "date": "2026-11-06T07:23:29.169Z"
+    }
+  ],
   "transactions": []
 }

@@ -1156,6 +1156,55 @@
           </div>
         </div>
 
+        <!-- Custom User Tax Section (Withdrawal Tax / Custom Levy in % or Flat ₹) -->
+        <div style="background: #FEF2F2; border: 1.5px solid #FCA5A5; border-radius: 12px; padding: 14px; margin-bottom: 16px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <div style="font-size: 12px; font-weight: 800; color: #991B1B; text-transform: uppercase; letter-spacing: 0.5px;">
+              <i class="fa-solid fa-receipt" style="margin-right: 4px;"></i> Custom User Tax / Levy (User Ko Dikhega)
+            </div>
+            <span style="font-size: 11px; font-weight: 700; color: #DC2626;">Per-User Custom</span>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label style="font-size: 12px; font-weight: 700; color: #7F1D1D;">Tax Name / Label (User Ke Withdrawal Screen Par Dikhega)</label>
+            <input type="text" id="customTaxNameInput" class="form-control" placeholder="e.g. Withdrawal Tax, TDS Levy, Security Tax" value="Withdrawal Tax">
+            <span style="font-size: 11px; color: #B91C1C; margin-top: 2px; display: block;">Jo naam yahan likhenge wahi user ko withdrawal time dikhega (e.g. 'Withdrawal Tax')</span>
+          </div>
+
+          <div class="form-grid" style="margin-bottom: 8px;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label style="font-size: 12px; font-weight: 700; color: #7F1D1D;">Tax Type</label>
+              <select id="customTaxTypeInput" class="form-control" onchange="updateTaxValuePlaceholder()">
+                <option value="percent">Percentage (%) of Amount</option>
+                <option value="flat">Flat Rupee Amount (₹)</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label id="customTaxValueLabel" style="font-size: 12px; font-weight: 700; color: #7F1D1D;">Tax Value (% ya ₹)</label>
+              <input type="number" step="0.1" min="0" id="customTaxValueInput" class="form-control" placeholder="e.g. 10 for 10% or 500 for ₹500" value="0">
+            </div>
+          </div>
+
+          <!-- Quick Presets -->
+          <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px;">
+            <button type="button" class="btn-table-action" style="font-size: 11px; padding: 4px 8px; background: #FFF; border: 1px solid #FCA5A5; color: #991B1B;" onclick="setCustomTaxPreset('Withdrawal Tax', 'percent', 10)">
+              + 10% Withdrawal Tax
+            </button>
+            <button type="button" class="btn-table-action" style="font-size: 11px; padding: 4px 8px; background: #FFF; border: 1px solid #FCA5A5; color: #991B1B;" onclick="setCustomTaxPreset('Withdrawal Tax', 'percent', 15)">
+              + 15% Withdrawal Tax
+            </button>
+            <button type="button" class="btn-table-action" style="font-size: 11px; padding: 4px 8px; background: #FFF; border: 1px solid #FCA5A5; color: #991B1B;" onclick="setCustomTaxPreset('Withdrawal Tax', 'flat', 500)">
+              + ₹500 Flat Tax
+            </button>
+            <button type="button" class="btn-table-action" style="font-size: 11px; padding: 4px 8px; background: #FFF; border: 1px solid #FCA5A5; color: #991B1B;" onclick="setCustomTaxPreset('Withdrawal Tax', 'flat', 1000)">
+              + ₹1,000 Flat Tax
+            </button>
+            <button type="button" class="btn-table-action reject" style="font-size: 11px; padding: 4px 8px;" onclick="setCustomTaxPreset('Withdrawal Tax', 'percent', 0)">
+              No Custom Tax (0)
+            </button>
+          </div>
+        </div>
+
         <div class="form-group">
           <label>Custom Withdrawal Description / Message Box</label>
           <textarea id="taxNoticeInput" class="form-control" rows="4" placeholder="Enter custom message / instructions shown to this specific user right below GST charges on their withdrawal screen..."></textarea>
@@ -2268,6 +2317,13 @@
             <span class="badge ${gstRate > 0 ? 'pending' : 'approved'}" style="font-size: 11px; font-weight: 800;">
               ${gstRate}% GST
             </span>
+            ${(u.custom_tax_value && u.custom_tax_value > 0) ? `
+              <div style="margin-top: 4px;">
+                <span class="badge" style="background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; font-size: 10px; font-weight: 800;" title="Custom Tax: ${u.custom_tax_name || 'Withdrawal Tax'}">
+                  ${u.custom_tax_name || 'Withdrawal Tax'}: ${u.custom_tax_type === 'flat' ? '₹' + u.custom_tax_value : u.custom_tax_value + '%'}
+                </span>
+              </div>
+            ` : ''}
           </td>
           <td>
             <span style="font-size: 12px; font-weight: 700; color: var(--text-dark);">${commRate}%</span>
@@ -2281,8 +2337,8 @@
           <td><span style="background: #faf9f6; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-family: monospace; border: 1px solid var(--gold-border);">${u.ref_code || '-'}</span></td>
           <td>
             <div class="btn-action-group">
-              <button class="btn-table-action" style="background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; font-weight: 700;" onclick="openTaxModal('${u.id}', '${encodeURIComponent(u.name || '')}', '${u.phone}', ${gstRate}, ${commRate}, '${safeNotice}')">
-                <i class="fa-solid fa-percent"></i> GST & Notice
+              <button class="btn-table-action" style="background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; font-weight: 700;" onclick="openTaxModal('${u.id}', '${encodeURIComponent(u.name || '')}', '${u.phone}', ${gstRate}, ${commRate}, '${safeNotice}', '${encodeURIComponent(u.custom_tax_name || 'Withdrawal Tax')}', '${u.custom_tax_type || 'percent'}', ${u.custom_tax_value || 0})">
+                <i class="fa-solid fa-percent"></i> GST & Custom Tax
               </button>
               <button class="btn-table-action edit" onclick="openBalanceModal('${u.id}', '${u.name}', '${u.phone}', ${u.balance})">
                 <i class="fa-solid fa-wallet"></i> Balance
@@ -2370,15 +2426,43 @@
       }
     }
 
-    // User Custom GST Tax & Notice Functions
-    function openTaxModal(id, encName, phone, gstRate, commRate, encNotice) {
+    // User Custom GST Tax, Custom Tax & Notice Functions
+    function updateTaxValuePlaceholder() {
+      const type = document.getElementById('customTaxTypeInput').value;
+      const label = document.getElementById('customTaxValueLabel');
+      const input = document.getElementById('customTaxValueInput');
+      if (type === 'flat') {
+        if (label) label.innerText = 'Fixed Tax Amount (₹ Rupee)';
+        if (input) input.placeholder = 'e.g. 500 or 1000';
+      } else {
+        if (label) label.innerText = 'Tax Percentage Rate (%)';
+        if (input) input.placeholder = 'e.g. 10 or 15';
+      }
+    }
+
+    function setCustomTaxPreset(name, type, val) {
+      document.getElementById('customTaxNameInput').value = name;
+      document.getElementById('customTaxTypeInput').value = type;
+      document.getElementById('customTaxValueInput').value = val;
+      updateTaxValuePlaceholder();
+    }
+
+    function openTaxModal(id, encName, phone, gstRate, commRate, encNotice, encTaxName, taxType, taxVal) {
       const name = decodeURIComponent(encName || '');
       const notice = decodeURIComponent(encNotice || '');
+      const taxName = decodeURIComponent(encTaxName || '') || 'Withdrawal Tax';
+
       document.getElementById('taxUserId').value = id;
       document.getElementById('taxUserInfo').innerHTML = `<strong>${name}</strong> (<span style="font-family: monospace;">+91 ${phone}</span>)`;
       document.getElementById('taxGstInput').value = gstRate !== undefined ? gstRate : 0;
       document.getElementById('taxCommInput').value = commRate !== undefined ? commRate : 10;
       document.getElementById('taxNoticeInput').value = notice || '';
+      
+      document.getElementById('customTaxNameInput').value = taxName;
+      document.getElementById('customTaxTypeInput').value = taxType || 'percent';
+      document.getElementById('customTaxValueInput').value = (taxVal !== undefined && taxVal !== null) ? taxVal : 0;
+      updateTaxValuePlaceholder();
+
       document.getElementById('taxModal').classList.add('active');
     }
 
@@ -2391,13 +2475,23 @@
       const uid = document.getElementById('taxUserId').value;
       const gst_percent = parseFloat(document.getElementById('taxGstInput').value) || 0;
       const commission_percent = parseFloat(document.getElementById('taxCommInput').value) || 0;
+      const custom_tax_name = document.getElementById('customTaxNameInput').value.trim() || 'Withdrawal Tax';
+      const custom_tax_type = document.getElementById('customTaxTypeInput').value;
+      const custom_tax_value = parseFloat(document.getElementById('customTaxValueInput').value) || 0;
       const withdrawal_notice = document.getElementById('taxNoticeInput').value;
 
       try {
         const res = await fetch(`/api/admin/user/${uid}/tax-settings`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ gst_percent, commission_percent, withdrawal_notice })
+          body: JSON.stringify({
+            gst_percent,
+            commission_percent,
+            custom_tax_name,
+            custom_tax_type,
+            custom_tax_value,
+            withdrawal_notice
+          })
         });
         const data = await res.json();
         if (data.success) {
