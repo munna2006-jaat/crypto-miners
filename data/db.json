@@ -10,7 +10,7 @@
     "min_withdraw": 200,
     "withdrawal_fee_percent": 10,
     "withdrawal_time": "08:00 - 22:00 (Daily)",
-    "telegram_channel": "https://t.me/cryptominers_official",
+    "telegram_channel": "https://t.me/VIJAY_SIR_NO1",
     "whatsapp_support": "+919876543210",
     "upi_id": "cryptominers@okaxis",
     "merchant_name": "CRYPTOMINERS CLOUD TECHNOLOGIES PVT LTD",
@@ -18,7 +18,7 @@
     "usdt_bep20_address": "0x71C865882B32847B0d0c35471647F4f98BE1111",
     "btc_address": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
     "qr_image": "/images/logo.svg",
-    "qr_rotation_index": 0,
+    "qr_rotation_index": 1,
     "qr_codes": [
       {
         "id": "qr_1",
@@ -29,7 +29,7 @@
         "crypto_network": "USDT TRC-20",
         "status": "active",
         "created_at": "2026-11-05T00:00:00.000Z",
-        "hits": 0
+        "hits": 1
       },
       {
         "id": "qr_2",
@@ -53,7 +53,9 @@
         "created_at": "2026-11-05T00:00:00.000Z",
         "hits": 0
       }
-    ]
+    ],
+    "telegram_enabled": true,
+    "whatsapp_enabled": true
   },
   "plans": [
     {

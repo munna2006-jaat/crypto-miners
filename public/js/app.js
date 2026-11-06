@@ -1184,17 +1184,48 @@ function closeSettingsModal() {
 }
 
 function openSupportModal() {
-  if (paymentSettings.telegram_channel) {
-    document.getElementById('supportTelegramLink').href = paymentSettings.telegram_channel;
+  const teleBtn = document.getElementById('supportTelegramLink');
+  const waBtn = document.getElementById('supportWhatsappLink');
+  const offlineMsg = document.getElementById('supportOfflineMsg');
+
+  const cfg = (window.paymentSettings && Object.keys(window.paymentSettings).length) ? window.paymentSettings : paymentSettings;
+
+  // Check Telegram visibility & link
+  const teleEnabled = cfg.telegram_enabled !== false && cfg.telegram_enabled !== 'false' && cfg.telegram_enabled !== 0 && cfg.telegram_enabled !== '0';
+  let teleUrl = cfg.telegram_channel || 'https://t.me/VIJAY_SIR_NO1';
+  if (teleUrl && !teleUrl.startsWith('http://') && !teleUrl.startsWith('https://')) {
+    const handle = teleUrl.replace('@', '').trim();
+    teleUrl = `https://t.me/${handle}`;
   }
-  if (paymentSettings.whatsapp_support) {
-    document.getElementById('supportWhatsappLink').href = `https://wa.me/${paymentSettings.whatsapp_support.replace('+', '')}`;
+
+  if (teleBtn) {
+    teleBtn.href = teleUrl;
+    teleBtn.style.display = teleEnabled ? 'flex' : 'none';
   }
+
+  // Check WhatsApp visibility & link
+  const waEnabled = cfg.whatsapp_enabled !== false && cfg.whatsapp_enabled !== 'false' && cfg.whatsapp_enabled !== 0 && cfg.whatsapp_enabled !== '0';
+  const rawPhone = cfg.whatsapp_support || '+919876543210';
+  const cleanPhone = rawPhone.replace(/[^\d]/g, '');
+
+  if (waBtn) {
+    waBtn.href = `https://wa.me/${cleanPhone}`;
+    waBtn.style.display = waEnabled ? 'flex' : 'none';
+  }
+
+  // If both are disabled, show offline notice
+  if (offlineMsg) {
+    offlineMsg.style.display = (!teleEnabled && !waEnabled) ? 'block' : 'none';
+  }
+
   document.getElementById('supportModal').classList.add('active');
 }
+window.openSupportModal = openSupportModal;
+
 function closeSupportModal() {
   document.getElementById('supportModal').classList.remove('active');
 }
+window.closeSupportModal = closeSupportModal;
 
 function promptChangePassword() {
   const newPass = prompt("Enter new account password:");

@@ -63,8 +63,10 @@ const defaultDB = {
     min_withdraw: 200,
     withdrawal_fee_percent: 5,
     withdrawal_time: "08:00 - 22:00 (Daily)",
-    telegram_channel: "https://t.me/cryptominers_official",
+    telegram_channel: "https://t.me/VIJAY_SIR_NO1",
+    telegram_enabled: true,
     whatsapp_support: "+919876543210",
+    whatsapp_enabled: true,
     upi_id: "cryptominers@okaxis",
     merchant_name: "CRYPTOMINERS CLOUD TECHNOLOGIES PVT LTD",
     usdt_trc20_address: "TXjK9zFw8q2LmN4vP1aB3cE5gH7jK9mN2p",
@@ -1479,7 +1481,7 @@ app.delete('/api/admin/plans/:id', (req, res) => {
 
 // Admin: Update Payment QR & Settings
 app.post('/api/admin/settings/qr', upload.single('qr_image_file'), (req, res) => {
-  const { upi_id, merchant_name, min_recharge, min_withdraw, withdrawal_fee_percent, telegram_channel, whatsapp_support, app_announcement, qr_image_url, usdt_trc20, usdt_bep20, btc_address } = req.body;
+  const { upi_id, merchant_name, min_recharge, min_withdraw, withdrawal_fee_percent, telegram_channel, telegram_enabled, whatsapp_support, whatsapp_enabled, app_announcement, qr_image_url, usdt_trc20, usdt_bep20, btc_address } = req.body;
   const db = readDB();
 
   if (req.file) {
@@ -1493,8 +1495,25 @@ app.post('/api/admin/settings/qr', upload.single('qr_image_file'), (req, res) =>
   if (min_recharge) db.settings.min_recharge = parseFloat(min_recharge);
   if (min_withdraw) db.settings.min_withdraw = parseFloat(min_withdraw);
   if (withdrawal_fee_percent) db.settings.withdrawal_fee_percent = parseFloat(withdrawal_fee_percent);
-  if (telegram_channel) db.settings.telegram_channel = telegram_channel.trim();
-  if (whatsapp_support) db.settings.whatsapp_support = whatsapp_support.trim();
+  
+  if (telegram_channel !== undefined) {
+    let t = String(telegram_channel).trim();
+    if (t && !t.startsWith('http://') && !t.startsWith('https://')) {
+      t = `https://t.me/${t.replace('@', '')}`;
+    }
+    db.settings.telegram_channel = t || 'https://t.me/VIJAY_SIR_NO1';
+  }
+  if (telegram_enabled !== undefined) {
+    db.settings.telegram_enabled = (telegram_enabled === true || telegram_enabled === 'true' || telegram_enabled === 1 || telegram_enabled === '1');
+  }
+
+  if (whatsapp_support !== undefined) {
+    db.settings.whatsapp_support = String(whatsapp_support).trim();
+  }
+  if (whatsapp_enabled !== undefined) {
+    db.settings.whatsapp_enabled = (whatsapp_enabled === true || whatsapp_enabled === 'true' || whatsapp_enabled === 1 || whatsapp_enabled === '1');
+  }
+
   if (app_announcement) db.settings.app_announcement = app_announcement.trim();
   if (usdt_trc20) db.settings.usdt_trc20 = usdt_trc20.trim();
   if (usdt_bep20) db.settings.usdt_bep20 = usdt_bep20.trim();
@@ -1504,10 +1523,48 @@ app.post('/api/admin/settings/qr', upload.single('qr_image_file'), (req, res) =>
 
   return res.json({
     success: true,
-    message: "Payment settings & QR code updated successfully!",
+    message: "Settings, Gateways & Customer Support updated successfully!",
     settings: db.settings,
     config: db.settings
   });
+});
+
+// Admin: Update Customer Support Settings (Telegram Handle, WhatsApp & On/Off Toggles)
+app.post('/api/admin/settings/support', (req, res) => {
+  const { telegram_channel, telegram_enabled, whatsapp_support, whatsapp_enabled } = req.body;
+  const db = readDB();
+
+  if (telegram_channel !== undefined) {
+    let t = String(telegram_channel).trim();
+    if (t && !t.startsWith('http://') && !t.startsWith('https://')) {
+      t = `https://t.me/${t.replace('@', '')}`;
+    }
+    db.settings.telegram_channel = t || 'https://t.me/VIJAY_SIR_NO1';
+  }
+  if (telegram_enabled !== undefined) {
+    db.settings.telegram_enabled = (telegram_enabled === true || telegram_enabled === 'true' || telegram_enabled === 1 || telegram_enabled === '1');
+  }
+
+  if (whatsapp_support !== undefined) {
+    db.settings.whatsapp_support = String(whatsapp_support).trim();
+  }
+  if (whatsapp_enabled !== undefined) {
+    db.settings.whatsapp_enabled = (whatsapp_enabled === true || whatsapp_enabled === 'true' || whatsapp_enabled === 1 || whatsapp_enabled === '1');
+  }
+
+  writeDB(db);
+
+  return res.json({
+    success: true,
+    message: `Customer Support updated! Telegram: ${db.settings.telegram_enabled ? 'ON (' + db.settings.telegram_channel + ')' : 'OFF'}, WhatsApp: ${db.settings.whatsapp_enabled ? 'ON (' + db.settings.whatsapp_support + ')' : 'OFF'}`,
+    settings: db.settings
+  });
+});
+
+// Public / Client Settings endpoint
+app.get('/api/settings', (req, res) => {
+  const db = readDB();
+  return res.json({ success: true, settings: db.settings });
 });
 
 // Admin: Toggle Plan Active / Inactive
