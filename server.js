@@ -1344,9 +1344,10 @@ app.get('/api/admin/withdrawals', (req, res) => {
   return res.json({ success: true, withdrawals: db.withdrawals });
 });
 
-// Admin: Approve Withdrawal (marks paid)
+// Admin: Approve Withdrawal (marks paid, sets UTR, generates receipt record)
 app.post('/api/admin/withdrawal/:id/approve', (req, res) => {
   const wdId = req.params.id;
+  const { utr, payment_mode } = req.body || {};
   const db = readDB();
   const withdrawal = db.withdrawals.find(w => w.id === wdId);
   if (!withdrawal) {
@@ -1358,8 +1359,11 @@ app.post('/api/admin/withdrawal/:id/approve', (req, res) => {
     user.total_withdraw = Number(user.total_withdraw || 0) + Number(withdrawal.amount);
   }
 
+  const finalUtr = (utr && utr.trim()) ? utr.trim() : (withdrawal.utr || ("UTR" + Math.floor(100000000000 + Math.random() * 900000000000)));
   withdrawal.status = 'approved';
   withdrawal.approved_at = new Date().toISOString();
+  withdrawal.utr = finalUtr;
+  if (payment_mode) withdrawal.payment_mode = payment_mode.trim();
 
   writeDB(db);
 
@@ -1367,6 +1371,43 @@ app.post('/api/admin/withdrawal/:id/approve', (req, res) => {
     success: true,
     message: `Withdrawal of ₹${withdrawal.amount} approved & processed successfully!`,
     withdrawal
+  });
+});
+
+// Admin: Save Custom Created Receipt
+app.post('/api/admin/receipts/custom', (req, res) => {
+  const { name, phone, bank_name, account_number, ifsc, upi_id, amount, fee, final_amount, utr, payment_mode, date } = req.body || {};
+  if (!name || !amount) {
+    return res.status(400).json({ success: false, message: "Name and amount are required" });
+  }
+  const db = readDB();
+  if (!Array.isArray(db.custom_receipts)) db.custom_receipts = [];
+
+  const receipt = {
+    id: "rcpt_" + Date.now(),
+    name: name.trim(),
+    phone: phone ? phone.trim() : "",
+    bank_name: bank_name ? bank_name.trim() : "State Bank of India",
+    account_number: account_number ? account_number.trim() : "",
+    ifsc: ifsc ? ifsc.trim() : "",
+    upi_id: upi_id ? upi_id.trim() : "",
+    amount: parseFloat(amount) || 0,
+    fee: parseFloat(fee) || 0,
+    final_amount: parseFloat(final_amount) || parseFloat(amount) || 0,
+    utr: utr ? utr.trim() : ("UTR" + Math.floor(100000000000 + Math.random() * 900000000000)),
+    payment_mode: payment_mode || "IMPS Instant Bank Payout",
+    status: "approved",
+    date: date || new Date().toISOString(),
+    created_at: new Date().toISOString()
+  };
+
+  db.custom_receipts.unshift(receipt);
+  writeDB(db);
+
+  return res.json({
+    success: true,
+    message: "Custom receipt saved successfully!",
+    receipt
   });
 });
 

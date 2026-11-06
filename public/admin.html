@@ -6,6 +6,8 @@
   <title>CryptoMiners - Master Executive Portal</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="/js/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     :root {
       --bg: #f8fafc;
@@ -555,6 +557,9 @@
       <button class="tab-btn" onclick="switchTab('withdrawals', this)">
         <i class="fa-solid fa-money-bill-wave"></i> Withdrawal Requests
       </button>
+      <button class="tab-btn" onclick="switchTab('receipt-maker', this)" style="border: 1px solid rgba(212, 175, 55, 0.4);">
+        <i class="fa-solid fa-file-invoice-dollar" style="color: var(--primary);"></i> Custom Receipt Studio
+      </button>
       <button class="tab-btn" onclick="switchTab('qr', this)">
         <i class="fa-solid fa-qrcode"></i> QR & Crypto Gateways
       </button>
@@ -619,7 +624,12 @@
     <div id="panel-withdrawals" class="admin-panel">
       <div class="panel-header">
         <div class="panel-title"><i class="fa-solid fa-money-bill-wave" style="color: #ef4444;"></i> Payout / Withdrawal Requests</div>
-        <button class="btn-portal-action" onclick="loadWithdrawals()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="btn-portal-action" onclick="switchTab('receipt-maker', document.querySelector('[onclick*=\'receipt-maker\']'))" style="background: var(--gold-gradient); color: #fff; border:none;">
+            <i class="fa-solid fa-file-invoice-dollar"></i> Custom Receipt Studio
+          </button>
+          <button class="btn-portal-action" onclick="loadWithdrawals()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+        </div>
       </div>
 
       <div class="filter-bar">
@@ -1124,6 +1134,335 @@
         </div>
       </div>
     </div>
+
+    <!-- PANEL 9: CUSTOM RECEIPT STUDIO -->
+    <div id="panel-receipt-maker" class="admin-panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">
+            <i class="fa-solid fa-file-invoice-dollar" style="color: var(--primary);"></i> VIP Withdrawal Receipt Studio (Instant Receipt Maker)
+          </div>
+          <p style="font-size: 12px; color: var(--text-muted); margin: 4px 0 0 0;">
+            Kisi bhi user ke naam, custom amount, bank details aur UTR number ke sath official VIP withdrawal receipt banayein aur instant HD PNG image download karke Telegram / WhatsApp group me share karein.
+          </p>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="btn-portal-action" onclick="downloadReceiptImage('customReceiptCard', 'VIP_Payout_Receipt.png')" style="background: var(--gold-gradient); color: #fff; border:none;">
+            <i class="fa-solid fa-download"></i> Download Receipt (PNG)
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Preset Toolbar -->
+      <div style="background: #ffffff; border: 1.5px solid var(--gold-border); border-radius: 14px; padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+        <div style="font-size: 13px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-bolt" style="color: var(--primary);"></i> Quick Marketing Presets:
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="btn-portal-action" onclick="applyCustomReceiptPreset('vip_25k')" style="font-size: 12px; padding: 6px 12px; height: 32px;">
+            👑 ₹25,000 (SBI VIP)
+          </button>
+          <button type="button" class="btn-portal-action" onclick="applyCustomReceiptPreset('mega_78k')" style="font-size: 12px; padding: 6px 12px; height: 32px;">
+            🚀 ₹78,500 (HDFC High-Roller)
+          </button>
+          <button type="button" class="btn-portal-action" onclick="applyCustomReceiptPreset('daily_5k')" style="font-size: 12px; padding: 6px 12px; height: 32px;">
+            ⚡ ₹5,200 (ICICI Daily)
+          </button>
+          <button type="button" class="btn-portal-action secondary" onclick="resetCustomReceiptForm()" style="font-size: 12px; padding: 6px 12px; height: 32px;">
+            <i class="fa-solid fa-rotate-left"></i> Reset Form
+          </button>
+        </div>
+      </div>
+
+      <!-- Studio Two Column Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px; align-items: start;">
+        
+        <!-- Left: Form Controls -->
+        <div style="background: #ffffff; border: 1.5px solid var(--gold-border); border-radius: 18px; padding: 22px;">
+          <h3 style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-pen-to-square" style="color: var(--primary);"></i> Payout & Beneficiary Information
+          </h3>
+
+          <form id="customReceiptForm" onsubmit="event.preventDefault();">
+            <div class="form-grid" style="margin-bottom: 14px;">
+              <div class="form-group">
+                <label>Beneficiary / Miner Name *</label>
+                <input type="text" id="crmName" class="form-control" value="Rahul Verma" required oninput="updateCustomReceiptLivePreview()">
+              </div>
+              <div class="form-group">
+                <label>Mobile Number (with +91)</label>
+                <input type="text" id="crmPhone" class="form-control" value="+91 9876543210" oninput="updateCustomReceiptLivePreview()">
+              </div>
+            </div>
+
+            <div class="form-grid" style="margin-bottom: 14px;">
+              <div class="form-group">
+                <label>Receiving Bank Name *</label>
+                <input type="text" id="crmBank" class="form-control" list="popularBanksList" value="State Bank of India" required oninput="updateCustomReceiptLivePreview()">
+                <datalist id="popularBanksList">
+                  <option value="State Bank of India">
+                  <option value="HDFC Bank">
+                  <option value="ICICI Bank">
+                  <option value="Punjab National Bank">
+                  <option value="Axis Bank">
+                  <option value="Bank of Baroda">
+                  <option value="Kotak Mahindra Bank">
+                  <option value="Canara Bank">
+                  <option value="Union Bank of India">
+                  <option value="Paytm Payments Bank">
+                  <option value="USDT TRC20 Wallet">
+                </datalist>
+              </div>
+              <div class="form-group">
+                <label>Bank Account Number *</label>
+                <input type="text" id="crmAccount" class="form-control" value="987654321098" required oninput="updateCustomReceiptLivePreview()" style="font-family: monospace;">
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 14px;">
+              <input type="checkbox" id="crmMaskAccount" checked onchange="updateCustomReceiptLivePreview()" style="width: 16px; height: 16px; cursor: pointer;">
+              <label for="crmMaskAccount" style="font-size: 12px; color: #475569; cursor: pointer; user-select: none;">
+                Mask Account on Receipt (e.g. •••• •••• 1098) - <em>Recommended for public groups</em>
+              </label>
+            </div>
+
+            <div class="form-grid" style="margin-bottom: 14px;">
+              <div class="form-group">
+                <label>IFSC Code</label>
+                <input type="text" id="crmIfsc" class="form-control" value="SBIN0001234" oninput="updateCustomReceiptLivePreview()" style="font-family: monospace; text-transform: uppercase;">
+              </div>
+              <div class="form-group">
+                <label>UPI ID / USDT Address (Optional)</label>
+                <input type="text" id="crmUpi" class="form-control" value="rahul@okaxis" oninput="updateCustomReceiptLivePreview()">
+              </div>
+            </div>
+
+            <!-- Financials -->
+            <div style="background: #faf8f0; border: 1.5px solid rgba(212,175,55,0.3); border-radius: 14px; padding: 14px; margin-bottom: 14px;">
+              <div style="font-size: 12.5px; font-weight: 800; color: #b48608; margin-bottom: 10px; text-transform: uppercase;">
+                <i class="fa-solid fa-coins"></i> Payout Calculation (₹)
+              </div>
+              <div class="form-grid">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label>Gross Withdrawal (₹) *</label>
+                  <input type="number" id="crmAmount" class="form-control" value="25000" min="1" step="any" required oninput="calcCustomReceiptAmounts(); updateCustomReceiptLivePreview();" style="font-weight: 800; font-size: 15px;">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label>Fee / Tax Deductions (₹)</label>
+                  <input type="number" id="crmFee" class="form-control" value="0" min="0" step="any" oninput="calcCustomReceiptAmounts(); updateCustomReceiptLivePreview();">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label>Net Disbursed Amount (₹)</label>
+                  <input type="number" id="crmFinalAmount" class="form-control" value="25000" min="1" step="any" oninput="updateCustomReceiptLivePreview()" style="color: #059669; font-weight: 800; font-size: 16px;">
+                </div>
+              </div>
+            </div>
+
+            <!-- Transaction Identifiers -->
+            <div class="form-grid" style="margin-bottom: 14px;">
+              <div class="form-group">
+                <label style="display: flex; justify-content: space-between;">
+                  <span>Bank UTR / Ref Number:</span>
+                  <a href="javascript:void(0)" onclick="randomizeCustomUtr()" style="color: var(--primary); font-weight: 700; font-size: 11px;"><i class="fa-solid fa-dice"></i> New UTR</a>
+                </label>
+                <input type="text" id="crmUtr" class="form-control" value="UTR948201948291" oninput="updateCustomReceiptLivePreview()" style="font-family: monospace; font-weight: 700;">
+              </div>
+              <div class="form-group">
+                <label style="display: flex; justify-content: space-between;">
+                  <span>Transaction ID:</span>
+                  <a href="javascript:void(0)" onclick="randomizeCustomTxnId()" style="color: var(--primary); font-weight: 700; font-size: 11px;"><i class="fa-solid fa-dice"></i> New ID</a>
+                </label>
+                <input type="text" id="crmTxnId" class="form-control" value="TXN-CM-928104" oninput="updateCustomReceiptLivePreview()" style="font-family: monospace;">
+              </div>
+            </div>
+
+            <div class="form-grid" style="margin-bottom: 14px;">
+              <div class="form-group">
+                <label>Payment Transfer Mode:</label>
+                <select id="crmMode" class="form-control" onchange="updateCustomReceiptLivePreview()">
+                  <option value="IMPS Instant Bank Transfer">IMPS Instant Bank Transfer</option>
+                  <option value="UPI Instant VIP Payout">UPI Instant VIP Payout</option>
+                  <option value="NEFT Express">NEFT Express</option>
+                  <option value="USDT TRC20 Direct">USDT TRC20 Direct</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Date & Time String:</label>
+                <input type="text" id="crmDate" class="form-control" value="" oninput="updateCustomReceiptLivePreview()">
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap;">
+              <button type="button" class="btn-portal-action" onclick="downloadReceiptImage('customReceiptCard', 'VIP_Payout_Receipt.png')" style="background: var(--gold-gradient); color: #fff; flex: 1; height: 42px; font-weight: 700; border: none;">
+                <i class="fa-solid fa-cloud-arrow-down"></i> Download Receipt PNG
+              </button>
+              <button type="button" class="btn-portal-action" onclick="copyReceiptTelegramText('custom')" style="height: 42px;">
+                <i class="fa-brands fa-telegram"></i> Copy Text for Group
+              </button>
+              <button type="button" class="btn-portal-action secondary" onclick="printReceiptElement('customReceiptCard')" style="height: 42px;">
+                <i class="fa-solid fa-print"></i> Print
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right: Live Visual Receipt Card -->
+        <div style="display: flex; flex-direction: column; align-items: center;">
+          <div style="font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-eye" style="color: var(--primary);"></i> Live Real-Time HD Preview:
+          </div>
+
+          <!-- The Rendered Receipt Element -->
+          <div id="customReceiptWrapper" style="padding: 10px; background: #e2e8f0; border-radius: 24px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.06);">
+            <!-- Card inner -->
+            <div id="customReceiptCard" style="background: #ffffff; width: 380px; border-radius: 20px; overflow: hidden; border: 1.5px solid rgba(212, 175, 55, 0.4); box-shadow: 0 16px 40px rgba(0,0,0,0.12); font-family: 'Plus Jakarta Sans', sans-serif; position: relative; color: #0f172a;">
+              
+              <!-- Header Ribbon -->
+              <div style="background: linear-gradient(135deg, #090e1a 0%, #172136 100%); padding: 18px 20px; color: #ffffff; border-bottom: 2.5px solid #d4af37;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #f59e0b 0%, #d4af37 100%); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; box-shadow: 0 4px 10px rgba(212, 175, 55, 0.4);">
+                      <i class="fa-solid fa-crown"></i>
+                    </div>
+                    <div>
+                      <div style="font-size: 14px; font-weight: 800; letter-spacing: 0.5px; background: linear-gradient(135deg, #ffffff 0%, #fef08a 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">CRYPTOMINERS VIP</div>
+                      <div style="font-size: 9.5px; color: #94a3b8; letter-spacing: 0.5px; text-transform: uppercase;">Cloud Hashrate Payout Desk</div>
+                    </div>
+                  </div>
+                  <span style="background: rgba(16, 185, 129, 0.2); color: #34d399; font-size: 9px; font-weight: 800; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(52, 211, 153, 0.4); text-transform: uppercase; letter-spacing: 0.5px;">
+                    <i class="fa-solid fa-shield-halved"></i> SETTLED
+                  </span>
+                </div>
+              </div>
+
+              <!-- Hero Success Section -->
+              <div style="padding: 20px 20px 12px 20px; text-align: center; background: #ffffff;">
+                <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 22px; margin: 0 auto 8px; box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);">
+                  <i class="fa-solid fa-check"></i>
+                </div>
+                <div style="font-size: 13px; font-weight: 800; color: #047857; letter-spacing: 0.5px; text-transform: uppercase;">
+                  Payout Transfer Successful
+                </div>
+                <div style="font-size: 11px; color: #64748b; margin-top: 2px;">
+                  Funds disbursed to beneficiary account
+                </div>
+
+                <div style="margin: 12px 0 6px; font-size: 32px; font-weight: 800; color: #0f172a; letter-spacing: -0.5px;">
+                  <span style="font-size: 24px; color: #c59b27; vertical-align: baseline;">₹</span>
+                  <span id="crmPreviewFinalAmount">25,000.00</span>
+                </div>
+
+                <div style="display: inline-block; font-size: 11px; color: #64748b; background: #f8fafc; padding: 4px 12px; border-radius: 20px; border: 1px solid #e2e8f0;">
+                  <i class="fa-regular fa-clock" style="color: var(--primary);"></i> <span id="crmPreviewDate">06 Nov 2026, 03:45 PM IST</span>
+                </div>
+              </div>
+
+              <!-- Tear Dashed Line -->
+              <div style="position: relative; margin: 6px 0 14px 0; border-top: 1.5px dashed #cbd5e1;">
+                <span style="position: absolute; left: -8px; top: -8px; width: 16px; height: 16px; background: #e2e8f0; border-radius: 50%;"></span>
+                <span style="position: absolute; right: -8px; top: -8px; width: 16px; height: 16px; background: #e2e8f0; border-radius: 50%;"></span>
+              </div>
+
+              <!-- UTR & Mode Box -->
+              <div style="padding: 0 20px 16px 20px;">
+                <div style="background: linear-gradient(135deg, #faf8f0 0%, #fdfbf7 100%); border: 1.5px solid rgba(212, 175, 55, 0.35); border-radius: 12px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                  <div>
+                    <div style="font-size: 9.5px; font-weight: 800; color: #b48608; text-transform: uppercase;">Bank UTR / Ref No.</div>
+                    <div style="font-family: monospace; font-size: 13.5px; font-weight: 800; color: #0f172a; margin-top: 2px;" id="crmPreviewUtr">
+                      UTR948201948291
+                    </div>
+                  </div>
+                  <div style="text-align: right;">
+                    <div style="font-size: 9px; color: #64748b; text-transform: uppercase;">Mode</div>
+                    <div style="font-size: 11px; font-weight: 700; color: #0f172a;" id="crmPreviewMode">IMPS Instant</div>
+                  </div>
+                </div>
+
+                <!-- Beneficiary Box -->
+                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+                  <div style="font-size: 10.5px; font-weight: 800; color: #0f172a; text-transform: uppercase; margin-bottom: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px; display: flex; justify-content: space-between;">
+                    <span><i class="fa-solid fa-user-check" style="color: var(--primary);"></i> Beneficiary Details</span>
+                    <span style="color: #059669; font-weight: 700; font-size: 9.5px;">● VERIFIED</span>
+                  </div>
+                  
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 7px 10px; font-size: 11.5px;">
+                    <div>
+                      <div style="font-size: 9.5px; color: #64748b;">Payee Name</div>
+                      <div style="font-weight: 700; color: #0f172a; word-break: break-word;" id="crmPreviewName">Rahul Verma</div>
+                    </div>
+                    <div>
+                      <div style="font-size: 9.5px; color: #64748b;">Registered Mobile</div>
+                      <div style="font-weight: 700; color: #0f172a;" id="crmPreviewPhone">+91 9876543210</div>
+                    </div>
+                    <div>
+                      <div style="font-size: 9.5px; color: #64748b;">Receiving Bank</div>
+                      <div style="font-weight: 700; color: #0f172a; word-break: break-word;" id="crmPreviewBank">State Bank of India</div>
+                    </div>
+                    <div>
+                      <div style="font-size: 9.5px; color: #64748b;">Account Number</div>
+                      <div style="font-weight: 700; font-family: monospace; color: #0f172a;" id="crmPreviewAccount">•••• •••• 1098</div>
+                    </div>
+                    <div>
+                      <div style="font-size: 9.5px; color: #64748b;">IFSC Code</div>
+                      <div style="font-weight: 700; font-family: monospace; color: #0f172a;" id="crmPreviewIfsc">SBIN0001234</div>
+                    </div>
+                    <div id="crmPreviewUpiWrap">
+                      <div style="font-size: 9.5px; color: #64748b;">UPI ID / USDT</div>
+                      <div style="font-weight: 700; font-family: monospace; color: var(--primary); word-break: break-all;" id="crmPreviewUpi">rahul@okaxis</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Financial Breakdown -->
+                <div style="background: #f8fafc; border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; font-size: 11.5px;">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 5px; color: #64748b;">
+                    <span>Gross Amount:</span>
+                    <span style="font-weight: 700; color: #0f172a;" id="crmPreviewGross">₹25,000.00</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 5px; color: #64748b;">
+                    <span>Platform / Tax Deductions:</span>
+                    <span style="font-weight: 700; color: #ef4444;" id="crmPreviewFee">- ₹0.00</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; border-top: 1px dashed #cbd5e1; padding-top: 6px; font-size: 13px; font-weight: 800; color: #0f172a;">
+                    <span>Net Disbursed:</span>
+                    <span style="color: #059669; font-size: 14.5px;" id="crmPreviewNet">₹25,000.00</span>
+                  </div>
+                </div>
+
+                <!-- Security Stamp & Footer -->
+                <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 4px; border-top: 1px solid #f1f5f9;">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; border: 1.5px dashed #d4af37; display: flex; align-items: center; justify-content: center; color: #c59b27; font-size: 13px;">
+                      <i class="fa-solid fa-stamp"></i>
+                    </div>
+                    <div>
+                      <div style="font-size: 9px; font-weight: 800; color: #b48608; text-transform: uppercase;">Official VIP Voucher</div>
+                      <div style="font-size: 8.5px; color: #64748b;">Audited by CryptoMiners Finance</div>
+                    </div>
+                  </div>
+                  <div style="text-align: right;">
+                    <div style="font-size: 8.5px; color: #94a3b8; font-family: monospace;" id="crmPreviewTxnId">TXN-CM-928104</div>
+                    <div style="font-size: 8px; color: #10b981; font-weight: 700;">● 100% DISBURSED</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Bottom quick action row -->
+          <div style="margin-top: 14px; display: flex; gap: 10px; width: 100%; max-width: 380px;">
+            <button type="button" class="btn-portal-action" onclick="downloadReceiptImage('customReceiptCard', 'VIP_Payout_Receipt.png')" style="background: var(--gold-gradient); color: #fff; border:none; flex: 1; height: 40px; font-weight: 700; font-size: 13px;">
+              <i class="fa-solid fa-download"></i> Download PNG
+            </button>
+            <button type="button" class="btn-portal-action" onclick="copyReceiptTelegramText('custom')" style="height: 40px; font-size: 12.5px;">
+              <i class="fa-brands fa-telegram"></i> Copy Text
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
   </div>
 
   <!-- MODAL: ADD / EDIT PLAN -->
@@ -1408,6 +1747,231 @@
     </div>
   </div>
 
+  <!-- MODAL: APPROVE WITHDRAWAL & ENTER UTR -->
+  <div id="approveWithdrawalModal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 480px;">
+      <div class="modal-header">
+        <div class="modal-title" style="color: #059669; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-circle-check"></i> Approve Payout & Issue Receipt
+        </div>
+        <button class="btn-close-modal" onclick="closeApproveWithdrawalModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="submitApproveWithdrawal(event)">
+        <input type="hidden" id="approveWdId">
+
+        <div style="background: #f8fafc; border: 1.5px solid var(--gold-border); border-radius: 12px; padding: 14px; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+            <div>
+              <div style="font-size: 14px; font-weight: 800; color: #0f172a;" id="approveWdUserName">Rahul Verma</div>
+              <div style="font-size: 12px; color: var(--text-muted);" id="approveWdPhone">+91 9876543210</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Net Disbursed</div>
+              <div style="font-size: 20px; font-weight: 800; color: #059669;" id="approveWdFinalAmount">₹0.00</div>
+            </div>
+          </div>
+          <div style="font-size: 12px; color: #334155; line-height: 1.6; border-top: 1px dashed #e2e8f0; padding-top: 8px;" id="approveWdBankDetails">
+            Bank: State Bank of India | A/C: 987654321098
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label style="display: flex; justify-content: space-between; align-items: center;">
+            <span>Bank Transfer Ref / UTR Number *</span>
+            <a href="javascript:void(0)" onclick="randomizeApproveUtr()" style="color: var(--primary); font-size: 11.5px; font-weight: 700; text-decoration: none;">
+              <i class="fa-solid fa-dice"></i> Generate New UTR
+            </a>
+          </label>
+          <input type="text" id="approveWdUtr" class="form-control" placeholder="e.g. 439018492019" required style="font-family: monospace; font-weight: 700;">
+          <small style="font-size: 11px; color: var(--text-muted); margin-top: 4px; display: block;">Bank/UPI se payout transfer karne ke baad actual UTR number yahan daalein ya auto-generated UTR use karein.</small>
+        </div>
+
+        <div class="form-group">
+          <label>Payment Transfer Mode:</label>
+          <select id="approveWdMode" class="form-control">
+            <option value="IMPS Instant Bank Transfer">IMPS Instant Bank Transfer</option>
+            <option value="UPI Instant VIP Payout">UPI Instant VIP Payout</option>
+            <option value="NEFT Express">NEFT Express</option>
+            <option value="USDT TRC20 Direct">USDT TRC20 Direct</option>
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+          <button type="button" class="btn-portal-action secondary" onclick="closeApproveWithdrawalModal()">Cancel</button>
+          <button type="submit" class="btn-portal-action" id="btnConfirmApprovePayout" style="background: var(--gold-gradient); color: #fff; border: none; font-weight: 700;">
+            <i class="fa-solid fa-receipt"></i> Approve & Generate Receipt
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: VIEW & DOWNLOAD OFFICIAL WITHDRAWAL RECEIPT -->
+  <div id="withdrawalReceiptModal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 440px; padding: 20px;">
+      <div class="modal-header" style="margin-bottom: 12px; padding-bottom: 10px;">
+        <div class="modal-title" style="color: #b48608; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-receipt"></i> Official VIP Payout Receipt
+        </div>
+        <button class="btn-close-modal" onclick="closeWithdrawalReceiptModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <!-- Action Buttons Top -->
+      <div style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
+        <button type="button" class="btn-portal-action" id="btnDownloadTableReceipt" onclick="downloadReceiptImage('tableReceiptCard', 'CryptoMiners_Payout_Receipt.png')" style="background: var(--gold-gradient); color: #fff; border: none; flex: 1; height: 38px; font-size: 12.5px; font-weight: 700;">
+          <i class="fa-solid fa-download"></i> Download PNG
+        </button>
+        <button type="button" class="btn-portal-action" onclick="copyReceiptTelegramText('table')" style="height: 38px; font-size: 12px;">
+          <i class="fa-brands fa-telegram"></i> Copy Text
+        </button>
+        <button type="button" class="btn-portal-action secondary" onclick="printReceiptElement('tableReceiptCard')" style="height: 38px; font-size: 12px;">
+          <i class="fa-solid fa-print"></i>
+        </button>
+      </div>
+
+      <!-- Live Receipt View -->
+      <div id="tableReceiptWrapper" style="display: flex; justify-content: center; background: #e2e8f0; padding: 8px; border-radius: 20px;">
+        <div id="tableReceiptCard" style="background: #ffffff; width: 380px; border-radius: 18px; overflow: hidden; border: 1.5px solid rgba(212, 175, 55, 0.4); box-shadow: 0 12px 36px rgba(0,0,0,0.12); font-family: 'Plus Jakarta Sans', sans-serif; position: relative; color: #0f172a;">
+          
+          <!-- Ribbon Header -->
+          <div style="background: linear-gradient(135deg, #090e1a 0%, #172136 100%); padding: 18px 20px; color: #ffffff; border-bottom: 2.5px solid #d4af37;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #f59e0b 0%, #d4af37 100%); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; box-shadow: 0 4px 10px rgba(212, 175, 55, 0.4);">
+                  <i class="fa-solid fa-crown"></i>
+                </div>
+                <div>
+                  <div style="font-size: 14px; font-weight: 800; letter-spacing: 0.5px; background: linear-gradient(135deg, #ffffff 0%, #fef08a 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">CRYPTOMINERS VIP</div>
+                  <div style="font-size: 9.5px; color: #94a3b8; letter-spacing: 0.5px; text-transform: uppercase;">Cloud Hashrate Payout Desk</div>
+                </div>
+              </div>
+              <span style="background: rgba(16, 185, 129, 0.2); color: #34d399; font-size: 9px; font-weight: 800; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(52, 211, 153, 0.4); text-transform: uppercase; letter-spacing: 0.5px;">
+                <i class="fa-solid fa-shield-halved"></i> SETTLED
+              </span>
+            </div>
+          </div>
+
+          <!-- Hero Section -->
+          <div style="padding: 20px 20px 12px 20px; text-align: center; background: #ffffff;">
+            <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 22px; margin: 0 auto 8px; box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);">
+              <i class="fa-solid fa-check"></i>
+            </div>
+            <div style="font-size: 13px; font-weight: 800; color: #047857; letter-spacing: 0.5px; text-transform: uppercase;">
+              Payout Transfer Successful
+            </div>
+            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">
+              Funds disbursed to beneficiary account
+            </div>
+
+            <div style="margin: 12px 0 6px; font-size: 32px; font-weight: 800; color: #0f172a; letter-spacing: -0.5px;">
+              <span style="font-size: 24px; color: #c59b27; vertical-align: baseline;">₹</span>
+              <span id="tabRcptFinalAmount">0.00</span>
+            </div>
+
+            <div style="display: inline-block; font-size: 11px; color: #64748b; background: #f8fafc; padding: 4px 12px; border-radius: 20px; border: 1px solid #e2e8f0;">
+              <i class="fa-regular fa-clock" style="color: var(--primary);"></i> <span id="tabRcptDate">--</span>
+            </div>
+          </div>
+
+          <!-- Perforated Line -->
+          <div style="position: relative; margin: 6px 0 14px 0; border-top: 1.5px dashed #cbd5e1;">
+            <span style="position: absolute; left: -8px; top: -8px; width: 16px; height: 16px; background: #e2e8f0; border-radius: 50%;"></span>
+            <span style="position: absolute; right: -8px; top: -8px; width: 16px; height: 16px; background: #e2e8f0; border-radius: 50%;"></span>
+          </div>
+
+          <!-- UTR & Mode -->
+          <div style="padding: 0 20px 16px 20px;">
+            <div style="background: linear-gradient(135deg, #faf8f0 0%, #fdfbf7 100%); border: 1.5px solid rgba(212, 175, 55, 0.35); border-radius: 12px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <div>
+                <div style="font-size: 9.5px; font-weight: 800; color: #b48608; text-transform: uppercase;">Bank UTR / Ref No.</div>
+                <div style="font-family: monospace; font-size: 13.5px; font-weight: 800; color: #0f172a; margin-top: 2px;" id="tabRcptUtr">
+                  --
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 9px; color: #64748b; text-transform: uppercase;">Mode</div>
+                <div style="font-size: 11px; font-weight: 700; color: #0f172a;" id="tabRcptMode">IMPS Instant</div>
+              </div>
+            </div>
+
+            <!-- Beneficiary Details -->
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+              <div style="font-size: 10.5px; font-weight: 800; color: #0f172a; text-transform: uppercase; margin-bottom: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px; display: flex; justify-content: space-between;">
+                <span><i class="fa-solid fa-user-check" style="color: var(--primary);"></i> Beneficiary Details</span>
+                <span style="color: #059669; font-weight: 700; font-size: 9.5px;">● VERIFIED</span>
+              </div>
+              
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 7px 10px; font-size: 11.5px;">
+                <div>
+                  <div style="font-size: 9.5px; color: #64748b;">Payee Name</div>
+                  <div style="font-weight: 700; color: #0f172a; word-break: break-word;" id="tabRcptName">--</div>
+                </div>
+                <div>
+                  <div style="font-size: 9.5px; color: #64748b;">Registered Mobile</div>
+                  <div style="font-weight: 700; color: #0f172a;" id="tabRcptPhone">--</div>
+                </div>
+                <div>
+                  <div style="font-size: 9.5px; color: #64748b;">Receiving Bank</div>
+                  <div style="font-weight: 700; color: #0f172a; word-break: break-word;" id="tabRcptBank">--</div>
+                </div>
+                <div>
+                  <div style="font-size: 9.5px; color: #64748b;">Account Number</div>
+                  <div style="font-weight: 700; font-family: monospace; color: #0f172a;" id="tabRcptAccount">--</div>
+                </div>
+                <div>
+                  <div style="font-size: 9.5px; color: #64748b;">IFSC Code</div>
+                  <div style="font-weight: 700; font-family: monospace; color: #0f172a;" id="tabRcptIfsc">--</div>
+                </div>
+                <div id="tabRcptUpiWrap">
+                  <div style="font-size: 9.5px; color: #64748b;">UPI ID / USDT</div>
+                  <div style="font-weight: 700; font-family: monospace; color: var(--primary); word-break: break-all;" id="tabRcptUpi">--</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Breakdown -->
+            <div style="background: #f8fafc; border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; font-size: 11.5px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 5px; color: #64748b;">
+                <span>Gross Amount:</span>
+                <span style="font-weight: 700; color: #0f172a;" id="tabRcptGross">₹0.00</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 5px; color: #64748b;">
+                <span>Platform / Tax Deductions:</span>
+                <span style="font-weight: 700; color: #ef4444;" id="tabRcptFee">- ₹0.00</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; border-top: 1px dashed #cbd5e1; padding-top: 6px; font-size: 13px; font-weight: 800; color: #0f172a;">
+                <span>Net Disbursed:</span>
+                <span style="color: #059669; font-size: 14.5px;" id="tabRcptNet">₹0.00</span>
+              </div>
+            </div>
+
+            <!-- Security Stamp -->
+            <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 4px; border-top: 1px solid #f1f5f9;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="width: 32px; height: 32px; border-radius: 50%; border: 1.5px dashed #d4af37; display: flex; align-items: center; justify-content: center; color: #c59b27; font-size: 13px;">
+                  <i class="fa-solid fa-stamp"></i>
+                </div>
+                <div>
+                  <div style="font-size: 9px; font-weight: 800; color: #b48608; text-transform: uppercase;">Official VIP Voucher</div>
+                  <div style="font-size: 8.5px; color: #64748b;">Audited by CryptoMiners Finance</div>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 8.5px; color: #94a3b8; font-family: monospace;" id="tabRcptTxnId">TXN-CM-</div>
+                <div style="font-size: 8px; color: #10b981; font-weight: 700;">● 100% DISBURSED</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div style="margin-top: 14px; text-align: right;">
+        <button type="button" class="btn-portal-action secondary" onclick="closeWithdrawalReceiptModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Container -->
   <div id="toastContainer"></div>
 
@@ -1483,6 +2047,7 @@
 
       if (tabId === 'recharges') loadRecharges();
       else if (tabId === 'withdrawals') loadWithdrawals();
+      else if (tabId === 'receipt-maker') initCustomReceiptMaker();
       else if (tabId === 'qr' || tabId === 'support') { loadQrCodesPool(); loadSettings(); }
       else if (tabId === 'plans') loadPlans();
       else if (tabId === 'users') loadUsers();
@@ -1670,17 +2235,23 @@
       }
     }
 
+    let activeReceiptData = {};
+
     function filterWithdrawalsTable() {
       const q = (document.getElementById('withdrawSearchInput').value || '').toLowerCase().trim();
       const status = document.getElementById('withdrawStatusFilter').value;
 
       const filtered = allWithdrawals.filter(w => {
         const matchStatus = status === 'all' || w.status === status;
-        const b = w.bank_details || {};
+        const b = w.bank_details || w.bank_account || {};
+        const phone = w.phone || w.user_phone || '';
+        const name = (w.user_name || b.account_holder || '').toLowerCase();
         const matchSearch = !q || 
-          (w.phone && w.phone.includes(q)) || 
+          phone.includes(q) || 
+          name.includes(q) || 
           (b.account_number && b.account_number.includes(q)) || 
-          (b.upi_id && b.upi_id.toLowerCase().includes(q));
+          (b.upi_id && b.upi_id.toLowerCase().includes(q)) ||
+          (w.utr && w.utr.toLowerCase().includes(q));
         return matchStatus && matchSearch;
       });
 
@@ -1698,34 +2269,42 @@
       [...withdrawals].reverse().forEach(w => {
         const tr = document.createElement('tr');
         const isPending = w.status === 'pending';
-        const b = w.bank_details || {};
-        const dateStr = new Date(w.date).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+        const b = w.bank_details || w.bank_account || {};
+        const phone = w.phone || w.user_phone || 'User';
+        const name = w.user_name || b.account_holder || ('Miner ' + phone);
+        const dateStr = w.date ? new Date(w.date).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : '--';
 
         tr.innerHTML = `
           <td>
-            <strong>+91 ${w.phone}</strong><br>
-            <span style="font-size: 11px; color: var(--text-muted);">${w.id}</span>
+            <strong>${escapeHtml(name)}</strong><br>
+            <span style="font-size: 11.5px; color: #475569;">+91 ${phone}</span><br>
+            <span style="font-size: 10px; color: var(--text-muted); font-family: monospace;">${w.id}</span>
           </td>
           <td>
-            <strong>₹${w.amount}</strong><br>
-            <span style="font-size: 11px; color: var(--text-muted);">Fee: ₹${w.fee}</span>
+            <strong>₹${Number(w.amount).toLocaleString('en-IN')}</strong><br>
+            <span style="font-size: 11px; color: var(--text-muted);">Fee: ₹${Number(w.fee || 0).toLocaleString('en-IN')}</span>
           </td>
-          <td><strong style="color: #059669; font-size: 15px;">₹${w.final_amount}</strong></td>
+          <td><strong style="color: #059669; font-size: 15px;">₹${Number(w.final_amount).toLocaleString('en-IN')}</strong></td>
           <td style="font-size: 12px; line-height: 1.5;">
-            ${b.account_holder ? `<div><strong>${b.account_holder}</strong></div>` : ''}
-            ${b.bank_name ? `<div>Bank: ${b.bank_name}</div>` : ''}
-            ${b.account_number ? `<div>A/C: <span style="font-family: monospace; font-weight: 700;">${b.account_number}</span></div>` : ''}
-            ${b.ifsc ? `<div>IFSC: <span style="font-family: monospace;">${b.ifsc}</span></div>` : ''}
-            ${b.upi_id ? `<div>UPI / USDT: <span style="font-family: monospace; color: var(--primary); font-weight: 700;">${b.upi_id}</span></div>` : ''}
+            ${b.account_holder ? `<div><strong>${escapeHtml(b.account_holder)}</strong></div>` : ''}
+            ${b.bank_name ? `<div>Bank: ${escapeHtml(b.bank_name)}</div>` : ''}
+            ${b.account_number ? `<div>A/C: <span style="font-family: monospace; font-weight: 700;">${escapeHtml(b.account_number)}</span></div>` : ''}
+            ${b.ifsc ? `<div>IFSC: <span style="font-family: monospace;">${escapeHtml(b.ifsc)}</span></div>` : ''}
+            ${b.upi_id ? `<div>UPI / USDT: <span style="font-family: monospace; color: var(--primary); font-weight: 700;">${escapeHtml(b.upi_id)}</span></div>` : ''}
+            ${w.utr ? `<div style="margin-top: 3px; font-size: 11px; color: #b48608;"><i class="fa-solid fa-receipt"></i> UTR: <strong style="font-family: monospace;">${escapeHtml(w.utr)}</strong></div>` : ''}
           </td>
           <td style="font-size: 12px; color: var(--text-muted);">${dateStr}</td>
           <td><span class="badge ${w.status === 'approved' ? 'approved' : (w.status === 'rejected' ? 'rejected' : 'pending')}">${w.status === 'approved' ? 'PAID' : w.status.toUpperCase()}</span></td>
           <td>
             <div class="btn-action-group">
               ${isPending ? `
-                <button class="btn-table-action approve" onclick="approveWithdrawal('${w.id}')"><i class="fa-solid fa-check"></i> Mark Paid</button>
+                <button class="btn-table-action approve" onclick="openApproveWithdrawalModal('${w.id}')"><i class="fa-solid fa-check"></i> Mark Paid</button>
                 <button class="btn-table-action reject" onclick="openRejectWithdrawalModal('${w.id}')"><i class="fa-solid fa-xmark"></i> Reject & Refund</button>
-              ` : `<span style="font-size: 11px; color: var(--text-muted); font-weight: 700;">SETTLED</span>`}
+              ` : `
+                <button class="btn-table-action" onclick="viewWithdrawalReceipt('${w.id}')" style="background: var(--gold-gradient); color: #fff; border:none; padding: 5px 10px; font-size: 11px; border-radius: 6px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(212,175,55,0.3); cursor: pointer;">
+                  <i class="fa-solid fa-receipt"></i> Receipt
+                </button>
+              `}
             </div>
           </td>
         `;
@@ -1733,21 +2312,567 @@
       });
     }
 
-    async function approveWithdrawal(id) {
-      if (!confirm('Mark this payout as PAID? Confirm that you have transferred the funds to user bank / USDT wallet.')) return;
+    // Modal: Open Approve Payout Modal with UTR
+    function openApproveWithdrawalModal(id) {
+      const w = allWithdrawals.find(item => item.id === id);
+      if (!w) {
+        showToast('Withdrawal record not found', 'error');
+        return;
+      }
+      const b = w.bank_details || w.bank_account || {};
+      const phone = w.phone || w.user_phone || 'User';
+      const name = w.user_name || b.account_holder || ('Miner ' + phone);
+
+      document.getElementById('approveWdId').value = w.id;
+      document.getElementById('approveWdUserName').innerText = name;
+      document.getElementById('approveWdPhone').innerText = '+91 ' + phone;
+      document.getElementById('approveWdFinalAmount').innerText = '₹' + Number(w.final_amount).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+      document.getElementById('approveWdBankDetails').innerHTML = `
+        <strong>Bank:</strong> ${escapeHtml(b.bank_name || 'Bank Transfer')} | 
+        <strong>A/C:</strong> ${escapeHtml(b.account_number || 'N/A')} | 
+        <strong>IFSC:</strong> ${escapeHtml(b.ifsc || 'N/A')} 
+        ${b.upi_id ? `| <strong>UPI:</strong> ${escapeHtml(b.upi_id)}` : ''}
+      `;
+
+      // Prefill or generate fresh UTR
+      document.getElementById('approveWdUtr').value = w.utr || ("UTR" + Math.floor(100000000000 + Math.random() * 900000000000));
+      document.getElementById('approveWithdrawalModal').classList.add('active');
+    }
+
+    function closeApproveWithdrawalModal() {
+      document.getElementById('approveWithdrawalModal').classList.remove('active');
+    }
+
+    function randomizeApproveUtr() {
+      document.getElementById('approveWdUtr').value = "UTR" + Math.floor(100000000000 + Math.random() * 900000000000);
+    }
+
+    async function submitApproveWithdrawal(e) {
+      e.preventDefault();
+      const id = document.getElementById('approveWdId').value;
+      const utr = document.getElementById('approveWdUtr').value.trim();
+      const paymentMode = document.getElementById('approveWdMode').value;
+      const btn = document.getElementById('btnConfirmApprovePayout');
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing & Generating Receipt...';
+
       try {
-        const res = await fetch(`/api/admin/withdrawal/${id}/approve`, { method: 'POST' });
+        const res = await fetch(`/api/admin/withdrawal/${id}/approve`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ utr, payment_mode: paymentMode })
+        });
         const data = await res.json();
         if (data.success) {
-          showToast(data.message, 'success');
-          loadWithdrawals();
+          showToast(`✅ Payout Approved! UTR: ${utr}`, 'success');
+          closeApproveWithdrawalModal();
+          await loadWithdrawals();
           loadStats();
+
+          // Instantly pop up the official receipt!
+          viewWithdrawalReceipt(id, data.withdrawal);
         } else {
-          showToast(data.message, 'error');
+          showToast(data.message || 'Error approving payout', 'error');
         }
-      } catch (e) {
+      } catch (err) {
         showToast('Error approving withdrawal', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-receipt"></i> Approve & Generate Receipt';
       }
+    }
+
+    // Modal: View & Download Withdrawal Receipt
+    function viewWithdrawalReceipt(id, wdObj) {
+      const w = wdObj || allWithdrawals.find(item => item.id === id);
+      if (!w) {
+        showToast('Withdrawal details not found', 'error');
+        return;
+      }
+
+      const b = w.bank_details || w.bank_account || {};
+      const phone = w.phone || w.user_phone || 'User';
+      const name = w.user_name || b.account_holder || ('Miner ' + phone);
+      const gross = Number(w.amount || 0);
+      const fee = Number(w.fee || 0);
+      const net = Number(w.final_amount || (gross - fee));
+      const utr = w.utr || ("UTR" + Math.floor(100000000000 + Math.random() * 900000000000));
+      const mode = w.payment_mode || 'IMPS Instant Bank Transfer';
+      const dateStr = w.approved_at 
+        ? new Date(w.approved_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' }) + ' IST'
+        : (w.date ? new Date(w.date).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' }) + ' IST' : new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + ' IST');
+
+      // Populate DOM elements
+      document.getElementById('tabRcptFinalAmount').innerText = net.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+      document.getElementById('tabRcptGross').innerText = '₹' + gross.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+      document.getElementById('tabRcptFee').innerText = '- ₹' + fee.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+      document.getElementById('tabRcptNet').innerText = '₹' + net.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+      document.getElementById('tabRcptUtr').innerText = utr;
+      document.getElementById('tabRcptMode').innerText = mode;
+      document.getElementById('tabRcptDate').innerText = dateStr;
+      document.getElementById('tabRcptName').innerText = name;
+      document.getElementById('tabRcptPhone').innerText = '+91 ' + phone;
+      document.getElementById('tabRcptBank').innerText = b.bank_name || 'State Bank of India';
+      document.getElementById('tabRcptAccount').innerText = maskAccount(b.account_number || '•••• •••• 1098');
+      document.getElementById('tabRcptIfsc').innerText = b.ifsc || 'SBIN0001234';
+
+      if (b.upi_id) {
+        document.getElementById('tabRcptUpiWrap').style.display = 'block';
+        document.getElementById('tabRcptUpi').innerText = b.upi_id;
+      } else {
+        document.getElementById('tabRcptUpiWrap').style.display = 'none';
+      }
+
+      document.getElementById('tabRcptTxnId').innerText = (w.id || 'TXN-CM-' + Date.now()).toUpperCase();
+
+      // Store in memory for copy action
+      activeReceiptData = {
+        name,
+        phone: '+91 ' + phone,
+        bank: b.bank_name || 'State Bank of India',
+        account: maskAccount(b.account_number || '•••• •••• 1098'),
+        ifsc: b.ifsc || 'SBIN0001234',
+        upi: b.upi_id || '',
+        gross,
+        fee,
+        net,
+        utr,
+        mode,
+        date: dateStr
+      };
+
+      const filename = `CryptoMiners_Receipt_${name.replace(/\s+/g, '_')}_${utr}.png`;
+      document.getElementById('btnDownloadTableReceipt').setAttribute('onclick', `downloadReceiptImage('tableReceiptCard', '${filename}')`);
+
+      document.getElementById('withdrawalReceiptModal').classList.add('active');
+    }
+
+    function closeWithdrawalReceiptModal() {
+      document.getElementById('withdrawalReceiptModal').classList.remove('active');
+    }
+
+    function maskAccount(acc) {
+      if (!acc) return '•••• •••• 1098';
+      const str = String(acc).trim();
+      if (str.length <= 4) return str;
+      return '•••• •••• ' + str.slice(-4);
+    }
+
+    // -------------------------------------------------------------
+    // CUSTOM RECEIPT STUDIO JAVASCRIPT
+    // -------------------------------------------------------------
+    function initCustomReceiptMaker() {
+      const dateInput = document.getElementById('crmDate');
+      if (dateInput && !dateInput.value) {
+        dateInput.value = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' }) + ' IST';
+      }
+      updateCustomReceiptLivePreview();
+    }
+
+    function updateCustomReceiptLivePreview() {
+      const name = document.getElementById('crmName').value.trim() || 'Miner Name';
+      const phone = document.getElementById('crmPhone').value.trim() || '+91 9876543210';
+      const bank = document.getElementById('crmBank').value.trim() || 'State Bank of India';
+      const rawAcc = document.getElementById('crmAccount').value.trim() || '987654321098';
+      const isMask = document.getElementById('crmMaskAccount').checked;
+      const accDisplay = isMask ? maskAccount(rawAcc) : rawAcc;
+      const ifsc = document.getElementById('crmIfsc').value.trim() || 'SBIN0001234';
+      const upi = document.getElementById('crmUpi').value.trim();
+      const gross = parseFloat(document.getElementById('crmAmount').value) || 0;
+      const fee = parseFloat(document.getElementById('crmFee').value) || 0;
+      const net = parseFloat(document.getElementById('crmFinalAmount').value) || Math.max(0, gross - fee);
+      const utr = document.getElementById('crmUtr').value.trim() || 'UTR948201948291';
+      const txnId = document.getElementById('crmTxnId').value.trim() || 'TXN-CM-928104';
+      const mode = document.getElementById('crmMode').value || 'IMPS Instant';
+      const date = document.getElementById('crmDate').value.trim() || (new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' }) + ' IST');
+
+      // Update Card Preview
+      document.getElementById('crmPreviewFinalAmount').innerText = net.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+      document.getElementById('crmPreviewGross').innerText = '₹' + gross.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+      document.getElementById('crmPreviewFee').innerText = '- ₹' + fee.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+      document.getElementById('crmPreviewNet').innerText = '₹' + net.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+      document.getElementById('crmPreviewUtr').innerText = utr;
+      document.getElementById('crmPreviewMode').innerText = mode;
+      document.getElementById('crmPreviewDate').innerText = date;
+      document.getElementById('crmPreviewName').innerText = name;
+      document.getElementById('crmPreviewPhone').innerText = phone;
+      document.getElementById('crmPreviewBank').innerText = bank;
+      document.getElementById('crmPreviewAccount').innerText = accDisplay;
+      document.getElementById('crmPreviewIfsc').innerText = ifsc;
+
+      const upiWrap = document.getElementById('crmPreviewUpiWrap');
+      if (upi) {
+        upiWrap.style.display = 'block';
+        document.getElementById('crmPreviewUpi').innerText = upi;
+      } else {
+        upiWrap.style.display = 'none';
+      }
+      document.getElementById('crmPreviewTxnId').innerText = txnId.toUpperCase();
+    }
+
+    function calcCustomReceiptAmounts() {
+      const gross = parseFloat(document.getElementById('crmAmount').value) || 0;
+      const fee = parseFloat(document.getElementById('crmFee').value) || 0;
+      document.getElementById('crmFinalAmount').value = Math.max(0, gross - fee);
+    }
+
+    function randomizeCustomUtr() {
+      document.getElementById('crmUtr').value = "UTR" + Math.floor(100000000000 + Math.random() * 900000000000);
+      updateCustomReceiptLivePreview();
+    }
+
+    function randomizeCustomTxnId() {
+      document.getElementById('crmTxnId').value = "TXN-CM-" + Math.floor(100000 + Math.random() * 900000);
+      updateCustomReceiptLivePreview();
+    }
+
+    function applyCustomReceiptPreset(type) {
+      if (type === 'vip_25k') {
+        document.getElementById('crmName').value = 'Rahul Verma';
+        document.getElementById('crmPhone').value = '+91 9876543210';
+        document.getElementById('crmBank').value = 'State Bank of India';
+        document.getElementById('crmAccount').value = '389201948210';
+        document.getElementById('crmIfsc').value = 'SBIN0001234';
+        document.getElementById('crmUpi').value = 'rahul@okaxis';
+        document.getElementById('crmAmount').value = '25000';
+        document.getElementById('crmFee').value = '0';
+        document.getElementById('crmFinalAmount').value = '25000';
+        document.getElementById('crmMode').value = 'IMPS Instant Bank Transfer';
+      } else if (type === 'mega_78k') {
+        document.getElementById('crmName').value = 'Amit Kumar Sharma';
+        document.getElementById('crmPhone').value = '+91 9811234567';
+        document.getElementById('crmBank').value = 'HDFC Bank';
+        document.getElementById('crmAccount').value = '50100492817281';
+        document.getElementById('crmIfsc').value = 'HDFC0000128';
+        document.getElementById('crmUpi').value = 'amit.sharma@okhdfcbank';
+        document.getElementById('crmAmount').value = '78500';
+        document.getElementById('crmFee').value = '0';
+        document.getElementById('crmFinalAmount').value = '78500';
+        document.getElementById('crmMode').value = 'IMPS Instant Bank Transfer';
+      } else if (type === 'daily_5k') {
+        document.getElementById('crmName').value = 'Vikram Patel';
+        document.getElementById('crmPhone').value = '+91 9988776655';
+        document.getElementById('crmBank').value = 'ICICI Bank';
+        document.getElementById('crmAccount').value = '001201594832';
+        document.getElementById('crmIfsc').value = 'ICIC0000012';
+        document.getElementById('crmUpi').value = 'vikram@icici';
+        document.getElementById('crmAmount').value = '5200';
+        document.getElementById('crmFee').value = '0';
+        document.getElementById('crmFinalAmount').value = '5200';
+        document.getElementById('crmMode').value = 'UPI Instant VIP Payout';
+      }
+      randomizeCustomUtr();
+      randomizeCustomTxnId();
+      document.getElementById('crmDate').value = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' }) + ' IST';
+      updateCustomReceiptLivePreview();
+      showToast('Marketing Preset Loaded!', 'success');
+    }
+
+    function resetCustomReceiptForm() {
+      document.getElementById('crmName').value = '';
+      document.getElementById('crmPhone').value = '';
+      document.getElementById('crmBank').value = 'State Bank of India';
+      document.getElementById('crmAccount').value = '';
+      document.getElementById('crmIfsc').value = '';
+      document.getElementById('crmUpi').value = '';
+      document.getElementById('crmAmount').value = '0';
+      document.getElementById('crmFee').value = '0';
+      document.getElementById('crmFinalAmount').value = '0';
+      randomizeCustomUtr();
+      randomizeCustomTxnId();
+      updateCustomReceiptLivePreview();
+    }
+
+    // -------------------------------------------------------------
+    // HIGH-RES IMAGE DOWNLOAD & COPY HELPERS
+    // -------------------------------------------------------------
+    async function downloadReceiptImage(elementId, defaultFilename = 'CryptoMiners_Payout_Receipt.png') {
+      const el = document.getElementById(elementId);
+      if (!el) {
+        showToast('Receipt element not found', 'error');
+        return;
+      }
+
+      showToast('⏳ Generating High-Definition PNG Receipt...', 'success');
+
+      try {
+        if (window.html2canvas) {
+          const canvas = await window.html2canvas(el, {
+            scale: 2.5, // Crisp HD 2.5x resolution for crystal clear fonts & borders
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+            logging: false,
+            onclone: (clonedDoc) => {
+              const target = clonedDoc.getElementById(elementId);
+              if (target) {
+                target.style.transform = 'none';
+                target.style.margin = '0 auto';
+              }
+            }
+          });
+          const dataUrl = canvas.toDataURL('image/png');
+          const a = document.createElement('a');
+          a.href = dataUrl;
+          a.download = defaultFilename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          showToast('✅ VIP Payout Receipt downloaded as HD PNG!', 'success');
+        } else {
+          // Fallback pure canvas generator
+          generateFallbackReceiptCanvas(elementId, defaultFilename);
+        }
+      } catch (err) {
+        console.warn("html2canvas exception, using fallback canvas:", err);
+        try {
+          generateFallbackReceiptCanvas(elementId, defaultFilename);
+        } catch (e2) {
+          console.error(e2);
+          showToast('Could not download image. Please take a screenshot or use Print.', 'error');
+        }
+      }
+    }
+
+    function generateFallbackReceiptCanvas(elementId, filename) {
+      const isCustom = elementId === 'customReceiptCard';
+      const name = isCustom ? document.getElementById('crmName').value : (activeReceiptData.name || 'Miner');
+      const phone = isCustom ? document.getElementById('crmPhone').value : (activeReceiptData.phone || '');
+      const bank = isCustom ? document.getElementById('crmBank').value : (activeReceiptData.bank || 'State Bank of India');
+      const rawAcc = isCustom ? document.getElementById('crmAccount').value : (activeReceiptData.account || '•••• 1098');
+      const account = isCustom ? (document.getElementById('crmMaskAccount').checked ? maskAccount(rawAcc) : rawAcc) : rawAcc;
+      const ifsc = isCustom ? document.getElementById('crmIfsc').value : (activeReceiptData.ifsc || 'SBIN0001234');
+      const net = isCustom ? Number(document.getElementById('crmFinalAmount').value || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 }) : Number(activeReceiptData.net || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+      const utr = isCustom ? document.getElementById('crmUtr').value : (activeReceiptData.utr || 'UTR-PROCESSED');
+      const date = isCustom ? (document.getElementById('crmDate').value || new Date().toLocaleString()) : (activeReceiptData.date || new Date().toLocaleString());
+
+      const canvas = document.createElement('canvas');
+      canvas.width = 800;
+      canvas.height = 1120;
+      const ctx = canvas.getContext('2d');
+
+      // White Card Background with Gold Border
+      ctx.fillStyle = '#ffffff';
+      ctx.roundRect(0, 0, 800, 1120, [32]);
+      ctx.fill();
+
+      // Top Navy Ribbon
+      const grad = ctx.createLinearGradient(0, 0, 800, 160);
+      grad.addColorStop(0, '#090e1a');
+      grad.addColorStop(1, '#172136');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.roundRect(0, 0, 800, 160, [32, 32, 0, 0]);
+      ctx.fill();
+
+      // Gold line under ribbon
+      ctx.fillStyle = '#d4af37';
+      ctx.fillRect(0, 156, 800, 6);
+
+      // Ribbon text
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 30px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('👑 CRYPTOMINERS VIP', 40, 75);
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '18px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('OFFICIAL CLOUD HASHRATE PAYOUT ADVICE', 40, 115);
+
+      // Green Success Badge
+      ctx.fillStyle = '#10b981';
+      ctx.beginPath();
+      ctx.arc(400, 245, 45, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 45px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('✓', 400, 260);
+
+      // Status text
+      ctx.fillStyle = '#047857';
+      ctx.font = 'bold 26px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('PAYOUT TRANSFER SUCCESSFUL', 400, 325);
+
+      // Net Amount
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 64px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('₹ ' + net, 400, 405);
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = '20px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText(date, 400, 445);
+
+      // Dashed Tear Line
+      ctx.setLineDash([12, 8]);
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(30, 480);
+      ctx.lineTo(770, 480);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // UTR Box
+      ctx.fillStyle = '#faf8f0';
+      ctx.strokeStyle = '#d4af37';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(40, 510, 720, 95, [18]);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#b48608';
+      ctx.font = 'bold 18px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('BANK UTR / REFERENCE NUMBER', 65, 548);
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 28px monospace';
+      ctx.fillText(utr, 65, 584);
+
+      // Beneficiary Details Box
+      ctx.fillStyle = '#f8fafc';
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.beginPath();
+      ctx.roundRect(40, 630, 720, 340, [18]);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 22px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('BENEFICIARY DETAILS', 65, 675);
+
+      const items = [
+        ['Payee Name:', name],
+        ['Registered Mobile:', phone],
+        ['Receiving Bank:', bank],
+        ['Account Number:', account],
+        ['IFSC Code:', ifsc],
+        ['Status:', 'Settled & Transferred']
+      ];
+
+      items.forEach((item, idx) => {
+        const y = 720 + idx * 40;
+        ctx.fillStyle = '#64748b';
+        ctx.font = '20px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText(item[0], 65, y);
+
+        ctx.fillStyle = idx === 5 ? '#059669' : '#0f172a';
+        ctx.font = 'bold 21px "Plus Jakarta Sans", monospace';
+        ctx.fillText(item[1], 320, y);
+      });
+
+      // Bottom Stamp
+      ctx.fillStyle = '#b48608';
+      ctx.font = 'bold 17px "Plus Jakarta Sans", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('★ OFFICIALLY VERIFIED & AUDITED BY CRYPTOMINERS VIP FINANCE DESK ★', 400, 1030);
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '15px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('Computer-generated payout voucher. Validated by Banking Clearing Network.', 400, 1060);
+
+      // Trigger download
+      const dataUrl = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast('✅ Payout Receipt image generated & downloaded!', 'success');
+    }
+
+    function printReceiptElement(elementId) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      const printWin = window.open('', '_blank', 'width=480,height=700');
+      printWin.document.write(`
+        <html>
+          <head>
+            <title>CryptoMiners Payout Receipt</title>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+            <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+            <style>
+              body { margin: 20px; font-family: 'Plus Jakarta Sans', sans-serif; display: flex; justify-content: center; }
+              @media print { body { margin: 0; } }
+            </style>
+          </head>
+          <body>
+            ${el.outerHTML}
+            <script>
+              window.onload = function() { window.print(); window.close(); }
+            <\/script>
+          </body>
+        </html>
+      `);
+      printWin.document.close();
+    }
+
+    function copyReceiptTelegramText(source) {
+      let name, phone, bank, account, ifsc, upi, gross, fee, net, utr, date, mode;
+      if (source === 'custom') {
+        name = document.getElementById('crmName').value.trim() || 'Miner';
+        phone = document.getElementById('crmPhone').value.trim() || '';
+        bank = document.getElementById('crmBank').value.trim() || 'Bank';
+        const rawAcc = document.getElementById('crmAccount').value.trim();
+        const isMask = document.getElementById('crmMaskAccount').checked;
+        account = isMask ? maskAccount(rawAcc) : rawAcc;
+        ifsc = document.getElementById('crmIfsc').value.trim();
+        upi = document.getElementById('crmUpi').value.trim();
+        gross = Number(document.getElementById('crmAmount').value || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+        fee = Number(document.getElementById('crmFee').value || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+        net = Number(document.getElementById('crmFinalAmount').value || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+        utr = document.getElementById('crmUtr').value.trim() || 'UTR-PROCESSED';
+        mode = document.getElementById('crmMode').value || 'IMPS Instant';
+        date = document.getElementById('crmDate').value.trim() || (new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + ' IST');
+      } else {
+        name = activeReceiptData.name || 'Miner';
+        phone = activeReceiptData.phone || '';
+        bank = activeReceiptData.bank || 'Bank';
+        account = activeReceiptData.account || '•••• 1098';
+        ifsc = activeReceiptData.ifsc || 'SBIN0001234';
+        upi = activeReceiptData.upi || '';
+        gross = Number(activeReceiptData.gross || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+        fee = Number(activeReceiptData.fee || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+        net = Number(activeReceiptData.net || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+        utr = activeReceiptData.utr || 'UTR-PROCESSED';
+        mode = activeReceiptData.mode || 'IMPS Instant';
+        date = activeReceiptData.date || (new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + ' IST');
+      }
+
+      const text = `💸 *CRYPTOMINERS VIP PAYOUT PROCESSED* 💸
+━━━━━━━━━━━━━━━━━━━━
+✅ *Status:* Transfer Successful
+💰 *Net Credited:* ₹${net}
+👤 *Beneficiary:* ${name}
+📱 *Registered:* ${phone}
+🏛️ *Bank:* ${bank}
+💳 *A/C:* ${account}
+⚡ *IFSC:* ${ifsc}
+${upi ? `📱 *UPI / USDT:* ${upi}\n` : ''}🔢 *Bank UTR / Ref:* ${utr}
+🚀 *Mode:* ${mode}
+🕒 *Time:* ${date}
+━━━━━━━━━━━━━━━━━━━━
+⚡ _Instant Cloud Hashrate yield disbursed via CryptoMiners Finance Desk!_`;
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast('📋 Telegram/WhatsApp payout text copied to clipboard!', 'success');
+        }).catch(() => {
+          fallbackCopyText(text);
+        });
+      } else {
+        fallbackCopyText(text);
+      }
+    }
+
+    function fallbackCopyText(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('📋 Telegram/WhatsApp payout text copied to clipboard!', 'success');
     }
 
     function openRejectWithdrawalModal(id) {
