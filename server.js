@@ -26,28 +26,31 @@ if (!fs.existsSync(uploadDir)) {
 // Serve uploads from uploadDir (works for both local public/uploads and persistent disk mounts)
 app.use('/uploads', express.static(uploadDir));
 
-// Multer storage with 5MB file size limit & mime-type security to prevent disk overflow
+// Multer storage with 15MB file size limit & mime-type security to prevent disk overflow
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
     cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname).toLowerCase() || '.jpg';
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + ext);
+    cb(null, (file.fieldname || 'qr') + '-' + uniqueSuffix + ext);
   }
 });
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // Max 5MB per upload
+  limits: { fileSize: 15 * 1024 * 1024 }, // Max 15MB per upload
   fileFilter: (req, file, cb) => {
-    const allowed = /jpeg|jpg|png|webp/;
+    const allowed = /jpeg|jpg|png|webp|jfif|bmp/i;
     const ext = allowed.test(path.extname(file.originalname).toLowerCase());
-    const mime = allowed.test(file.mimetype);
+    const mime = allowed.test(file.mimetype) || (file.mimetype && file.mimetype.startsWith('image/'));
     if (ext || mime) {
       return cb(null, true);
     }
-    cb(new Error("Only image files (JPG, PNG, WEBP) are allowed!"));
+    cb(new Error("Only image files (JPG, PNG, WEBP, BMP) are allowed!"));
   }
 });
 
@@ -1753,13 +1756,22 @@ app.get('/api/admin/export/:type', (req, res) => {
 });
 
 // Admin: Dedicated Instant QR Upload
-app.post('/api/admin/settings/upload-qr', upload.single('qr_image_file'), (req, res) => {
-  if (!req.file) {
+app.post('/api/admin/settings/upload-qr', (req, res, next) => {
+  upload.any()(req, res, (err) => {
+    if (err) {
+      console.error("[Multer Upload Single Error]:", err.message);
+      return res.status(400).json({ success: false, message: `Upload error: ${err.message}` });
+    }
+    next();
+  });
+}, (req, res) => {
+  const file = (req.files && req.files.length > 0) ? req.files[0] : req.file;
+  if (!file) {
     return res.status(400).json({ success: false, message: "No image file provided" });
   }
   const db = readDB();
   ensureQrCodes(db);
-  const newQrPath = `/uploads/${req.file.filename}`;
+  const newQrPath = `/uploads/${file.filename}`;
   db.settings.qr_image = newQrPath;
   const newQrItem = {
     id: "qr_" + Date.now(),
@@ -1796,19 +1808,37 @@ app.get('/api/admin/settings/qr-codes', (req, res) => {
   });
 });
 
-// Admin: Upload Multiple QR Codes at once (Batch upload minimum 5+ QRs)
-app.post('/api/admin/settings/upload-multiple-qrs', upload.array('qr_files', 20), (req, res) => {
-  if (!req.files || req.files.length === 0) {
-    return res.status(400).json({ success: false, message: "No QR image files provided" });
+// Admin: Upload Multiple QR Codes at once (Batch upload 1, 2, 3, 5+ QRs)
+app.post('/api/admin/settings/upload-multiple-qrs', (req, res, next) => {
+  upload.any()(req, res, (err) => {
+    if (err) {
+      console.error("[Multer Upload Multiple Error]:", err.message);
+      return res.status(400).json({ success: false, message: `Upload error: ${err.message}` });
+    }
+    next();
+  });
+}, (req, res) => {
+  const files = (req.files && Array.isArray(req.files)) ? req.files : [];
+  if (files.length === 0) {
+    return res.status(400).json({ success: false, message: "No QR image files provided. Please select at least 1 image." });
   }
 
   const db = readDB();
   ensureQrCodes(db);
 
-  const upiId = (req.body.upi_id && req.body.upi_id.trim()) ? req.body.upi_id.trim() : (db.settings.upi_id || 'cryptominers@okaxis');
-  const baseTitle = (req.body.title && req.body.title.trim()) ? req.body.title.trim() : 'Payment Channel';
+  const upiId = (req.body.upi_id && req.body.upi_id.trim()) 
+    ? req.body.upi_id.trim() 
+    : (req.body.custom_upi && req.body.custom_upi.trim())
+      ? req.body.custom_upi.trim()
+      : (db.settings.upi_id || 'cryptominers@okaxis');
 
-  const newQrs = req.files.map((file, idx) => {
+  const baseTitle = (req.body.title && req.body.title.trim()) 
+    ? req.body.title.trim() 
+    : (req.body.title_prefix && req.body.title_prefix.trim())
+      ? req.body.title_prefix.trim()
+      : 'Payment Channel';
+
+  const newQrs = files.map((file, idx) => {
     const channelNum = db.settings.qr_codes.length + idx + 1;
     return {
       id: "qr_" + Date.now() + "_" + (idx + 1) + "_" + Math.floor(Math.random() * 1000),
@@ -1827,10 +1857,12 @@ app.post('/api/admin/settings/upload-multiple-qrs', upload.array('qr_files', 20)
   }
   writeDB(db);
 
+  const count = newQrs.length;
   return res.json({
     success: true,
-    message: `Successfully uploaded ${newQrs.length} QR code(s) to rotation pool!`,
-    added_count: newQrs.length,
+    message: `Successfully uploaded ${count} QR code(s) to rotation pool!`,
+    addedCount: count,
+    added_count: count,
     qr_codes: db.settings.qr_codes
   });
 });
@@ -2077,6 +2109,18 @@ if (RENDER_EXTERNAL_URL) {
   }, pingInterval);
   console.log(`[KeepAlive] Auto self-ping activated for ${RENDER_EXTERNAL_URL}`);
 }
+
+// Global Error Handling Middleware (Handles Multer errors gracefully as JSON)
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    console.error("[Multer Error]:", err.message);
+    return res.status(400).json({ success: false, message: `Upload error: ${err.message}` });
+  } else if (err) {
+    console.error("[Server Error]:", err.message);
+    return res.status(400).json({ success: false, message: err.message || "An unexpected error occurred" });
+  }
+  next();
+});
 
 // Fallback index.html
 app.use((req, res) => {

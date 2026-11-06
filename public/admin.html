@@ -685,9 +685,9 @@
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
           <div>
             <h3 style="font-size: 15px; font-weight: 800; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 8px;">
-              <i class="fa-solid fa-cloud-arrow-up" style="color: var(--primary);"></i> Batch Upload Multiple QR Codes (5+ Ek Saath)
+              <i class="fa-solid fa-cloud-arrow-up" style="color: var(--primary);"></i> Batch Upload Multiple QR Codes (2, 3, 5+ Ek Saath)
             </h3>
-            <p style="font-size: 12px; color: var(--text-muted); margin: 4px 0 0 0;">PhonePe, GPay, Paytm ke 5 ya zyada QR files select karein aur rotation pool me add karein.</p>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 4px 0 0 0;">PhonePe, GPay, Paytm ke 2 ya zyada QR files select karein aur rotation pool me add karein.</p>
           </div>
         </div>
 
@@ -1832,16 +1832,24 @@
       const btn = document.getElementById('btnUploadBatch');
 
       if (!input.files || input.files.length === 0) {
-        showToast('Please select at least 1 (recommended 5+) QR image files!', 'error');
+        showToast('Please select at least 1 QR image file!', 'error');
         return;
       }
 
+      const filesCount = input.files.length;
       const formData = new FormData();
       Array.from(input.files).forEach(file => {
+        formData.append('qr_files', file);
         formData.append('qr_batch_files', file);
       });
-      if (titlePrefix) formData.append('title_prefix', titlePrefix);
-      if (customUpi) formData.append('custom_upi', customUpi);
+      if (titlePrefix) {
+        formData.append('title_prefix', titlePrefix);
+        formData.append('title', titlePrefix);
+      }
+      if (customUpi) {
+        formData.append('custom_upi', customUpi);
+        formData.append('upi_id', customUpi);
+      }
 
       btn.disabled = true;
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading QR Pool...';
@@ -1853,17 +1861,23 @@
         });
         const data = await res.json();
         if (data.success) {
-          showToast(`✅ ${data.addedCount} new QR codes added to active rotation pool!`, 'success');
+          const count = data.addedCount || data.added_count || filesCount;
+          showToast(`✅ ${count} new QR codes added to active rotation pool!`, 'success');
           input.value = '';
-          document.getElementById('batchPreUploadPreview').style.display = 'none';
-          document.getElementById('batchThumbnailsRow').innerHTML = '';
+          const previewBox = document.getElementById('batchPreUploadPreview');
+          if (previewBox) previewBox.style.display = 'none';
+          const thumbsRow = document.getElementById('batchThumbnailsRow');
+          if (thumbsRow) thumbsRow.innerHTML = '';
+          const countBadge = document.getElementById('batchCountBadge');
+          if (countBadge) countBadge.innerText = '0';
           loadQrCodesPool();
           loadSettings();
         } else {
           showToast(data.message || 'Upload failed', 'error');
         }
       } catch (e) {
-        showToast('Error uploading QR batch', 'error');
+        console.error("Batch QR upload error:", e);
+        showToast(e.message || 'Error uploading QR batch', 'error');
       } finally {
         btn.disabled = false;
         btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Upload All Selected QRs to Pool';
