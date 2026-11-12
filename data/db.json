@@ -1,11 +1,12 @@
 {
   "admin": {
-    "username": "Crypto_SuperAdmin",
-    "password": "Crypto@2026#SecureAdmin!"
+    "username": "Crypto_MasterAdmin",
+    "password": "CryptoMine@2026#VaultAdmin!",
+    "session_token": null
   },
   "settings": {
     "platform_name": "CryptoMiners VIP",
-    "app_announcement": "⚡ Welcome to CryptoMiners Global Cloud Hashrate! Real-time ASIC mining yields completed in 45 Minutes. Instant withdrawals in INR & USDT! 3-level VIP commission up to 40%! Start high-speed mining now!",
+    "app_announcement": "\u26a1 Welcome to CryptoMiners Global Cloud Hashrate! Real-time ASIC mining yields completed in 45 Minutes. Instant withdrawals in INR & USDT! 3-level VIP commission up to 40%! Start high-speed mining now!",
     "min_recharge": 499,
     "min_withdraw": 200,
     "withdrawal_fee_percent": 10,
@@ -228,7 +229,7 @@
       "custom_tax_name": "Security Clearance Tax",
       "custom_tax_type": "flat",
       "custom_tax_value": 350,
-      "withdrawal_notice": "Security Clearance Tax ₹350 flat applied."
+      "withdrawal_notice": "Security Clearance Tax \u20b9350 flat applied."
     }
   ],
   "user_plans": [],
@@ -251,7 +252,7 @@
       "custom_tax_amount": 350,
       "fee": 810,
       "final_amount": 1190,
-      "withdrawal_notice": "Security Clearance Tax ₹350 flat applied.",
+      "withdrawal_notice": "Security Clearance Tax \u20b9350 flat applied.",
       "bank_account": {
         "account_holder": "Rahul Sharma",
         "bank_name": "HDFC Bank",

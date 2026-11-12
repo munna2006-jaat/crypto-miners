@@ -56,8 +56,9 @@ const upload = multer({
 
 const defaultDB = {
   admin: {
-    username: "Crypto_SuperAdmin",
-    password: "Crypto@2026#SecureAdmin!"
+    username: "Crypto_MasterAdmin",
+    password: "CryptoMine@2026#VaultAdmin!",
+    session_token: null
   },
   settings: {
     platform_name: "CryptoMiners VIP",
@@ -1236,14 +1237,45 @@ app.post('/api/spin', (req, res) => {
   });
 });
 
-// ----------------- ADMIN PANEL APIS -----------------
+// ----------------- ADMIN PANEL APIS & AUTH MIDDLEWARE -----------------
+
+// Admin Authentication Middleware (enforces dynamic session token & forces logout on revocation)
+app.use('/api/admin', (req, res, next) => {
+  if (req.path === '/login') {
+    return next();
+  }
+
+  const authHeader = req.headers.authorization;
+  const token = (authHeader && authHeader.startsWith('Bearer '))
+    ? authHeader.slice(7)
+    : (req.query.token || req.headers['x-admin-token']);
+
+  const db = readDB();
+  if (!token || !db.admin.session_token || token !== db.admin.session_token) {
+    return res.status(401).json({
+      success: false,
+      sessionExpired: true,
+      message: "Admin session expired or credentials changed. Please log in again."
+    });
+  }
+  next();
+});
+
+// Admin Verify Session endpoint
+app.get('/api/admin/verify-session', (req, res) => {
+  return res.json({ success: true, message: "Admin session is valid" });
+});
 
 // Admin Login
 app.post('/api/admin/login', (req, res) => {
   const { username, password } = req.body;
   const db = readDB();
   if (username === db.admin.username && password === db.admin.password) {
-    return res.json({ success: true, message: "Admin authenticated successfully", token: "admin_token_auth_98234" });
+    const crypto = require('crypto');
+    const newToken = 'crypto_adm_' + Date.now() + '_' + crypto.randomBytes(16).toString('hex');
+    db.admin.session_token = newToken;
+    writeDB(db);
+    return res.json({ success: true, message: "Admin authenticated successfully", token: newToken });
   }
   return res.status(401).json({ success: false, message: "Invalid Admin username or password" });
 });
@@ -2012,8 +2044,16 @@ app.post('/api/admin/change-password', (req, res) => {
   if (new_password && new_password.trim().length >= 4) {
     db.admin.password = new_password.trim();
   }
+  // Invalidate all active sessions across all devices
+  const crypto = require('crypto');
+  const newToken = 'crypto_adm_' + Date.now() + '_' + crypto.randomBytes(16).toString('hex');
+  db.admin.session_token = newToken;
   writeDB(db);
-  return res.json({ success: true, message: "Admin credentials updated successfully!" });
+  return res.json({ 
+    success: true, 
+    message: "Admin credentials updated successfully! All other sessions have been logged out.",
+    token: newToken
+  });
 });
 
 // Admin: Manual Balance Credit / Debit with full record

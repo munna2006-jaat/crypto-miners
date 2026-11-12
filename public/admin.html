@@ -1983,13 +1983,53 @@
     let allUsers = [];
     let adminQrPool = [];
 
-    document.addEventListener('DOMContentLoaded', () => {
-      if (adminToken) {
-        document.getElementById('adminAuthScreen').style.display = 'none';
-        initAdminData();
-      } else {
-        document.getElementById('adminAuthScreen').style.display = 'flex';
+    // Global fetch interceptor: automatically attaches admin token and force-logs out on revoked/invalid sessions
+    const originalFetch = window.fetch;
+    window.fetch = async function(url, options = {}) {
+      options = options || {};
+      options.headers = options.headers || {};
+      
+      const urlStr = typeof url === 'string' ? url : (url && url.url ? url.url : '');
+      if (urlStr.startsWith('/api/admin') && !urlStr.includes('/api/admin/login')) {
+        if (adminToken) {
+          if (options.headers instanceof Headers) {
+            options.headers.set('Authorization', 'Bearer ' + adminToken);
+          } else {
+            options.headers['Authorization'] = 'Bearer ' + adminToken;
+          }
+        }
       }
+
+      const response = await originalFetch(url, options);
+
+      if (response.status === 401 && urlStr.startsWith('/api/admin') && !urlStr.includes('/api/admin/login')) {
+        localStorage.removeItem('cryptominers_admin_token');
+        localStorage.removeItem('redbull_admin_token');
+        adminToken = null;
+        document.getElementById('adminAuthScreen').style.display = 'flex';
+        showToast('Session expired or admin credentials changed. Please log in again.', 'error');
+      }
+
+      return response;
+    };
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (adminToken) {
+        try {
+          const res = await fetch('/api/admin/verify-session');
+          const data = await res.json();
+          if (data && data.success) {
+            document.getElementById('adminAuthScreen').style.display = 'none';
+            initAdminData();
+            return;
+          }
+        } catch (e) {}
+        // If verify-session fails or returns 401:
+        localStorage.removeItem('cryptominers_admin_token');
+        localStorage.removeItem('redbull_admin_token');
+        adminToken = null;
+      }
+      document.getElementById('adminAuthScreen').style.display = 'flex';
     });
 
     async function handleAdminLogin(e) {
